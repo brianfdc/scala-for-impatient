@@ -1,0 +1,31 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.scala</groupId>
+  <artifactId>com.scala.impatient</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <name>scala-for-impatient</name>
+  <description>Exercises from _Scala for the Impatient_</description>
+  <url>https://github.com/alanktwong/scala-for-impateint</url>
+  <developers>
+    <developer>
+      <name>Alan Wong</name>
+      <email>alan_kt_wong@yahoo.com</email>
+      <organization>Self</organization>
+      <timezone>-5</timezone>
+    </developer>
+  </developers>
+  <dependencies>
+    <dependency>
+      <groupId>org.scalatest</groupId>
+      <artifactId>scalatest_2.9.0</artifactId>
+      <version>1.8</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.4</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+</project>
