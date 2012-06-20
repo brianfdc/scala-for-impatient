@@ -88,7 +88,8 @@ package Exercise08 {
       ("description: " + description + ", price: " + price)
     }
   }
-  class Bundle {
+  class Bundle(aDescription : String) extends Item {
+    val description = aDescription;
     var items = List[SimpleItem]()
     def price : Double = {
       val prices = items.map(_.price)
@@ -98,5 +99,50 @@ package Exercise08 {
     def add(item:SimpleItem) = {
       items = item :: items
     }
+  }
+  /**
+   * (8.5)
+   */
+  class Point(val x: Int, val y: Int) {
+    override def toString : String = {
+      ("x: " + x + ", y: " + y)
+    }
+  }
+  class LabeledPoint(x: Int, y: Int, val label: String) extends Point(x,y) {
+    override def toString : String = {
+      val str = super.toString();
+      (str + ", label: " + label)
+    }
+  }
+  /**
+   * (8.8)
+   * 
+   * scala> javap -p Person
+   * Compiled from "<console>"
+   * public class Person extends java.lang.Object implements scala.ScalaObject{
+   *     private final java.lang.String name;
+   *     public java.lang.String name();
+   *     public java.lang.String toString();
+   *     public Person(java.lang.String);
+   * }
+   * 
+   * scala> javap -p SecretAgent
+   * Compiled from "<console>"
+   * public class SecretAgent extends Person implements scala.ScalaObject{
+   *     private final java.lang.String name;
+   *     private final java.lang.String toString;
+   *     public java.lang.String name();
+   *     public java.lang.String toString();
+   *     public SecretAgent(java.lang.String);
+   * }
+   */
+  class Person(val name: String) {
+    override def toString : String = {
+      (getClass.getName + "[name: " + name + "]")
+    }
+  }
+  class SecretAgent(codename: String) extends Person(codename) {
+    override val name = "*******"    // don't reveal name
+    override val toString = "******" // don't reveal class name
   }
 }
