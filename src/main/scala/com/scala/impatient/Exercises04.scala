@@ -1,6 +1,9 @@
 package com.scala.impatient
 
+import scala.collection.JavaConversions.propertiesAsScalaMap
+import scala.collection.Iterable
 import scala.collection.Map
+import scala.io.Source
 
 class Exercise04 {
   /**
