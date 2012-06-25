@@ -1,4 +1,8 @@
 package scala.impatient
+import java.beans.PropertyChangeListener
+
+import scala.awong.ReflectionToString
+
 
 object Exercises10 {
   /**
@@ -161,6 +165,107 @@ object Exercises10 {
         msg.map( x => (x + key).toChar )
       }
       println(ceasarCipher(msg))
+    }
+  }
+  
+  /**
+   * (10.5)
+   */
+  trait PropertyChangeSupportLike extends ReflectionToString with Serializable {
+    private var listeners = Seq[PropertyChangeListener]()
+    private var propertyListeners = Map[String,Seq[PropertyChangeListener]]()
+    val source:Object
+    
+    def addPropertyChangeListener(listener: PropertyChangeListener) = {
+      listeners = listeners :+ listener
+    }
+    def removePropertyChangeListener(listener: PropertyChangeListener) = {
+      listeners = listeners.filter( _ != listener)
+    }
+    
+    def getPropertyChangeListeners: Seq[PropertyChangeListener] = {
+      val result = Seq[PropertyChangeListener]()
+      ( listeners ++ propertyListeners.values.flatMap( (x) => x ++ result) )
+    }
+    
+    def addPropertyChangeListener(property:String, listener: PropertyChangeListener) = {
+      val triggers = getPropertyChangeListeners(property) :+ listener
+      propertyListeners = ( propertyListeners + (property ->  triggers ) )
+    }
+    def removePropertyChangeListener(property:String, listener: PropertyChangeListener) = {
+      val triggers = getPropertyChangeListeners(property).filter( _ != listener)
+      propertyListeners = ( propertyListeners + (property ->  triggers ) )
+      
+    }
+    def getPropertyChangeListeners(property:String): Seq[PropertyChangeListener] = {
+      val result = propertyListeners(property)
+      (result)
+    }
+    def firePropertyChangeListeners[A](property:String, oldValue: A, newValue: A) = {
+      val triggers = getPropertyChangeListeners(property) ++ listeners
+      triggers.foreach{
+        _.propertyChange(new java.beans.PropertyChangeEvent(source, property, oldValue, newValue) )
+      }
+    }
+    def hasListeners: Boolean = {
+      ( !listeners.isEmpty || !propertyListeners.isEmpty)
+    }
+    
+  }
+  
+  object PointFactory {
+    def get(x: Int, y:Int, src: java.lang.Object): java.awt.Point = {
+      val point = new { val source = src } with java.awt.Point(x,y) with PropertyChangeSupportLike
+      (point)
+    }
+  }
+  /**
+   * (10.6) 
+   * Java: java.awt.Container extends java.awt.Component
+   *       javax.swing.JComponent extends java.awt.Container (unintuitive: violates "is a")
+   *       javax.swing.JPanel extends javax.swing.JComponent
+   * Preferable: java.awt.Container inherits from java.awt.Component
+   *             javax.swing.JComponent inherits from java.awt.Component
+   *             javax.swing.JButton inherits from javax.swing.JComponent
+   *             javax.swing.JContainer inherits from java.awt.Container and javax.swing.JComponent
+   *             javax.swing.JPanel extends javax.swing.JContainer
+   * The preferable design is not possible in Java due to the absence of mixins. A working version
+   * of multiple inheritance was needed. But it is possible in Scala!
+   * 
+   * Let Container, Component, JContainer & JComponent be traits. Component is the 
+   * root trait of all 4. Container extends Component. JComponent extends Component. Then
+   * since the Swing library is a rewrite of AWT, JContainer extends JComponent with Container.
+   * Let JButton be a class that extends JComponent and JPanel be a class that extends JContainer.
+   */
+  
+  /**
+   * (10.8) Replace the decorator java.io.BufferedInputStream 
+   */
+  trait BufferedInputStreamLike {
+    val in: java.io.InputStream
+    def available: Int = {
+      in.available()
+    }
+    def close = {
+      in.close
+    }
+    def mark(readLimit: Int) {
+      in.mark(readLimit)
+    }
+    def markSupported: Boolean = {
+      in.markSupported
+    }
+    def read: Int = {
+      in.read()
+    }
+    def read(b: Array[Byte], off: Int, len: Int) : Int = {
+      in.read(b,off,len)
+    }
+    def reset = {
+      in.reset
+    }
+    def skip(n: Long) : Long = {
+      in.skip(n)
     }
   }
 }
