@@ -54,9 +54,12 @@ package Exercises06 {
   }
   /**
    * (6.5)
+   * If this extends the trait App it will have main method for free
    */
-  object ReverseApp extends App {
-    Console.println("Hello World: " + args.reverse.mkString(" ") )
+  object ReverseApp {
+    def reverse(args:Array[String]) = {
+      println("Hello World: " + args.reverse.mkString(" ") )
+    }
   }
   
   /**

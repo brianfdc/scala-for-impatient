@@ -7,5 +7,5 @@ package scala.awong
  * 
  */
 object HolaMundo extends App {
-  Console.println("Hello World: " + args.mkString(", ") )
+  println("Hello World: " + args.mkString(", ") )
 }
