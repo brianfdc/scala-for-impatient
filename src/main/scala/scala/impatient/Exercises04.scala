@@ -5,6 +5,9 @@ import scala.collection.Iterable
 import scala.collection.Map
 import scala.io.Source
 
+/**
+ * Maps and Tuples
+ */
 class Exercise04 {
   /**
    * (4.1)

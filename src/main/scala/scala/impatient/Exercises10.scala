@@ -3,7 +3,9 @@ import java.beans.PropertyChangeListener
 
 import scala.awong.ReflectionToString
 
-
+/**
+ * Traits
+ */
 object Exercises10 {
   /**
    * (10.1)

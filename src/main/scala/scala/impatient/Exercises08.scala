@@ -2,6 +2,9 @@ package scala.impatient
 
 import scala.awong.ReflectionToString
 
+/**
+ * Inheritance
+ */
 package Exercise08 {
   class BankAccount(initialBalance: Double) extends ReflectionToString {
     protected var balance = initialBalance

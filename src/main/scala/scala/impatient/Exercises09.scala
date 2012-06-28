@@ -2,6 +2,9 @@ package scala.impatient
 
 import scala.io.Source
 
+/**
+ * Files and Regular Expressions
+ */
 class Exercises09 {
   /**
    * (9.1)

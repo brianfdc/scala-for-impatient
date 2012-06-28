@@ -4,6 +4,9 @@ import scala.math._
 import scala.math.BigInt._
 import scala.util.Random
 
+/**
+ * The Basics
+ */
 class Exercises01 {
   /*
    * (1.1) Methods on the integer "3"

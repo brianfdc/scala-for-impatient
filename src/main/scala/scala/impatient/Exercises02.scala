@@ -1,5 +1,7 @@
 package scala.impatient
-
+/**
+ * Control Structures and Functions
+ */
 class Exercises02 {
   /*
    * (2.1) 

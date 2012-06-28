@@ -1,5 +1,8 @@
 package scala.impatient
 
+/**
+ * Operators
+ */
 class Exercises11 {
   /**
    * (11.1) According to the precedence rules (determined by the

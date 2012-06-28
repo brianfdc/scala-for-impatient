@@ -1,5 +1,8 @@
 package scala.impatient
 
+/**
+ * Objects
+ */
 package Exercises06 {
   /**
    * (6.1)
