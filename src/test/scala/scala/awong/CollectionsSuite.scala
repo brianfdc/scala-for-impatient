@@ -22,10 +22,8 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
     
     expect(60) { list.drop(40).size }
     expect(40) { list.take(40).size }
-    
-    
-    
   }
+  
   test("filtering/partition of linked list ") {
     val (evens, odds) = list.partition( _ % 2 == 0)
     expect(50) { evens.size }
@@ -51,5 +49,19 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(100) {  list.foldRight(0){ max(_,_) } }
     // operator form of fold right
     expect(100) {  ( list :\ 0 ) { max(_,_) }  }
+  }
+  
+  test("parallelizing collections") {
+    
+    val range = (0 until 1000).par
+    val result = range.map{ each => print(each + " "); each }
+    expect( range.length ) { result.length }
+    
+    val initial: Double = 0
+    val sum = range.aggregate(initial)(
+        (a,b) => a.toDouble + b.toDouble /* seqop applied to parts of the collection */,
+        _ + _  /* parop to combine the results */
+    )
+    
   }
 }
