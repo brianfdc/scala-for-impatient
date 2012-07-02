@@ -53,6 +53,11 @@ class ControlStructures {
     }
   }
   */
+  def foreach[T](seq : Seq[T], fn : (T) => Any) {
+    for (each <- seq) {
+      fn(each)
+    } 
+  }
 
   def decorate(str: String, left: String = "[", right: String = "]") : String = {
     left + str + right

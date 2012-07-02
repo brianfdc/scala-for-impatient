@@ -3,7 +3,7 @@ package scala.impatient
 /**
  * Operators
  */
-class Exercises11 {
+object Exercises11 {
   /**
    * (11.1) According to the precedence rules (determined by the
    * 1st character of an operator

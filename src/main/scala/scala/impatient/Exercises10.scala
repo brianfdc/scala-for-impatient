@@ -162,11 +162,13 @@ object Exercises10 {
    */
   trait CryptoLogger {
     val key = 3
-    def log(msg: String) {
+    def log(msg: String):String = {
       def ceasarCipher(msg: String): String = {
         msg.map( x => (x + key).toChar )
       }
-      println(ceasarCipher(msg))
+      val encrypted = ceasarCipher(msg)
+      println(encrypted)
+      ( encrypted )
     }
   }
   

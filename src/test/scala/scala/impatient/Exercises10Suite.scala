@@ -25,4 +25,10 @@ class Exercises10Suite extends FunSuite with BeforeAndAfter {
     assert(egg.getHeight === 50)
   }
 
+  test("ceasar Cipher") {
+    import scala.impatient.Exercises11._
+    val money = new Exercises11.Money(100, 100) with Exercises10.CryptoLogger
+    expect( BigInt(101*100) ) { money.totalCents } 
+    expect( "khoor" ) { money.log("hello") }
+  }
 }
