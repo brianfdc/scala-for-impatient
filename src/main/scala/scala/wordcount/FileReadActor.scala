@@ -20,18 +20,28 @@ class FileReadActor extends Actor {
       }
     }
   }
-  def readTokens(src:Source) : Array[String] = {
+  def readTokens(src:Source) : Seq[String] = {
     val lineIterator = src.getLines
-    val lines = lineIterator.toArray    // put lines into an Array
-    val content = src.mkString       // read whole file into a String
-    val tokens : Array[String]  = content.split("\\s+")
-    tokens
+    val lines = lineIterator.toArray
+    // process each line for tokens and accrue them in parallel
+    val allTokens = lines.par.aggregate(Seq[String]()) (
+      (seq,eachLine) => {
+        val tokensPerLine = eachLine.split("\\s+")
+        seq ++ tokensPerLine
+      },
+      _ ++ _
+    )
+    allTokens
   }
   
-  def wordCountFold(tokens: Seq[String]) : Map[String,Int] = {
-    val sortedMap  = scala.collection.immutable.SortedMap[String,Int]()
-    tokens.foldLeft(sortedMap){
-      (map,eachToken) => map + ( eachToken -> (map.getOrElse(eachToken,0) + 1 ) )
-    }
+  def countWordsInTokens(tokens: Seq[String]) : Map[String,Int] = {
+    val wordCountMap = tokens.par.aggregate( Map[String,Int]() )(
+        (map, eachToken) => {
+          val count = map.getOrElse(eachToken,0) + 1
+          map + ( eachToken -> count )
+        },
+        _ ++ _
+    )
+    ( wordCountMap )
   }
 }
