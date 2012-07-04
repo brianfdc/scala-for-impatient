@@ -52,16 +52,22 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
   }
   
   test("parallelizing collections") {
-    
-    val range = (0 until 1000).par
+    val range = (0 until 1000000).par
     val result = range.map{ each => print(each + " "); each }
     expect( range.length ) { result.length }
     
-    val initial: Double = 0
-    val sum = range.aggregate(initial)(
-        (a,b) => a.toDouble + b.toDouble /* seqop applied to parts of the collection */,
-        _ + _  /* parop to combine the results */
-    )
-    
+    expect(range.sum) {
+      /*
+       * aggregate requires two operations
+       * (1) a seqop applied to partitions of the collection
+       * (2) a parop to combine the results applied to the partitions
+       */
+      val sum = range.aggregate(0)( (a,b) => {
+        a + b
+      },{ (a1,a2) =>
+        println("adding: (" + a1 + "," + a2 + ")")
+        a1 + a2  
+      })
+    }
   }
 }
