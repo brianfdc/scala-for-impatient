@@ -11,7 +11,6 @@ class FunctionalCollections {
       xs match {
         case List() => List(x)
         case y::ys => {
-          
           if (x <=  y) {
             x::xs
           } else {
