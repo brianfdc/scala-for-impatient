@@ -14,6 +14,28 @@
       <timezone>-5</timezone>
     </developer>
   </developers>
+  <repositories>
+    <repository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
+    </repository>
+    <repository>
+      <id>Typesafe.com</id>
+      <name>Typesafe Repository</name>
+      <url>http://repo.typesafe.com/typesafe/releases/</url>
+    </repository>
+  </repositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>scala-tools.org</id>
+      <name>Scala-Tools Maven2 Repository</name>
+      <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
+    </pluginRepository>
+  </pluginRepositories>
+  <properties>
+    <scala.version>2.9.2</scala.version>
+  </properties>
   <dependencies>
     <dependency>
       <groupId>org.scalatest</groupId>
@@ -27,22 +49,15 @@
       <version>4.4</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-actor</artifactId>
+      <version>2.0.2</version>
+    </dependency>
+    <dependency>
+      <groupId>com.typesafe.akka</groupId>
+      <artifactId>akka-remote</artifactId>
+      <version>2.0.2</version>
+    </dependency>
   </dependencies>
-  <repositories>
-    <repository>
-      <id>scala-tools.org</id>
-      <name>Scala-Tools Maven2 Repository</name>
-      <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
-    </repository>
-  </repositories>
-  <pluginRepositories>
-    <pluginRepository>
-      <id>scala-tools.org</id>
-      <name>Scala-Tools Maven2 Repository</name>
-      <url>https://oss.sonatype.org/content/groups/scala-tools/</url>
-    </pluginRepository>
-  </pluginRepositories>
-  <properties>
-    <scala.version>2.9.2</scala.version>
-  </properties>
 </project>
