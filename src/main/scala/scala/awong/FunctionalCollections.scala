@@ -1,11 +1,19 @@
 package scala.awong
 
+import scala.collection.JavaConversions
+
+import scala.util.Random
+
 /**
  * Fun with collections using functional
  * programming
  */
-class FunctionalCollections {
+object FunctionalCollections {
 
+  def shuffle[T](xs:List[T]): List[T] = {
+    Random.shuffle(xs)
+  }
+  
   def insertionSort[T <: Ordered[T]](xs:List[T]): List[T] = {
     def insert(x:T, xs:List[T]): List[T] = {
       xs match {
@@ -46,20 +54,5 @@ class FunctionalCollections {
       val (ys,zs) = xs.splitAt(n)
       merge(mergeSort(ys), mergeSort(zs))
     }
-  }
-  
-  def mapping = {
-    val list = List(1,2,3)
-    list.map( _ + 1) // (2,3,4)
-    val words = List("the","quick", "brown", "fox")
-    words.map(_.toList) // List(List(t,h,e), List(q,u,i,c,k),List(b,r,o,w,n),List(f,o,x))
-    words.flatMap(_.toList) // List(t,h,e,q,u,i,c,k,b,r,o,w,n,f,o,x)
-    var sum = 0
-    
-    list.foreach( sum += _) // 6
-  }
-  
-  def filtering = {
-    
   }
 }

@@ -7,7 +7,7 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class CollectionsSuite extends FunSuite with BeforeAndAfter {
+class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
   var list: List[Int] = _
   var seq: Seq[Int] = _
   
@@ -24,6 +24,14 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(40) { list.take(40).size }
   }
   
+  test("shuffling") {
+    val range = 1 to 20
+    val rn = FunctionalCollections.shuffle(range.toList)
+    println("shuffled range:" + rn.mkString(",") + "\n")
+    expect(range.size) { rn.size }
+    expect(false) { rn.head == range.head }
+  }
+  
   test("filtering/partition of linked list ") {
     val (evens, odds) = list.partition( _ % 2 == 0)
     expect(50) { evens.size }
@@ -36,6 +44,34 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(200) { doubled.flatMap( each => List(each * 2, each % 2 ) ).size }
   }
 
+  test("testing mapping") {
+    val list = List(1,2,3)
+    expect(List(2,3,4)) {
+      list.map( _ + 1) // (2,3,4)
+    }
+    
+    val words = List("the","quick", "brown", "fox")
+    
+    val mapped = words.map(_.toList)
+    // List(List("t","h","e"), List("q","u","i","c","k"),List("b","r","o","w","n"),List("f","o","x"))
+    expect( 4 ) {
+      mapped.size
+    }
+    
+    val flatMap = words.flatMap(_.toList)
+    // List("t","h","e", "q","u","i","c","k","b","r","o","w","n","f","o","x")
+    expect( 16 ) {
+      flatMap.size
+    }
+    var sum = 0
+    
+    expect( 6 ) {
+      list.foreach( sum += _)
+      sum
+    }
+    
+  }
+  
   test("reduce and fold linked lists") {
     def max(a:Int, b:Int): Int = {
        if (a > b) a else b
@@ -52,22 +88,25 @@ class CollectionsSuite extends FunSuite with BeforeAndAfter {
   }
   
   test("parallelizing collections") {
-    val range = (0 until 1000000).par
-    val result = range.map{ each => print(each + " "); each }
-    expect( range.length ) { result.length }
+    val range = 0 until 1000
+    val parallelRange = range.par
+    val result = parallelRange.map{ each => print(each + " "); each }
+    expect( parallelRange.length ) { result.length }
     
-    expect(range.sum) {
+    expect(parallelRange.sum) {
       /*
        * aggregate requires two operations
        * (1) a seqop applied to partitions of the collection
        * (2) a parop to combine the results applied to the partitions
        */
-      val sum = range.aggregate(0)( (a,b) => {
+      val sum = parallelRange.aggregate(0)( (a,b) => {
         a + b
       },{ (a1,a2) =>
         println("adding: (" + a1 + "," + a2 + ")")
-        a1 + a2  
+        a1 + a2
       })
+      
+      ( sum )
     }
   }
 }
