@@ -17,11 +17,18 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
   }
   
   test("head/tail of linked list") {
-    expect(1) { list.head }
-    expect(99) { list.tail.size }
-    
-    expect(60) { list.drop(40).size }
-    expect(40) { list.take(40).size }
+    expect(1) {
+      list.head
+    }
+    expect(99) {
+      list.tail.size
+    }
+    expect(60) {
+      list.drop(40).size
+    }
+    expect(40) {
+      list.take(40).size
+    }
   }
   
   test("shuffling") {
@@ -55,7 +62,6 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(4) {
       (bSet diff aSet).size
     }
-    
   }
   
   test("filtering/partition of linked list ") {
@@ -102,15 +108,75 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     def max(a:Int, b:Int): Int = {
        if (a > b) a else b
     }
-    expect(100) {  list.reduceLeft{ max(_,_) }  }
+    expect(100) {
+      list.reduceLeft{ max(_,_) }
+    }
     
-    expect(100) {  list.foldLeft(0){ max(_,_) } }
+    expect(100) {
+      list.foldLeft(0){ max(_,_) }
+    }
     // operator form of fold left
-    expect(100) {  ( 0 /: list ) { max(_,_) }  }
-    
-    expect(100) {  list.foldRight(0){ max(_,_) } }
+    expect(100) {
+      ( 0 /: list ) { max(_,_) }
+    }
+    expect(100) {
+      list.foldRight(0){ max(_,_) }
+    }
     // operator form of fold right
-    expect(100) {  ( list :\ 0 ) { max(_,_) }  }
+    expect(100) {
+      ( list :\ 0 ) { max(_,_) }
+    }
+  }
+  
+  test("linked list accumulate") {
+    expect(seq.size * 2) {
+      val result = ( List[Double]() /: seq ) { (doubles,each) =>
+        // prepend to doubles
+        each.toDouble :: doubles
+      }
+      println (result.size)
+      // same as java.util.List.addAll
+      ( result ::: list.map(_.toDouble) ).size
+    }
+    
+    expect(list.size) {
+      val result = ( Seq[Double]() /: list ) { (doubles,each) =>
+        // prepend to doubles
+        each.toDouble +: doubles
+      }
+      result.size
+    }
+    
+    expect(list.size) {
+      val result = ( Seq[Double]() /: list ) { (doubles,each) =>
+        // append to doubles
+        doubles :+ each.toDouble
+      }
+      result.size
+    }
+  }
+  
+  test("mutable list accumulate") {
+    expect(seq.size * 2) {
+      val result = ( scala.collection.mutable.Buffer[Int]() /: seq ) { (doubles,each) =>
+        // prepend to doubles
+        doubles += (each * 2)  
+      }
+      ( result ++= list.toBuffer ).size
+      
+    }
+    
+    expect(list.size) {
+      val result = ( list.toBuffer /: list ) { (doubles,each) =>
+        if (each % 2 == 0) {
+          // remove evens from doubles
+          doubles -= each
+        } else {
+          doubles += each
+        } 
+      }
+      result.size
+    }
   }
   
   test("parallelizing collections") {
