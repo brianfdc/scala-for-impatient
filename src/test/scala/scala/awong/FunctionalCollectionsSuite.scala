@@ -32,6 +32,32 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(false) { rn.head == range.head }
   }
   
+  test("set methods") {
+    val aSet = (1 to 3).toSet
+    val bSet = (3 to 7).toSet
+    
+    expect(1) {
+      (aSet & bSet).size
+    }
+    expect(1) {
+      (aSet intersect bSet).size
+    }
+    expect(7) {
+      (aSet | bSet).size
+    }
+    expect(7) {
+      (aSet union bSet).size
+    }
+    println( aSet &~ bSet )
+    expect(2) {
+      (aSet &~ bSet).size
+    }
+    expect(4) {
+      (bSet diff aSet).size
+    }
+    
+  }
+  
   test("filtering/partition of linked list ") {
     val (evens, odds) = list.partition( _ % 2 == 0)
     expect(50) { evens.size }
