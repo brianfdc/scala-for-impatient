@@ -10,15 +10,11 @@ import scala.impatient.Exercises14._
 
 @RunWith(classOf[JUnitRunner])
 class Exercises14Suite extends FunSuite with BeforeAndAfter {
-  before {
-    println("executing before")
+  test("(14.2) should swap integers") {
+    expect( (2,1),"swapped integers" ) { Exercises14.swap(1,2) }
   }
 
-  test("14.2: swap integers") {
-    expect( (2,1) ) { Exercises14.swap(1,2) }
-  }
-
-  test("14.3: swap first two elements of list") {
+  test("(14.3) should swap 1st 2 elements of a list") {
     var arry = List("foo","bar","barry","baz")
     expect( List("bar","foo","barry","baz") ) {
       Exercises14.swap(arry)
@@ -28,16 +24,16 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
       Exercises14.swap(arry)
     }
     arry = List("foo");
-    expect( List("foo") ) {
+    expect( List("foo"),"don't swap if size < 2" ) {
       Exercises14.swap(arry)
     }
     arry = List[String]();
-    expect( true ) {
+    expect( true, "don't swap if empty list" ) {
       Exercises14.swap(arry).isEmpty
     }
   }
   
-  test("14.4: case class for Items") {
+  test("(14.4) should add totals for items") {
     val product0 = Product(3.14, "Blackwell Toaster")
     val product1 = Product(13.14, "Ginzu Knife")
     val product2 = Product(272.52, "Kitchen Aid Stand Mixer")
@@ -64,7 +60,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("14.5: recursive descent of tree") {
+  test("(14.5) should descend a tree recrusively") {
     expect( 0 ) {
       Exercises14.leafSum( List() )
     }
@@ -79,7 +75,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("14.6: recursive descent of tree") {
+  test("(14.6) should descend a tree recursively") {
     import scala.impatient.Exercises14.{BTrie, Node, Leaf, BinaryNode}
     expect( 1 ) {
       Exercises14.treeSum(
@@ -111,6 +107,53 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
                Node(Leaf(5))
           )
         )
+    }
+  }
+  
+  test ("(14.9) should sum up options") {
+    val options = List(Some(1),
+                       Some(2),
+                       None,
+                       Some(3),
+                       None,
+                       Some(4) )
+    expect(6) {
+      options.size
+    }
+    expect(10) {
+      Exercises14.sumOptions(options)
+    }
+  }
+  
+  test("14.10 composition") {
+    def f(x:Double) ={
+      if (x >= 0)
+        Some(Math.sqrt(x))
+      else
+        None
+    }
+    def g(x:Double) = {
+      if (x != 1)
+        Some( 1 / (x-1) )
+      else
+        None
+    }
+    val h = Exercises14.compose(f,g)
+    
+    expect(Some(1)) {
+      h(2)
+    }
+    expect(None) {
+      g(1)
+    }
+    expect(None) {
+      h(1)
+    }
+    expect(Some(-1)) {
+      g(0)
+    }
+    expect(None) {
+      h(0)
     }
   }
 }

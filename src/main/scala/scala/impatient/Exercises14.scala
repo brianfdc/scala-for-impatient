@@ -71,7 +71,7 @@ object Exercises14 {
     result
   }
   /**
-   * (14.6)
+   * (14.6/7)
    */
   sealed abstract class BTrie
   case class Leaf(value:Int) extends BTrie
@@ -90,5 +90,28 @@ object Exercises14 {
   }
   def treeSum(tree:BTrie): Int = {
     treeSumImpl(0, tree)
+  }
+  
+  /**
+   *  (14.8) Previews ideas in DSLs (chapter 19)
+   */
+  
+  /**
+   * (14.10)
+   */
+  def sumOptions(options: List[Option[Int]]): Int = {
+    options.foldLeft(0) { (subTotal,eachOption) =>
+      subTotal + eachOption.getOrElse(0)
+    }
+  }
+  
+  /**
+   * (14.11)
+   */
+  def compose(f: Double=>Option[Double], g: Double=>Option[Double]): Double=>Option[Double] = {
+    g.apply(_) match {
+      case Some(x) => f.apply(x)
+      case None => None
+    }
   }
 }
