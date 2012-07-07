@@ -1,12 +1,12 @@
 package scala.awong
 
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
+class FunctionalCollectionsSpec extends FlatSpec with BeforeAndAfter {
   var list: List[Int] = _
   var seq: Seq[Int] = _
   
@@ -15,7 +15,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     seq = (1 to 100).toSeq
   }
   
-  test("head/tail of linked list") {
+  "A linked list" should "yield head and tail" in {
     expect(1) {
       list.head
     }
@@ -30,7 +30,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("shuffling") {
+  "A range" should "shuffle randomly" in {
     val range = 1 to 20
     val rn = FunctionalCollections.shuffle(range.toList)
     println("shuffled range:" + rn.mkString(",") + "\n")
@@ -38,7 +38,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     expect(false) { rn.head == range.head }
   }
   
-  test("set methods") {
+  "A set" should "correctly union, intersect and difference" in {
     val aSet = (1 to 3).toSet
     val bSet = (3 to 7).toSet
     
@@ -63,19 +63,19 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("filtering/partition of linked list ") {
+  "A linked list" should "filter and partition" in {
     val (evens, odds) = list.partition( _ % 2 == 0)
     expect(50) { evens.size }
     expect(0) { odds.filter(_ % 2 == 0).size }
   }
   
-  test("map of linked list") {
+  "A linked list" should "map to another list" in {
     val doubled = list.map( _ * 2 )
     expect(100) { doubled.filter(_ % 2 == 0).size }
     expect(200) { doubled.flatMap( each => List(each * 2, each % 2 ) ).size }
   }
 
-  test("testing mapping") {
+  "A linked list" should "map to yet another list" in {
     val list = List(1,2,3)
     expect(List(2,3,4)) {
       list.map( _ + 1) // (2,3,4)
@@ -103,7 +103,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     
   }
   
-  test("reduce and fold linked lists") {
+  "A linked list" should "reduce and fold" in {
     def max(a:Int, b:Int): Int = {
        if (a > b) a else b
     }
@@ -127,7 +127,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("linked list accumulate") {
+  "A linked list" should "accumulate" in {
     expect(seq.size * 2) {
       val result = ( List[Double]() /: seq ) { (doubles,each) =>
         // prepend to doubles
@@ -155,7 +155,7 @@ class FunctionalCollectionsSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("mutable list accumulate") {
+  "A mutable list" should "accumulate" in {
     expect(seq.size * 2) {
       val result = ( scala.collection.mutable.Buffer[Int]() /: seq ) { (doubles,each) =>
         // prepend to doubles

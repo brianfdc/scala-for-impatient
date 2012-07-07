@@ -1,20 +1,20 @@
 package scala.impatient
 
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
-
 import org.junit.runner.RunWith
 
 import scala.impatient.Exercises14._
 
 @RunWith(classOf[JUnitRunner])
-class Exercises14Suite extends FunSuite with BeforeAndAfter {
-  test("(14.2) should swap integers") {
+class Exercises14Spec extends FlatSpec with BeforeAndAfter {
+  
+  "(14.2)" should "swap integers" in {
     expect( (2,1),"swapped integers" ) { Exercises14.swap(1,2) }
   }
-
-  test("(14.3) should swap 1st 2 elements of a list") {
+  
+  "(14.3)" should "swap 1st 2 elements of a list" in {
     var arry = List("foo","bar","barry","baz")
     expect( List("bar","foo","barry","baz") ) {
       Exercises14.swap(arry)
@@ -33,7 +33,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("(14.4) should add totals for items") {
+  "(14.4)" should "add totals for items" in {
     val product0 = Product(3.14, "Blackwell Toaster")
     val product1 = Product(13.14, "Ginzu Knife")
     val product2 = Product(272.52, "Kitchen Aid Stand Mixer")
@@ -60,7 +60,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("(14.5) should descend a tree recrusively") {
+  "(14.5)" should "descend a tree recursively" in {
     expect( 0 ) {
       Exercises14.leafSum( List() )
     }
@@ -75,7 +75,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("(14.6) should descend a tree recursively") {
+  "(14.6)" should "descend a tree recursively" in {
     import scala.impatient.Exercises14.{BTrie, Node, Leaf, BinaryNode}
     expect( 1 ) {
       Exercises14.treeSum(
@@ -110,7 +110,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test ("(14.9) should sum up options") {
+  "(14.9)" should "sum up options" in {
     val options = List(Some(1),
                        Some(2),
                        None,
@@ -125,7 +125,7 @@ class Exercises14Suite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("14.10 composition") {
+  "14.10" should "compose functions with optional outputs" in {
     def f(x:Double) ={
       if (x >= 0)
         Some(Math.sqrt(x))

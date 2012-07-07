@@ -1,6 +1,6 @@
 package scala.impatient
 
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import scala.collection.mutable.Stack
@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import scala.impatient.Exercise08._
 
 @RunWith(classOf[JUnitRunner])
-class Exercises08Suite extends FunSuite with BeforeAndAfter {
+class Exercises08Spec extends FlatSpec with BeforeAndAfter {
   var checking: CheckingAccount = _
   var bank: BankAccount = _
   var savings: SavingsAccount = _
@@ -19,15 +19,21 @@ class Exercises08Suite extends FunSuite with BeforeAndAfter {
     savings = new SavingsAccount(300.00)
   }
   
-  test("bank account") {
+  "bank account" should "transact" in {
     val oldBalance = bank.deposit(0);
     val str = bank.toString()
     
-    assert(oldBalance === 100.00)
-    val newBalance = bank.deposit(100);
-    assert(newBalance === 200.00)
-    val finalBalance = bank.withdraw(100);
-    assert(finalBalance === 100.00)
+    expect (100.00) {
+      oldBalance
+    }
+    
+    expect(200.00, "deposit") {
+      bank.deposit(100)
+    }
+    
+    expect(100.00,"withdraw") {
+      bank.withdraw(100)
+    }
   }
 
 }

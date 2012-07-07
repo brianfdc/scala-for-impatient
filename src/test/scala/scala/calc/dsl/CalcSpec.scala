@@ -1,6 +1,6 @@
 package scala.calc.dsl
 
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
@@ -8,15 +8,15 @@ import org.junit.runner.RunWith
 import scala.calc.dsl._
 
 @RunWith(classOf[JUnitRunner])
-class CalcSuite extends FunSuite with BeforeAndAfter {
-  test("test AST") {
+class CalcSpec extends FlatSpec with BeforeAndAfter {
+  it should "render AST simply" in {
     val n1 = Number(5)
     expect(5) {
       n1.value
     }
   }
     
-  test("equality test") {
+  it should "equality test" in {
     val binop = BinaryOp("+", Number(5), Number(10))
     expect(Number(5)) {
       binop.left
@@ -29,7 +29,7 @@ class CalcSuite extends FunSuite with BeforeAndAfter {
     }
   }
 
-  test("parse number") {
+  it should "parse number" in {
     expect(Number(5)) {
       Calc.parse("5")
     }
@@ -38,7 +38,7 @@ class CalcSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("many ArithParser parses") {
+  it should "run many ArithParser parses" in {
     val expressions = List(
         "5",
         "(5)",
@@ -61,7 +61,7 @@ class CalcSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("ExprParser") {
+  it should " run many ExprParser" in {
     expect( Number(5) ) {
       Calc.parse("5")
     }
@@ -82,17 +82,18 @@ class CalcSuite extends FunSuite with BeforeAndAfter {
     }
   }
   
-  test("Simple addition test") {
+  it should "do simple addition" in {
     expect( 2.0 ) {
       Calc.evaluate("1 + 1")
     }
   }
-  test("Simple exponentiation test") {
+  
+  it should "do simple exponentiation" in {
     expect( 16.0 ) {
       Calc.evaluate("4 ^ 2")
     }
   }
-  test("Complex exponentiation test") {
+  it should "do complex exponentiation" in {
     expect( 16.0 ) {
       Calc.evaluate("(2 + 2) ^ (4 / 2)")
     }

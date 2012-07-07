@@ -1,19 +1,21 @@
 package scala.awong
 
-import org.scalatest.FunSuite
+import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class ParallelCollectionsSuite extends FunSuite with BeforeAndAfter {
-  test("parallelizing collections") {
+class ParallelCollectionsSuite extends FlatSpec with BeforeAndAfter {
+  "Scala collections" should "process in parallel" in {
     val range = 0 until 1000
     val parallelRange = range.par
     val result = parallelRange.map{ each => print(each + " "); each }
-    expect( parallelRange.length ) { result.length }
+    expect( parallelRange.length ) {
+      result.length
+    }
     
-    expect(parallelRange.sum) {
+    expect(parallelRange.sum, "parallel summation == sequential summation") {
       /*
        * aggregate requires two operations
        * (1) a seqop applied to partitions of the collection
