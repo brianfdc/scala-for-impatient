@@ -6,27 +6,38 @@ package akka.tutorial
  * @see http://doc.akka.io/docs/akka/2.0.2/intro/getting-started-first-scala.html
  */
 import akka.actor._
+import akka.actor.ActorSystem
 import akka.routing.RoundRobinRouter
 import akka.util.Duration
-import akka.util.duration._
+import java.util.concurrent.TimeUnit
 
-object Pi extends App {
-  run
-  
+object Pi {
   def run = {
-    calculate(nrOfWorkers = 4, nrOfElements = 10000, nrOfMessages = 10000)
+    val nrOfWorkers = 4
+    val nrOfElements = 10000
+    val nrOfMessages = 10000
+    calculate(nrOfWorkers, nrOfElements, nrOfMessages)
   }
+  
   def calculate(nrOfWorkers: Int, nrOfElements: Int, nrOfMessages: Int) = {
     // Create an Akka system
     val system = ActorSystem("PiSystem")
-    // create the result listener, which will print the result and shutdown the system
-    val listener = system.actorOf(Props[Listener], name = "listener")
-    // create the master
-    val master = system.actorOf(Props(new Master(
-      nrOfWorkers, nrOfMessages, nrOfElements, listener)),
-      name = "master")
+    val listener = createListener(system)
+    val master = createMaster(nrOfWorkers, nrOfElements, nrOfMessages, system, listener)
     // start the calculation
     master ! Calculate
+  }
+  
+  // create the result listener, which will print the result and shutdown the system
+  def createListener(system: ActorSystem): ActorRef = {
+    system.actorOf(Props[Listener], name = "listener")
+  }
+  
+  // create the master
+  def createMaster(nrOfWorkers: Int, nrOfElements: Int, nrOfMessages: Int, system: ActorSystem, listener: ActorRef): ActorRef = {
+    system.actorOf(
+        Props(new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener)),
+        name = "master")
   }
   
   sealed trait PiMessage
@@ -43,7 +54,7 @@ object Pi extends App {
     
     def calculatePiFor(start: Int, nrOfElements: Int): Double = {
       var acc = 0.0
-      for (i <- start until (start + nrOfElements)) {
+      ( start until (start + nrOfElements) ).foreach{ (i) =>
         acc += 4.0 * (1 - (i % 2) * 2) / (2 * i + 1)
       }
       acc
@@ -59,7 +70,8 @@ object Pi extends App {
   
     def receive = {
       case Calculate =>
-        for (i <- 0 until nrOfMessages) {
+        val messages = 0 until nrOfMessages
+        messages.foreach{ i =>
           workerRouter ! Work(i * nrOfElements, nrOfElements)
         }
       case Result(value) =>
@@ -67,7 +79,7 @@ object Pi extends App {
         nrOfResults += 1
         if (nrOfResults == nrOfMessages) {
           // Send the result to the listener
-          listener ! PiApproximation(pi, duration = (System.currentTimeMillis - start).millis)
+          listener ! PiApproximation(pi, Duration(System.currentTimeMillis - start,TimeUnit.MILLISECONDS) )
           // Stops this actor and all its supervised children
           context.stop(self)
         }
@@ -76,9 +88,11 @@ object Pi extends App {
 
   class Listener extends Actor {
     def receive = {
-      case PiApproximation(pi, duration) =>
-        println("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s".format(pi, duration))
-        context.system.shutdown()
+      case msg: PiApproximation =>
+        println("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s".format(msg.pi, msg.duration))
+        sender ! msg
+        //context.system.shutdown()
     }
   }
+  
 }
