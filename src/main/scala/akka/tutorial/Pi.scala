@@ -11,15 +11,17 @@ import akka.routing.RoundRobinRouter
 import akka.util.Duration
 import java.util.concurrent.TimeUnit
 
-object Pi {
+object Pi
+  extends App
+{
+  run
+  
   def run = {
-    val nrOfWorkers = 4
-    val nrOfElements = 10000
-    val nrOfMessages = 10000
-    calculate(nrOfWorkers, nrOfElements, nrOfMessages)
+    calculate(4, 10000, 10000)
   }
   
   def calculate(nrOfWorkers: Int, nrOfElements: Int, nrOfMessages: Int) = {
+    // TODO factor this to Cake pattern
     // Create an Akka system
     val system = ActorSystem("PiSystem")
     val listener = createListener(system)
@@ -42,6 +44,7 @@ object Pi {
   
   sealed trait PiMessage
   case object Calculate extends PiMessage
+  case class Shutdown extends PiMessage
   case class Work(start: Int, nrOfElements: Int) extends PiMessage
   case class Result(value: Double) extends PiMessage
   case class PiApproximation(pi: Double, duration: Duration)
@@ -80,19 +83,22 @@ object Pi {
         if (nrOfResults == nrOfMessages) {
           // Send the result to the listener
           listener ! PiApproximation(pi, Duration(System.currentTimeMillis - start,TimeUnit.MILLISECONDS) )
-          // Stops this actor and all its supervised children
-          context.stop(self)
         }
+      case msg: Shutdown =>
+        println("shutting down master and all its superverised children")
+        context.stop(self)
+        println("shutting down system")
+        context.system.shutdown
     }
   }
 
   class Listener extends Actor {
     def receive = {
       case msg: PiApproximation =>
-        println("\n\tPi approximation: \t\t%s\n\tCalculation time: \t%s".format(msg.pi, msg.duration))
-        sender ! msg
+        println("\nPi approximation: \t\t%s".format(msg.pi))
+        println("Calculation time:   \t\t%s".format(msg.duration))
+        sender ! Shutdown
         //context.system.shutdown()
     }
   }
-  
 }
