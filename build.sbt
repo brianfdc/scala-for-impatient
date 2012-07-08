@@ -17,3 +17,6 @@ libraryDependencies += "com.typesafe.akka" % "akka-actor" % "2.0.2"
 
 libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0.2"
 
+libraryDependencies += "com.typesafe.akka" % "akka-testkit" % "2.0.2" % "test"
+
+libraryDependencies += "org.scalaz" % "scalaz-full_2.9.0-1" % "6.0.4" % "test"
