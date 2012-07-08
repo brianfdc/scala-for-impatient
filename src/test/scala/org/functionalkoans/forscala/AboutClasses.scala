@@ -1,14 +1,15 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class AboutClasses extends KoanSuite {
+  // you can define class with var or val parameters
+  class ClassWithVarParameter(var description: String) {
 
-
-   // you can define class with var or val parameters
-   class ClassWithVarParameter(var description: String) {
-
-   }
+  }
 
    koan("val parameters in class definition define getter") {
 	 val aClass = new ClassWithValParameter("name goes here")

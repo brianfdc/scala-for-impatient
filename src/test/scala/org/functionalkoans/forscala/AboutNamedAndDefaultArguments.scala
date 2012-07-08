@@ -1,8 +1,11 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutNamedAndDefaultArguments() extends KoanSuite {
+@RunWith(classOf[JUnitRunner])
+class AboutNamedAndDefaultArguments extends KoanSuite {
 
   class WithoutClassParameters() {
     def addColors(red: Int, green: Int, blue: Int) = {

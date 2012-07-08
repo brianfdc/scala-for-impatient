@@ -1,18 +1,11 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-/**
- * Created by Daniel Hinojosa
- * User: Daniel Hinojosa
- * Date: 4/25/11
- * Time: 9:32 PM
- * url: <a href="http://www.evolutionnext.com">http://www.evolutionnext.com</a>
- * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
- * tel: 505.363.5832
- */
-class AboutInfixPrefixAndPostfixOperators extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutInfixPrefixAndPostfixOperators extends KoanSuite {
 
   koan("""Simple: Infix Operators are available if an object
            |  has a method that takes one parameter.""") {

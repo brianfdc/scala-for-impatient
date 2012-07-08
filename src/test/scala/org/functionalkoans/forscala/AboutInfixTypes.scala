@@ -1,18 +1,11 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-/**
- * Created by Daniel Hinojosa
- * User: Daniel Hinojosa
- * Date: 4/25/11
- * Time: 10:17 PM
- * url: <a href="http://www.evolutionnext.com">http://www.evolutionnext.com</a>
- * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
- * tel: 505.363.5832
- */
-class AboutInfixTypes extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutInfixTypes extends KoanSuite {
 
   koan("""We can make a type infix, meaning that the type can be displayed in complement
            between two types in order to make a readable delaration""") {

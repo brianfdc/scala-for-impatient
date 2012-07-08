@@ -1,22 +1,11 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-/**
- * Created by Daniel Hinojosa
- * User: Daniel Hinojosa
- * Date: 3/6/11
- * Time: 9:50 PM
- * url: <a href="http://www.evolutionnext.com">http://www.evolutionnext.com</a>
- * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
- * tel: 505.363.5832
- */
-
-class Monkey
-
-
-class AboutManifests extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutManifests extends KoanSuite {
   koan("""Manifests can be used to determine a type used
          |   before it erased by the VM by using an implicit manifest argument.""") {
     def inspect[T](l: List[T])(implicit manifest: scala.reflect.Manifest[T]) = manifest.toString
@@ -33,3 +22,6 @@ class AboutManifests extends KoanSuite with ShouldMatchers {
     (monkeyBarrel + new Monkey) should be(__)
   }
 }
+
+class Monkey
+

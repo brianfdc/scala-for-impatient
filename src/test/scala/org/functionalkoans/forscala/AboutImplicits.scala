@@ -1,8 +1,9 @@
 package org.functionalkoans.forscala
 
 import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
-
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
 /**
  * Created by Daniel Hinojosa
@@ -13,6 +14,7 @@ import support.KoanSuite
  * email: <a href="mailto:dhinojosa@evolutionnext.com">dhinojosa@evolutionnext.com</a>
  * tel: 505.363.5832
  */
+@RunWith(classOf[JUnitRunner])
 class AboutImplicits extends KoanSuite with ShouldMatchers {
 
   koan("""Implicits wrap around existing classes to provide extra functionality

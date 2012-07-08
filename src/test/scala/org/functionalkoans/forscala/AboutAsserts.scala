@@ -1,10 +1,13 @@
 package org.functionalkoans.forscala
 
 import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-// meditate on AboutAsserts to see how the Scala Koans work
+@RunWith(classOf[JUnitRunner])
 class AboutAsserts extends KoanSuite with ShouldMatchers {
+// meditate on AboutAsserts to see how the Scala Koans work
 
   koan("asserts can take a boolean argument") {
     assert(false) // should be true

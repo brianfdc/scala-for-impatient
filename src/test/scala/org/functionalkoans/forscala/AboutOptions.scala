@@ -1,7 +1,10 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class AboutOptions extends KoanSuite {
 
   koan("Option can have one of two values - Some or None") {

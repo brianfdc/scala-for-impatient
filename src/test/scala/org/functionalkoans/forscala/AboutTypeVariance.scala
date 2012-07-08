@@ -1,9 +1,11 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutTypeVariance extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutTypeVariance extends KoanSuite {
 
   class Fruit
 

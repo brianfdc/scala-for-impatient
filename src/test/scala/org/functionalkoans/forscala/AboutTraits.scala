@@ -1,7 +1,10 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class AboutTraits extends KoanSuite {
   koan("A class uses the extends keyword to mixin a trait if it is the only relationship the class inherits") {
     case class Event(name: String, source: Any)

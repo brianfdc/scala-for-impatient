@@ -1,7 +1,10 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class AboutParentClasses extends KoanSuite {
   koan("Class heirarchy is linear, a class can only extend from one parent class") {
     class Worker(firstName: String, lastName: String) {}

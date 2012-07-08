@@ -1,8 +1,12 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
 import scala.collection.mutable
 
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
+
+@RunWith(classOf[JUnitRunner])
 class AboutMutableSets extends KoanSuite {
 
   koan("Mutable sets can be created easily") {

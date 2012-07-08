@@ -1,9 +1,11 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
-import org.scalatest.matchers.ShouldMatchers
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutPartialFunctions extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutPartialFunctions extends KoanSuite {
 
   koan("""A partial function is a trait that when
           | implemented can be used as building blocks to determine

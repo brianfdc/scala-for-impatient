@@ -1,8 +1,10 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
-import java.util.Date
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
+@RunWith(classOf[JUnitRunner])
 class AboutTuples extends KoanSuite {
 
   koan("Tuples can be created easily") {
@@ -20,6 +22,7 @@ class AboutTuples extends KoanSuite {
   }
 
   koan("Tuples may be of mixed type") {
+    import java.util.Date
     val tuple5 = ("a", 1, 2.2, new Date(), BigDecimal(5))
 
     tuple5._2 should be(__)

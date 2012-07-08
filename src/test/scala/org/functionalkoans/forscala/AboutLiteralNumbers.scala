@@ -1,9 +1,11 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutLiteralNumbers extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutLiteralNumbers extends KoanSuite {
   koan("Integer Literals are 32-bit and can be created from decimal, octal, or hexadecimal") {
     val a = 2
     val b = 31

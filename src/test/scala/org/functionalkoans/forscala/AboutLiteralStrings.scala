@@ -1,9 +1,11 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSuite
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutLiteralStrings extends KoanSuite with ShouldMatchers {
+@RunWith(classOf[JUnitRunner])
+class AboutLiteralStrings extends KoanSuite {
 
   koan("Character Literals are quoted with single quotes") {
     val a = 'a'

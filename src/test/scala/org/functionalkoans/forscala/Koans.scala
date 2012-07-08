@@ -1,11 +1,14 @@
 package org.functionalkoans.forscala
 
 import org.scalatest._
-import support.Master
+import org.functionalkoans.forscala.support.Master
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
 /**
  * @see http://www.scalakoans.org/
  */
+@RunWith(classOf[JUnitRunner])
 class Koans extends Suite {
   override def nestedSuites = List(
     new AboutAsserts,
