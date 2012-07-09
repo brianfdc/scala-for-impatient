@@ -8,7 +8,7 @@ import scala.io.Source
 /**
  * Maps and Tuples
  */
-class Exercise04 {
+object Exercises04 {
   /**
    * (4.1)
    */

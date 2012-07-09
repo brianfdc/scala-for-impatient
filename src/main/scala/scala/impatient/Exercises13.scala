@@ -82,8 +82,7 @@ class Exercises13 {
         while(true) {
           receive {
             case s:String =>{
-              val help = new scala.impatient.Exercise04
-              val wordCount = help.wordCountFold(s)
+              val wordCount = Exercises04.wordCountFold(s)
               // now update one of the frequencies maps
             }
             case c:Char => {
