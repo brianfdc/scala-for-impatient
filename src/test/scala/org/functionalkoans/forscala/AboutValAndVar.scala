@@ -1,25 +1,28 @@
 package org.functionalkoans.forscala
 
-import support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSpec
+import org.scalatest.junit.JUnitRunner
+import org.junit.runner.RunWith
 
-class AboutValAndVar extends KoanSuite {
-
-  koan("vars may be reassigned") {
-    var a = 5
-    a should be(10)
-
-    a = 7
-    a should be(__)
+@RunWith(classOf[JUnitRunner])
+class AboutValAndVar
+  extends KoanSpec("Meditate on Scala assignments")
+{
+  "The Scala language" must {
+    "reassign vars" in {
+      var a = 5
+      a should be(5)
+      a = 7
+      a should be(7)
+    }
+    "not reassign vals" in {
+      val a = 5
+      a should be(5)
+      
+      // What happens if you uncomment these lines?
+      //a = 7
+      //a should be (7)
+    }
   }
-
-  koan("vals may not be reassigned") {
-    val a = 5
-    a should be(__)
-
-    // What happens if you uncomment these lines?
-    // a = 7
-    // a should be (7)
-  }
-
 
 }

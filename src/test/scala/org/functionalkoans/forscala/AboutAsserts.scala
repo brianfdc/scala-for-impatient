@@ -1,33 +1,31 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
-import org.functionalkoans.forscala.support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class AboutAsserts extends KoanSuite with ShouldMatchers {
-// meditate on AboutAsserts to see how the Scala Koans work
-
-  koan("asserts can take a boolean argument") {
-    assert(false) // should be true
-  }
-
-  koan("asserts can include a message") {
-    assert(false, "This should be true")
-  }
-
-  koan("true and false values can be compared with should matchers") {
-    true should be(__) // should be true
-  }
-
-  koan("booleans in asserts can test equality") {
-    val v1 = 4
-    val v2 = 4
-    assert(v1 === __)
-  }
-
-  koan("sometimes we expect you to fill in the values") {
-    assert(__ == 1 + 1)
+class AboutAsserts
+  extends KoanSpec("Medidate on AboutAsserts to see how Scala Koans work") 
+{
+  "Scala Test" can {
+    "have asserts that take a boolean argument" in {
+      assert(false) // should be true
+    }
+    "have asserts that include a message" in {
+      assert(false, "This should be true")
+    }
+    "have true and false values that can be compared with should matchers" in {
+      (1 == 1) should be(true) // should be true
+    }
+    "have booleans in asserts that can test equality" in {
+      val v1 = 4
+      val v2 = 4
+      assert(v1 === v2)
+    }
+    "have test where sometimes we expect you to fill in the values" in {
+      val v1 = 2
+      assert(v1 == 1 + 1)
+    }
   }
 }

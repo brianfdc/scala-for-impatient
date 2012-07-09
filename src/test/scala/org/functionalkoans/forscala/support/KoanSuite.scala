@@ -5,19 +5,11 @@ import org.scalatest.{Tracker, Stopper, Reporter, FunSuite}
 import org.scalatest.matchers.{Matcher, ShouldMatchers}
 import org.scalatest.events.{TestPending, TestFailed, TestIgnored, Event}
 
-trait KoanSuite extends FunSuite with ShouldMatchers {
+trait KoanSuite extends FunSuite with ShouldMatchers with BlankTests {
 
   def koan(name : String)(fun: => Unit) { test(name)(fun) }
 
   def meditate() = pending
-
-  def  __ : Matcher[Any] = {
-    throw new TestPendingException
-  }
-
-  protected class ___ extends Exception {
-    override def toString = "___"
-  }
 
   private class ReportToTheMaster(other: Reporter) extends Reporter {
     var failed = false
