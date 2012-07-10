@@ -1,6 +1,8 @@
 
 name := "scala-for-impatient"
 
+organization := "net.alanktwong"
+
 version := "0.0.1"
 
 scalaVersion := "2.9.2"
@@ -19,4 +21,9 @@ libraryDependencies += "com.typesafe.akka" % "akka-remote" % "2.0.2"
 
 libraryDependencies += "com.typesafe.akka" % "akka-testkit" % "2.0.2" % "test"
 
-libraryDependencies += "org.scalaz" % "scalaz-full_2.9.0-1" % "6.0.4" % "test"
+libraryDependencies += "org.scalaz" % "scalaz-full_2.9.0-1" % "6.0.4"
+
+libraryDependencies += "com.google.guava" % "guava" % "12.0"
+
+addSbtPlugin("com.typesafe.sbteclipse" % "sbteclipse-plugin" % "2.1.0-RC1")
+
