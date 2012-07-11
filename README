@@ -1,3 +1,8 @@
-Hi. If you are reading this, you are brave, brave person. These are my answers to _Scala for the Impatient_ since I could not find a (semi) complete set of answers anywhere.
+Hi. If you are reading this, you are brave, brave person. These contain my answers to _Scala for the Impatient_,
+as well as other attempts to play around with Scala code.
 
-My environment is of Scala 2.9.2 using Scala IDE/Eclipse, which some of the examples questions in the text do not seem to match.
+My environment is of Scala 2.9.2 using Scala IDE/Eclipse with the m2eclipse plugin.
+I also have 0.11.3 SBT installed, but the sbteclipse plugin is not available for
+my sbt version and scala version.
+
+So for now, I'm using Maven for dependency management.
