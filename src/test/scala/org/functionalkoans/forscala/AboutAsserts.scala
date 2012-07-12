@@ -10,10 +10,10 @@ class AboutAsserts
 {
   "Scala Test" can {
     "have asserts that take a boolean argument" in {
-      assert(false) // should be true
+      assert(true) // should be true
     }
     "have asserts that include a message" in {
-      assert(false, "This should be true")
+      assert(true, "This should be true")
     }
     "have true and false values that can be compared with should matchers" in {
       (1 == 1) should be(true) // should be true

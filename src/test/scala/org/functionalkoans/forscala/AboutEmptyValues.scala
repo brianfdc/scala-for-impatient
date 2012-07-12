@@ -1,67 +1,66 @@
 package org.functionalkoans.forscala
 
-import org.functionalkoans.forscala.support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class AboutEmptyValues extends KoanSuite {
+class AboutEmptyValues extends KoanSpec("Meditate on nothing") {
 
-  test("None equals None") {
-    assert(None === __)
+  "None" should {
+    "equal None" in {
+      assert(None === None)
+    }
+    "be identical to None" in {
+      val a = None
+      assert(a eq None)
+    }
   }
-
-  test("None should be identical to None") {
-    val a = None
-    assert(a eq __) // note that eq denotes identity, and == denotes equality in Scala
+  "None" can {
+    "be converted to a string" in {
+      None.toString should be("None")
+    }
+    "be converted to an empty list" in {
+      val a = None
+      a.toList should be(Nil)
+    }
+    "be considered empty" in {
+      val a = None
+      a.isEmpty should be(true)
+    }
+    "be cast as: Any, AnyRef or AnyVal" in {
+      (None.asInstanceOf[Any]) should be (None)
+      (None.asInstanceOf[AnyRef]) should be (None)
+      (None.asInstanceOf[AnyVal]) should be (None)
+    }
+    "never be cast to any type of object" in {
+      intercept[ClassCastException] {
+        // put the exception you expect to see in place of the blank
+        assert(None.asInstanceOf[String] === __)
+      }
+    }
   }
-
-  test("None can be converted to a String") {
-    assert(None.toString === __)
+  "None can be the opposite of Some for Option types" in {
+      val optional: Option[String] = None
+      optional.isEmpty should be (true)
+      optional should be(None)
   }
-
-  test("An empty list can be represented by another nothing value: Nil") {
-    assert(List() === __)
+  "Some is the opposite of None for Option types" in {
+    val someValue: Option[String] = Some("Some Value")
+    someValue != None should be(true)
+    someValue.isEmpty should be(false)
   }
-
-  test("None can be converted to an empty list") {
-    val a = None
-    assert(a.toList === __)
+  "Option.getOrElse can be used to provide a default in the case of None" in {
+    val someValue: Option[String] = Some("Some Value")
+    val none: Option[String] = None
+    someValue.getOrElse("Specified default value") should be ("Some Value")
+    none.getOrElse("Specified default value") should be("Specified default value")
   }
-
-  test("None is considered empty") {
-    assert(None.isEmpty === __)
-  }
-
-  test("None can be cast Any, AnyRef or AnyVal") {
-    assert(None.asInstanceOf[Any] === __)
-    assert(None.asInstanceOf[AnyRef] === __)
-    assert(None.asInstanceOf[AnyVal] === __)
-  }
-
-  test("None cannot be cast to all types of objects") {
-    intercept[ClassCastException] {
-      // put the exception you expect to see in place of the blank
-      assert(None.asInstanceOf[String] === __)
+  
+  "An empty list" can {
+    "be represented by another nothing value: Nil" in {
+      List() should be(Nil)
     }
   }
 
-  test("None can be used with Option instead of null references") {
-    val optional: Option[String] = None
-    assert(optional.isEmpty === __)
-    assert(optional === __)
-  }
-
-  test("Some is the opposite of None for Option types") {
-    val optional: Option[String] = Some("Some Value")
-    assert((optional == None) === __, "Some(value) should not equal None")
-    assert(optional.isEmpty === __, "Some(value) should not be empty")
-  }
-
-  test("Option.getOrElse can be used to provide a default in the case of None") {
-    val optional: Option[String] = Some("Some Value")
-    val optional2: Option[String] = None
-    assert(optional.getOrElse("No Value") === __, "Should return the value in the option")
-    assert(optional2.getOrElse("No Value") === __, "Should return the specified default value")
-  }
 }
