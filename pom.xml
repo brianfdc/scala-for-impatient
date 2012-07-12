@@ -7,7 +7,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>scala-for-impatient</name>
   <description>Exercises from _Scala for the Impatient_</description>
-  <url>https://github.com/alanktwong/scala-for-impateint</url>
+  <url>https://github.com/alanktwong/scala-for-impatient</url>
   <developers>
     <developer>
       <name>Alan Wong</name>
@@ -36,7 +36,7 @@
     </pluginRepository>
   </pluginRepositories>
   <properties>
-    <scala.version>2.9.2</scala.version>
+    <scala.version>2.9.1</scala.version>
   </properties>
   <dependencies>
     <!-- Add scala-lang library to avoid ugly exclusions -->
