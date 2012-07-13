@@ -6,7 +6,6 @@ import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
 class AboutPatternMatching extends KoanSpec("About Pattern Matching") {
-
   "Pattern matching" must {
     "return something" in {
       val stuff = "blue"
