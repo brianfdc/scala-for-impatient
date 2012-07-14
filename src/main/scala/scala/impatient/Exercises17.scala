@@ -18,12 +18,22 @@ object Exercises17 {
       this.first = second
       this.second = temp
     }
+    // uses a lower bound
+    def replaceFirst[R >: T](newFirst: R): MutablePair[R] = {
+      new MutablePair(newFirst, second)
+    }
+    def replaceFirstWithoutLB[R](newFirst: R) = {
+      new MutablePair(newFirst, second)
+    }
   }
   
-  class Pair[S,T](val first: T, val second:S) {
-    def swap(pair:Pair[S,T]): Pair[T,S] = {
+  class Pair[T,S](val first: T, val second:S) {
+    def swap(pair:Pair[T,S]): Pair[S,T] = {
       new Pair(pair.second, pair.first)
     }
   }
+  /**
+   * (17.4)
+   */
   
 }
