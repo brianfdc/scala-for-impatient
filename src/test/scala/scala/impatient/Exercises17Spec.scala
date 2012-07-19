@@ -72,8 +72,20 @@ class Exercises17Spec extends KoanSpec("Specs for Chapter 17"){
                 |type in this mixed scenario""") 
     }
     "(17.6-10)" should {
-      "be not yet done" in {
-        (1 == 1) should be (false)
+      "find middle for (17.6)" in {
+        Exercises17.middle("world").get should be ('r')
+        Exercises17.middle("") should be (None)
+      }
+      "explain why Iterable[+A] uses covariant A for (17.7)" in {
+        val iterable: Iterable[String] = List("hello", "world")
+        
+        iterable.foldLeft(List[String]()) { (s,c) => c :: s }.size should be(iterable.size)
+        println("because A defines the upper bound of methods which must consume A")
+      }
+      "explain in (17.8)" in {
+        val pair = new Pair(1, "awong")      // Pair[Int,String]
+        val next = pair.replaceFirst(Some("where"))   // Pair[Any,String]
+        println("the lower bound restriction is needed for the product of the method")
       }
     }
   }
