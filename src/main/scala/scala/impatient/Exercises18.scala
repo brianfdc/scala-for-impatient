@@ -170,11 +170,34 @@ object Exercises18 {
     }
     
   }
+  /**
+   * (18.8)
+   */
   def printValues(f: { def apply(x: Int) : Int}, from: Int, to:Int): List[Int] = {
     val range = if (to > from) { from to to } else {to to from }
     val results = range.map( f.apply(_) ).toList
     println(results.mkString(" "))
     results
   }
-
+  /**
+   * (18.9)
+   */
+  trait Dim[T] {
+    this: T =>
+    val value: Double
+    val name: String
+    protected def create(v: Double):T
+    def +(other: Dim[T]) = create(value + other.value)
+    override def toString = {
+     "Dim(value: " + value + ",name: " + name + ")" 
+    }
+  }
+  class Seconds(val value: Double) extends Dim[Seconds] {
+    val name = "s"
+    override def create(v: Double) = new Seconds(v)
+  }
+  class Meters(val v: Double) extends Dim[Meters] {
+    val name = "m"
+    override def create(v: Double) = new Meters(v)
+  }
 }
