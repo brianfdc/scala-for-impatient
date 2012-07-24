@@ -196,7 +196,7 @@ object Exercises18 {
     val name = "s"
     override def create(v: Double) = new Seconds(v)
   }
-  class Meters(val v: Double) extends Dim[Meters] {
+  class Meters(val value: Double) extends Dim[Meters] {
     val name = "m"
     override def create(v: Double) = new Meters(v)
   }
