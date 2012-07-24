@@ -6,7 +6,7 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class ParallelCollectionsSuite extends FlatSpec with BeforeAndAfter {
+class ParallelCollectionsSuite extends AbstractFlatSpec {
   "Scala collections" should "process in parallel" in {
     val range = 0 until 1000
     val parallelRange = range.par

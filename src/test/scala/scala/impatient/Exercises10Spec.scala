@@ -9,7 +9,7 @@ import scala.impatient.Exercises10.RectangleLike
 
 
 @RunWith(classOf[JUnitRunner])
-class Exercises10Spec extends FlatSpec with BeforeAndAfter {
+class Exercises10Spec extends scala.awong.AbstractFlatSpec {
   
   before {
     println("executing before")

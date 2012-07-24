@@ -6,7 +6,7 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class FunctionalCollectionsSpec extends FlatSpec with BeforeAndAfter {
+class FunctionalCollectionsSpec extends AbstractFlatSpec {
   var list: List[Int] = _
   var seq: Seq[Int] = _
   

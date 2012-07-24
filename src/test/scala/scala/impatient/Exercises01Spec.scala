@@ -1,12 +1,12 @@
 package scala.impatient
 
-import org.scalatest.FlatSpec
-import org.scalatest.BeforeAndAfter
+import scala.awong._
+
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class Exercises01Spec extends FlatSpec with BeforeAndAfter {
+class Exercises01Spec extends AbstractFlatSpec {
   var exercises: Exercises01 = _
   
   before {

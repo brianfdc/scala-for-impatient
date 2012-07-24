@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import scala.impatient.Exercises14._
 
 @RunWith(classOf[JUnitRunner])
-class Exercises14Spec extends FlatSpec with BeforeAndAfter {
+class Exercises14Spec extends scala.awong.AbstractFlatSpec {
   
   "(14.2)" should "swap integers" in {
     expect( (2,1),"swapped integers" ) { Exercises14.swap(1,2) }

@@ -1,14 +1,12 @@
 package scala.calc.dsl
 
-import org.scalatest.FlatSpec
-import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 import scala.calc.dsl._
 
 @RunWith(classOf[JUnitRunner])
-class CalcSpec extends FlatSpec with BeforeAndAfter {
+class CalcSpec extends scala.awong.AbstractFlatSpec {
   it should "render AST simply" in {
     val n1 = Number(5)
     expect(5) {

@@ -12,7 +12,7 @@ import org.junit.runner.RunWith
  * @see http://www.scalatest.org/user_guide/writing_your_first_test
  */
 @RunWith(classOf[JUnitRunner])
-class StackSpec extends FlatSpec with BeforeAndAfter {
+class StackSpec extends AbstractFlatSpec {
   "A Stack" should "pop values in last-in-first-out order" in {
     val stack = Stack[Int]()
     stack.push(1)

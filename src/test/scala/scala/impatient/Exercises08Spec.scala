@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 import scala.impatient.Exercise08._
 
 @RunWith(classOf[JUnitRunner])
-class Exercises08Spec extends FlatSpec with BeforeAndAfter {
+class Exercises08Spec extends scala.awong.AbstractFlatSpec {
   var checking: CheckingAccount = _
   var bank: BankAccount = _
   var savings: SavingsAccount = _
