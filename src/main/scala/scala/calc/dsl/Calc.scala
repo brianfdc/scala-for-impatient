@@ -22,6 +22,7 @@ object Calc {
     evaluate(parse(text))
   }
   def evaluate(expr: Expr) : Double = {
+    import scala.math._
     simplify(expr) match {
       case Number(x) => x
       case UnaryOp("-", x) => -(evaluate(x))
@@ -29,7 +30,7 @@ object Calc {
       case BinaryOp("-", x1, x2) => (evaluate(x1) - evaluate(x2))
       case BinaryOp("*", x1, x2) => (evaluate(x1) * evaluate(x2))
       case BinaryOp("/", x1, x2) => (evaluate(x1) / evaluate(x2))
-      case BinaryOp("^", x1, x2) => Math.pow(evaluate(x1), evaluate(x2))
+      case BinaryOp("^", x1, x2) => pow(evaluate(x1), evaluate(x2))
     }
   }
   
@@ -90,23 +91,58 @@ object Calc {
  * term   ::= factor {'*' factor | '/' factor}
  * factor ::= floatingPointNumber | '(' expr ')'
  */
-object ArithParser extends JavaTokenParsers  {
-  def expr: Parser[Any] = {
-    (term~"+"~term) |
-    (term~"-"~term) |
+object ArithParser extends RegexParsers  {
+  import scala.math._
+  // clones from JavaTokenParsers
+  /** 
+   *  Anything starting with an ASCII alphabetic character or underscore,
+   *  followed by zero or more repetitions of regex's `\w`.
+   */
+  val ident = """[a-zA-Z_]\w*""".r
+  /** An integer, without sign or with a negative sign. */
+  val wholeNumber = """-?\d+""".r
+  /**
+   *   Number following one of these rules:
+   *  - An integer. For example: `13`
+   *  - An integer followed by a decimal point. For example: `3.`
+   *  - An integer followed by a decimal point and fractional part. For example: `3.14`
+   *  - A decimal point followed by a fractional part. For example: `.1`
+   */
+  val decimalNumber: Parser[String] = """(\d+(\.\d*)?|\d*\.\d+)""".r
+  /** 
+   *  Double quotes (`"`) enclosing a sequence of:
+   *  - Any character except double quotes, control characters or backslash (`\`)
+   *  - A backslash followed by another backslash, a single or double quote, or one
+   *    of the letters `b`, `f`, `n`, `r` or `t`
+   *  - `\` followed by `u` followed by four hexadecimal digits
+   */
+  val stringLiteral = ("\""+"""([^"\p{Cntrl}\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*"""+"\"").r
+  /** 
+   *  A number following the rules of `decimalNumber`, with the following
+   *  optional additions:
+   *  - Preceded by a negative sign
+   *  - Followed by `e` or `E` and an optionally signed integer
+   *  - Followed by `f`, `f`, `d` or `D` (after the above rule, if both are used)
+   */
+  val floatingPointNumber = """-?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?[fFdD]?""".r
+  def expr: Parser[Double] = {
+    (term~"+"~term) ^^ { case lhs~op~rhs => lhs + rhs } |
+    (term~"-"~term) ^^ { case lhs~op~rhs => lhs - rhs } |
     term
   }
-  def term : Parser[Any] = {
-    (factor~"*"~factor) |
-    (factor~"/"~factor) |
+  def term : Parser[Double] = {
+    (factor~"*"~factor) ^^ { case lhs~op~rhs => lhs * rhs    } |
+    (factor~"/"~factor) ^^ { case lhs~op~rhs => lhs / rhs    } |
+    (factor~"%"~factor) ^^ { case lhs~op~rhs => lhs % rhs    } |
+    (factor~"^"~factor) ^^ { case lhs~op~rhs => pow(lhs,rhs) } |
     factor
   }
-  def factor : Parser[Any] = {
+  def factor : Parser[Double] = {
     "(" ~> expr <~ ")" |
-    floatingPointNumber
+    floatingPointNumber ^^ (_.toDouble )
   }
   
-  def parse(text : String) = {
+  def parse(text: String) = {
     parseAll(expr, text)
   }
 }
@@ -132,14 +168,14 @@ object ExprParser extends JavaTokenParsers {
     "(" ~> expr <~ ")" |
     floatingPointNumber ^^ {x => Number(x.toFloat) }
   }
-  def parse(text : String) = parseAll(expr, text)
+  def parse(text: String) = parseAll(expr, text)
 }
 /**
  * Defines our AST
  */
 sealed abstract class Expr
-case class Number(value : Double) extends Expr
-case class UnaryOp(operator : String, arg : Expr) extends Expr
-case class BinaryOp(operator : String, left : Expr, right : Expr) extends Expr
+case class Number(value: Double) extends Expr
+case class UnaryOp(operator: String, arg: Expr) extends Expr
+case class BinaryOp(operator: String, left: Expr, right: Expr) extends Expr
 
 
