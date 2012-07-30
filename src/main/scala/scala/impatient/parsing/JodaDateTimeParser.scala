@@ -13,7 +13,7 @@ import org.joda.time._
  * 
  * Parse a date that follows RFC 3339 (used by the Atom spec)
  */
-object JodaDateTimeParser extends RegexParsers with ImplicitConversions {
+class JodaDateTimeParser extends RegexParsers with ImplicitConversions {
   def digit: Parser[Int] = {
     """[0-9]""".r ^^ { _.toInt }
   }
@@ -144,8 +144,7 @@ object JodaDateTimeParser extends RegexParsers with ImplicitConversions {
    * @throws ParseException when the string is not a proper date/time. 
    */
   def parseDateTime(text: String): DateTime = {
-    val result = parseAll(dateTime, text)
-    result match {
+    parseAll(dateTime, text) match {
       case Success(dt, _) => dt
       case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
     }
@@ -157,8 +156,7 @@ object JodaDateTimeParser extends RegexParsers with ImplicitConversions {
    * @throws ParseException when the string is not a proper date/time.
    */
   def parseDate(text: String): DateMidnight = {
-    val result = parseAll(dateOnly, text)
-    result match {
+    parseAll(dateOnly, text) match {
       case Success(dt, _) => dt
       case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
     }

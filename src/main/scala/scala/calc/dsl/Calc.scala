@@ -1,5 +1,7 @@
 package scala.calc.dsl
 
+import java.text.ParseException
+
 import scala.util.parsing.combinator._
 
 /**
@@ -10,9 +12,10 @@ import scala.util.parsing.combinator._
  */
 object Calc {
   def parse(text : String) = {
-    val results = ExprParser.parse(text)
+    val parser = new ExprParser
+    val results = parser.parse(text)
     println("parsed " + text + " as " + results + " which is a type " + results.getClass())
-    results.get
+    results
   }
 
   /**
@@ -91,7 +94,7 @@ object Calc {
  * term   ::= factor {'*' factor | '/' factor}
  * factor ::= floatingPointNumber | '(' expr ')'
  */
-object ArithParser extends RegexParsers  {
+class ArithParser extends RegexParsers  {
   import scala.math._
   // clones from JavaTokenParsers
   /** 
@@ -142,15 +145,18 @@ object ArithParser extends RegexParsers  {
     floatingPointNumber ^^ (_.toDouble )
   }
   
-  def parse(text: String) = {
-    parseAll(expr, text)
+  def parse(text: String): Double = {
+    parseAll(expr, text) match {
+      case Success(result, _) => result
+      case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
+    }
   }
 }
 
 /**
  * Define combinators for our parser
  */
-object ExprParser extends JavaTokenParsers {
+class ExprParser extends JavaTokenParsers {
   def expr: Parser[Expr] = {
     (term ~ "+" ~ term) ^^ { case lhs~plus~rhs => BinaryOp("+", lhs, rhs) }  |
     (term ~ "-" ~ term) ^^ { case lhs~minus~rhs => BinaryOp("-", lhs, rhs) } |
@@ -168,7 +174,12 @@ object ExprParser extends JavaTokenParsers {
     "(" ~> expr <~ ")" |
     floatingPointNumber ^^ {x => Number(x.toFloat) }
   }
-  def parse(text: String) = parseAll(expr, text)
+  def parse(text: String): Expr = {
+    parseAll(expr, text) match {
+      case Success(result, _) => result
+      case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
+    }
+  }
 }
 /**
  * Defines our AST

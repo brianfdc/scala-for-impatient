@@ -53,9 +53,9 @@ class CalcSpec extends scala.awong.AbstractFlatSpec {
         "5 / 5 / 5",
         "(5 / 5) / 5"
     )
-    
+    val parser = new ArithParser
     expressions.foreach{ (x) =>
-      println(x + " = " + ArithParser.parse(x))
+      println(x + " = " + parser.parse(x))
     }
   }
   

@@ -141,8 +141,7 @@ class XmlLightParser extends RegexParsers {
   }
   
   def parse(text: String): Node = {
-    val result = parseAll(document, text)
-    result match {
+    parseAll(document, text) match {
       case Success(doc, _) => doc
       case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
     }

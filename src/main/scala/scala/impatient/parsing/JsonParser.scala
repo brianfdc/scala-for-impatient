@@ -9,6 +9,7 @@ import scala.util.parsing.input.CharArrayReader
 class JsonParser extends JavaTokenParsers with ImplicitConversions {
   def literal: Parser[JValue] = {
     stringLiteral ^^ { case s => JString(s) } |
+    wholeNumber ^^ { case f => JInt(f.toInt) } |
     floatingPointNumber ^^ { case f => JDouble(f.toDouble) } |
     "null" ^^ { case _ => JNull } |
     "true" ^^ { case _ => JBool(true) } |
@@ -26,6 +27,12 @@ class JsonParser extends JavaTokenParsers with ImplicitConversions {
   def member: Parser[JField] = {
     stringLiteral ~ ":" ~ value ^^ {
       case name ~ ":" ~ value => JField(name,value)
+    }
+  }
+  def parse(text: String): JValue = {
+    parseAll(value, text) match {
+      case Success(result, _) => result
+      case NoSuccess(msg, _) => throw new ParseException(msg.toString, 0)
     }
   }
 }
