@@ -17,13 +17,14 @@ class Exercises19Spec extends scala.awong.AbstractFlatSpec {
    * (19.1/2)
    */
   "Arithmetic Parser" should "calculate" in {
-    var result = ArithParser.parse("3*4")
+    val parser = new ArithParser
+    var result = parser.parse("3*4")
     result.get should be (12)
-    result = ArithParser.parse("3+4")
+    result = parser.parse("3+4")
     result.get should be (7)
-    result = ArithParser.parse("3-4")
+    result = parser.parse("3-4")
     result.get should be (-1)
-    result = ArithParser.parse("3-(4-6)")
+    result = parser.parse("3-(4-6)")
     result.get should be (5)
   }
   /**
@@ -54,14 +55,23 @@ class Exercises19Spec extends scala.awong.AbstractFlatSpec {
     JodaDateTimeParser.parseDateTime(str) should be (dt1)
   }
   "19.5" should "parse xml" in {
-    var xmlStr = """<root r0="r0" r1="1">
+    var xmlStr = """<?xml version="1.0" ?>
+                    <root r0="r0" r1="1">
                       <dad d0="d0"/> 
                       <mum m0="m0">
                         <bro></bro>
                         <sis></sis>
                       </mum> 
                     </root>"""
-
+    var parser = new XmlLightParser
+    val node = parser.parse(xmlStr);
+    val sis = (node \\ "sis")
+    sis.size should be(1)
+    sis.head.attributes.isEmpty should be(true)
+    node.attribute("r0").get.toString should be("r0")
+    (node \\ "mum" \ "bro").isEmpty should be (false)
+  }
+  "scala xml api" should "manipulate xml" in {
     var tmp = <tmp/>.copy(label="root")
     val attrs = List(new UnprefixedAttribute("r0", "r0", Null), new UnprefixedAttribute("r1", "r1", Null))
     tmp = attrs.foldLeft(tmp) { (x,y) => x % y }
