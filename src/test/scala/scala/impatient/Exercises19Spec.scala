@@ -58,23 +58,6 @@ class Exercises19Spec extends scala.awong.AbstractFlatSpec {
     str = fmt.print(dt1)
     parser.parseDateTime(str) should be (dt1)
   }
-  "19.5" should "parse xml" in {
-    var xmlStr = """<?xml version="1.0" ?>
-                    <root r0="r0" r1="1">
-                      <dad d0="d0"/> 
-                      <mum m0="m0">
-                        <bro></bro>
-                        <sis></sis>
-                      </mum> 
-                    </root>"""
-    var parser = new XmlLightParser
-    val node = parser.parse(xmlStr);
-    val sis = (node \\ "sis")
-    sis.size should be(1)
-    sis.head.attributes.isEmpty should be(true)
-    node.attribute("r0").get.toString should be("r0")
-    (node \\ "mum" \ "bro").isEmpty should be (false)
-  }
   "scala xml api" should "manipulate xml" in {
     var tmp = <tmp/>.copy(label="root")
     val attrs = List(new UnprefixedAttribute("r0", "r0", Null), new UnprefixedAttribute("r1", "r1", Null))
@@ -86,4 +69,25 @@ class Exercises19Spec extends scala.awong.AbstractFlatSpec {
     tmp = tmp.copy(child= kids.toSeq)
     println(tmp)
   }
+  "19.5" should "parse xml" in {
+    var xmlStr = """<?xml version="1.0" ?>
+                    <root r0="r0" r1="1">
+                      <dad d0="d0"/>
+                      <mum m0="m0"><bro>Hi</bro><sis>There</sis></mum>
+                    </root>"""
+    var parser = new XmlLightParser
+    val node = parser.parse(xmlStr);
+    val sis = (node \\ "sis")
+    sis.size should be(1)
+    sis.head.attributes.isEmpty should be(true)
+    node.attribute("r0").get.toString should be("r0")
+    node.attribute("r1").get.toString should be("1")
+    (node \\ "mum" \ "bro").isEmpty should be (false)
+    (node \\ "dad").isEmpty should be (false)
+    (node \\ "dad").head.attribute("d0").get.toString should be ("d0")
+    (node \\ "mum").isEmpty should be (false)
+    (node \\ "mum").head.attribute("m0").get.toString should be ("m0")
+    println(node)
+  }
+
 }

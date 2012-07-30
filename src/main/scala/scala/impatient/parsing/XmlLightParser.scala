@@ -15,7 +15,7 @@ import scala.xml._
  * @see http://www.jelks.nu/XML/xmlebnf.html
  * @see http://www.berniepope.id.au/docs/scala_parser_combinators.pdf
  */
-class XmlLightParser extends RegexParsers { 
+class XmlLightParser extends RegexParsers with PackratParsers {
   override def skipWhitespace : Boolean = false
   /**
    * document := declaration ~ space? element space?
@@ -26,43 +26,47 @@ class XmlLightParser extends RegexParsers {
   /**
    * declaration := "<?xml" version encoding? standalone? space? "?>"
    */
-  def declaration = {
+  private type Declaration = String~Version~Option[Encoding]~Option[Standalone]~Option[String]~String
+  def declaration: Parser[Declaration] = {
     "<?xml" ~ version ~ (encoding?) ~ (standalone?) ~ optSpace ~ "?>"
   }
   /**
    * version := space "version" equals string
    */
-  def version = {
+  private type Version = String~String~String~String
+  def version: Parser[Version] = {
     space ~ "version" ~ equals ~ string
   }
   /**
    * encoding := space "encoding" equals string
    */
-  def encoding = {
+  private type Encoding = String~String~String~String
+  def encoding: Parser[Encoding] = {
     space ~ "encoding" ~ equals ~ string
   }
   /**
    * standalone := space "standalone" equals (yes | no)
    */
-  def standalone = {
+  private type Standalone = String~String~String~String
+  def standalone: Parser[Standalone] = {
     space ~ "standalone" ~ equals ~ (yes | no)
   }
   /**
    * element := nonEmpty | empty
    */
-  def element: Parser[Node] = {
+  lazy val element: PackratParser[Node] = {
     log(nonEmpty)("nonEmpty element") | log(empty)("empty element")
   }
   /**
    * nonEmpty := startTag content endTag
    */
-  def nonEmpty: Parser[Node] = {
+  lazy val nonEmpty: PackratParser[Node] = {
     startTag ~ log(content)("content in nonEmpty") ~ endTag >> mkNonEmpty
   }
   /**
    * empty := "<" name attributes space? "/>"
    */
-  def empty: Parser[Node] = {
+  lazy val empty: PackratParser[Node] = {
     "<" ~> log(name)("name of empty tag") ~ log(attributes)("attributes in empty tag") <~ optSpace <~ "/>" ^^ mkEmpty
   }
   /**
@@ -80,7 +84,7 @@ class XmlLightParser extends RegexParsers {
   /**
    * attributes := (space attribute)*
    */
-  def attributes: Parser[MetaData] = {
+  lazy val attributes: PackratParser[MetaData] = {
     (space ~> attribute *) ^^ mkAttributes
   }
   /**
@@ -92,7 +96,8 @@ class XmlLightParser extends RegexParsers {
   /**
    * attribute := name equals string
    */
-  def attribute: Parser[String~String] = {
+  private type Attribute = String~String
+  lazy val attribute: PackratParser[Attribute] = {
     (name <~ equals) ~ string 
   }
   /**
@@ -102,11 +107,11 @@ class XmlLightParser extends RegexParsers {
     optSpace ~> "=" <~ optSpace
   }
   
-  def string: Parser[String] = {
+  lazy val string: PackratParser[String] = {
     doubleString | singleString
   }
   
-  def optSpace: Parser[Option[String]] = {
+  lazy val optSpace: PackratParser[Option[String]] = {
     space?
   }
   
@@ -118,25 +123,25 @@ class XmlLightParser extends RegexParsers {
     """\s+""".r
   }
   
-  def name = {
-    """(:|\w)((\-|\.|\d|:|\w))*""".r
+  lazy val name: PackratParser[String] = {
+    """(:|\w)((\-|\.|\d|:|\w))*""".r ^^ { (a) => a}
   }
-  def doubleString: Parser[String] = {
+  lazy val doubleString: PackratParser[String] = {
     "\"" ~> """[^"]*""".r <~ "\""
   }
-  def singleString: Parser[String] = {
+  lazy val singleString: PackratParser[String] = {
     "'" ~> "[^']*".r <~ "'"
   }
   /**
    * yes := "yes" | 'yes'
    */
-  def yes: Parser[String] = {
+  lazy val yes: PackratParser[String] = {
     "\"yes\"" | "'yes'"
   }
   /**
    * no := "no" | 'no'
    */
-  def no: Parser[String] = {
+  lazy val no: PackratParser[String] = {
     "\"no\"" | "'no'"
   }
   
@@ -148,7 +153,7 @@ class XmlLightParser extends RegexParsers {
   }
 
   private def mkAttributes = {
-    (list : List[String~String]) => {
+    (list : List[Attribute]) => {
       ((Null:MetaData) /: list.reverse) {
          case (atts,key~value) => new UnprefixedAttribute(key,value,atts) 
       }
@@ -159,9 +164,9 @@ class XmlLightParser extends RegexParsers {
   private def mkNonEmpty : NonEmpty => Parser[Node] = {
     case startName~atts~children~endName => {
       if (startName == endName) 
-        success (Elem(null, startName, atts, TopScope, children:_* ))
+        success(Elem(null, startName, atts, TopScope, children:_* ))
       else
-        err("tag mismatch")
+        err("tag mismatch:" + startName + "!=" +endName)
     }
   }
   private def mkEmpty : String~MetaData => Node = { 
