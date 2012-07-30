@@ -1,11 +1,12 @@
 package scala.impatient.parsing
 
+import java.text.ParseException
+
 import scala.util.parsing.combinator._
 import scala.util.parsing.input.CharArrayReader
 
 import org.joda.time._
 
-import java.text.ParseException
 /**
  * (19.4)
  * See DateParser in http://code.google.com/p/gdata-scala-client/ 

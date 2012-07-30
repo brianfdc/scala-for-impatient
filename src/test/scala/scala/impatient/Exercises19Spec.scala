@@ -3,6 +3,8 @@ package scala.impatient
 import org.joda.time._
 import org.joda.time.format._
 
+import scala.xml._
+
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 import scala.impatient.parsing._
@@ -50,6 +52,24 @@ class Exercises19Spec extends scala.awong.AbstractFlatSpec {
     val dt1 = new DateTime(2012,7,14,22,47,31,893, DateTimeZone.forOffsetHours(4))
     str = fmt.print(dt1)
     JodaDateTimeParser.parseDateTime(str) should be (dt1)
-    
+  }
+  "19.5" should "parse xml" in {
+    var xmlStr = """<root r0="r0" r1="1">
+                      <dad d0="d0"/> 
+                      <mum m0="m0">
+                        <bro></bro>
+                        <sis></sis>
+                      </mum> 
+                    </root>"""
+
+    var tmp = <tmp/>.copy(label="root")
+    val attrs = List(new UnprefixedAttribute("r0", "r0", Null), new UnprefixedAttribute("r1", "r1", Null))
+    tmp = attrs.foldLeft(tmp) { (x,y) => x % y }
+    val kids = new NodeBuffer
+    kids += <fred></fred>
+    kids += <wilma></wilma>
+    kids.toSeq
+    tmp = tmp.copy(child= kids.toSeq)
+    println(tmp)
   }
 }
