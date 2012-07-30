@@ -11,8 +11,7 @@ import akka.routing.RoundRobinRouter
 import akka.util.Duration
 import java.util.concurrent.TimeUnit
 
-object Pi
-  extends App
+object Pi extends App
 {
   run
   
@@ -44,7 +43,7 @@ object Pi
   
   sealed trait PiMessage
   case object Calculate extends PiMessage
-  case class Shutdown extends PiMessage
+  case class Shutdown() extends PiMessage
   case class Work(start: Int, nrOfElements: Int) extends PiMessage
   case class Result(value: Double) extends PiMessage
   case class PiApproximation(pi: Double, duration: Duration)
