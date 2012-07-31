@@ -17,18 +17,17 @@ object SearchZone extends App {
     
   }
 }
-trait SearchLike {
-  type ScoredDocument = (Double, String)
+trait ScoredDocument {
+  val score: Double
+  val document: String
 }
 
-sealed trait SearchNodeMessage {
-  type ScoredDocument = (Double, String)
-}
+sealed trait SearchNodeMessage
 case class SearchQuery(query: String, maxDocs: Int, gatherer: OutputChannel[QueryResponse]) extends SearchNodeMessage
-case class QueryResponse(results:Seq[(Double,String)]) extends SearchNodeMessage with SearchLike
+case class QueryResponse(results:Seq[ScoredDocument]) extends SearchNodeMessage
 
 
-trait SearchNode extends Actor with SearchLike {
+trait SearchNode extends Actor {
   lazy val index = HashMap[String, Seq[ScoredDocument]]()
   override def act() = {
     loop {
@@ -47,7 +46,7 @@ trait SearchNode extends Actor with SearchLike {
   }
 }
 
-trait GathererNode extends Actor with SearchLike {
+trait GathererNode extends Actor {
   // max # of docs to retrun from a query
   val maxDocs: Int
   // max # of nodes that can response b4 sending results for a query
@@ -76,11 +75,11 @@ trait GathererNode extends Actor with SearchLike {
   }
   private def combineResults(current: Seq[ScoredDocument], next:Seq[ScoredDocument]) = {
     // view and force methods help efficiency by circumventing creation of intermediate collections
-    (current ++ next).view.sortBy(_._1).take(maxDocs).force
+    (current ++ next).view.sortBy(_.score).take(maxDocs).force
   }
 }
 
-trait HeadNode extends Actor with SearchLike {
+trait HeadNode extends Actor {
   // all nodes that head can scatter to.
   val nodes = Seq[OutputChannel[SearchNodeMessage]]()
   override def act() = {
