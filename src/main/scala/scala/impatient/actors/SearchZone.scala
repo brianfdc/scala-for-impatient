@@ -104,7 +104,7 @@ trait SearchNodeSupervisor extends Actor {
     searchNodes.foreach{ SearchNodeSupervisor.this link _ }
     searchNodes.foreach{ _.start() }
     val headNode = new HeadNode {
-      val nodes = searchNodes
+      override val nodes = searchNodes
       override val scheduler = s
     }
     this link headNode
