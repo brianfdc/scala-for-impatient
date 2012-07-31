@@ -1,9 +1,6 @@
 package scala.impatient
 
-import org.scalatest.FlatSpec
-import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
-import scala.collection.mutable.Stack
 import org.junit.runner.RunWith
 import scala.impatient.Exercise08._
 
