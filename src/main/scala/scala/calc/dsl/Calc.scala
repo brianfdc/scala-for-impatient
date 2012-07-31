@@ -87,15 +87,8 @@ object Calc {
       }
   }
 }
-/**
- * BNF of our parser:
- * 
- * expr   ::= term {'+' term | '-' term}
- * term   ::= factor {'*' factor | '/' factor}
- * factor ::= floatingPointNumber | '(' expr ')'
- */
-class ArithParser extends RegexParsers  {
-  import scala.math._
+
+trait JavaTokens {
   // clones from JavaTokenParsers
   /** 
    *  Anything starting with an ASCII alphabetic character or underscore,
@@ -111,7 +104,7 @@ class ArithParser extends RegexParsers  {
    *  - An integer followed by a decimal point and fractional part. For example: `3.14`
    *  - A decimal point followed by a fractional part. For example: `.1`
    */
-  val decimalNumber: Parser[String] = """(\d+(\.\d*)?|\d*\.\d+)""".r
+  val decimalNumber = """(\d+(\.\d*)?|\d*\.\d+)""".r
   /** 
    *  Double quotes (`"`) enclosing a sequence of:
    *  - Any character except double quotes, control characters or backslash (`\`)
@@ -127,7 +120,18 @@ class ArithParser extends RegexParsers  {
    *  - Followed by `e` or `E` and an optionally signed integer
    *  - Followed by `f`, `f`, `d` or `D` (after the above rule, if both are used)
    */
-  val floatingPointNumber = """-?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?[fFdD]?""".r
+  val floatingPointNumber = """-?(\d+(\.\d*)?|\d*\.\d+)([eE][+-]?\d+)?[fFdD]?""".r  
+}
+/**
+ * BNF of our parser:
+ * 
+ * expr   ::= term {'+' term | '-' term}
+ * term   ::= factor {'*' factor | '/' factor}
+ * factor ::= floatingPointNumber | '(' expr ')'
+ */
+class ArithParser extends RegexParsers with JavaTokens {
+  import scala.math._
+
   def expr: Parser[Double] = {
     (term~"+"~term) ^^ { case lhs~op~rhs => lhs + rhs } |
     (term~"-"~term) ^^ { case lhs~op~rhs => lhs - rhs } |

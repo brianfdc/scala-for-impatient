@@ -5,7 +5,7 @@ import scala.io.Source
 /**
  * Files and Regular Expressions
  */
-class Exercises09 {
+object Exercises09 extends scala.calc.dsl.JavaTokens {
   /**
    * (9.1)
    */
