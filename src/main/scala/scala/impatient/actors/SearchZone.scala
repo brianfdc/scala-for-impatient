@@ -89,21 +89,27 @@ trait GathererNode extends Actor {
 trait SearchNodeSupervisor extends Actor {
   val numThreadForSearchTree = 5
   private def createSearchTree(size: Int) = {
-    val s: IScheduler = new ForkJoinScheduler
+    val numProcessors = java.lang.Runtime.getRuntime.availableProcessors
+    val s = new ForkJoinScheduler(
+              initCoreSize = numProcessors,
+              maxSize = numThreadForSearchTree,
+              daemon = false,
+              fair = true)
     val searchNodes = (1 to size).map { i =>
-      val tmp = new SearchNode {
+      new SearchNode {
         override val id = i
+        override val scheduler = s
       }
-      SearchNodeSupervisor.this link tmp
-      tmp.start()
-      tmp
     }
+    searchNodes.foreach{ SearchNodeSupervisor.this link _ }
+    searchNodes.foreach{ _.start() }
     val headNode = new HeadNode {
       val nodes = searchNodes
       override val scheduler = s
     }
     this link headNode
     headNode.start()
+    headNode
   }
   def act() = {
     trapExit = true
@@ -120,7 +126,6 @@ trait SearchNodeSupervisor extends Actor {
 }
 
 trait HeadNode extends Actor {
-  val scheduler: IScheduler
   // all nodes that head can scatter to.
   val nodes = Seq[OutputChannel[SearchNodeMessage]]()
   override def act() = {
