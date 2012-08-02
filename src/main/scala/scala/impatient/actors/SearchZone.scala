@@ -18,15 +18,12 @@ object SearchZone extends App {
     
   }
 }
-trait ScoredDocument {
-  val score: Double
-  val document: String
-}
+case class ScoredDocument(score: Double, document: String)
 
 sealed trait SearchNodeMessage
 case class SearchQuery(query: String, maxDocs: Int, gatherer: OutputChannel[QueryResponse]) extends SearchNodeMessage
 case class QueryResponse(results:Seq[ScoredDocument]) extends SearchNodeMessage
-
+case class SearchableDocument(content: String) extends SearchNodeMessage
 
 trait SearchNode extends Actor {
   val id: Int

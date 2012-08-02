@@ -24,7 +24,7 @@ object AverageCast extends App {
   
   class Supervisor(val partitionSize: Int, val upperBound: Int) extends Actor {
     var done = false
-    var actors = Seq[RandomNumberActor]()
+    var randomNumberActors = Seq[Actor]()
     var reduceActor = new ReduceActor(SumMessage(0,0), this);
     def act() {
       while(!done) {
@@ -37,27 +37,25 @@ object AverageCast extends App {
             
             reduceActor.start()
             
-            actors = (0 to numberOfActors).map { (id) =>
-              val actor = new RandomNumberActor(id, this)
-              actor.start()
-              actor
+            randomNumberActors = (0 to numberOfActors).map { (id) =>
+              new RandomNumberActor(id, this).start()
             }
             val msgs = (0 to numberOfActors).map { (a) =>
               if (a != numberOfActors) GetRandomNumber(size)
               else GetRandomNumber(remainder)
             }
-            val li  = (actors zip msgs).foreach { (x) => x._1 ! x._2 }
+            val li  = (randomNumberActors zip msgs).foreach { (x) => x._1 ! x._2 }
           }
           case x: Done => {
             sender match {
               case x: RandomNumberActor =>
-                if (actors.contains(x)) {
-                  var bf = actors.toBuffer
+                if (randomNumberActors.contains(x)) {
+                  var bf = randomNumberActors.toBuffer
                   bf -= x
                   x ! Shutdown()
-                  actors = bf.toSeq
+                  randomNumberActors = bf.toSeq
                 }
-                if (actors.isEmpty) {
+                if (randomNumberActors.isEmpty) {
                   reduceActor ! CalculateAverage()
                 }
             }
@@ -89,9 +87,10 @@ object AverageCast extends App {
             supervisor.reduceActor ! SumMessage(sum, size)
             supervisor ! Done()
           }
-          case m: Shutdown =>
+          case m: Shutdown => {
             done = true
             exit()
+          }
         }
       }
     }
