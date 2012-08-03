@@ -1,9 +1,10 @@
-package scala.wordcount
+package scala.impatient.actors
 
 
 import java.io.File
 
-import scala.actors.Actor
+import scala.actors._
+import scala.actors.scheduler._
 import scala.io.Source
 
 /**
@@ -14,9 +15,9 @@ import scala.io.Source
  * actor to accumulate the results.
  * 
  * (20.4) Modify the program of the preceding exercise
- * to display all the maching words.
+ * to display all the matching words.
  * 
- * (20.5) Modify the program of the preceding exercies to display
+ * (20.5) Modify the program of the preceding exercises to display
  * all matching words, each with the list of files containing it.
  * 
  * (20.7) add a supervisor that monitors the file reading actors and 
@@ -26,82 +27,135 @@ object WordCountActors extends App with scala.calc.dsl.JavaTokens {
   run
   
   def run() {
-    val directory = "/Users/awong/projects/src"
+    val directory = "/Users/awong/Documents/projects/src/scala-for-impatient/src/test/java"
     val regex = ident.pattern.toString
-    val supervisor = new WordCountSupervisor
-    supervisor.start()
-    
-    val future = supervisor !! Start(directory, regex)
-    future() match {
-      case s: Map[String,String] => println(s)
-      case _ => throw new IllegalArgumentException("fail!")
+    val supervisor = newSupervisor()
+    supervisor ! Start(regex, directory)
+  }
+  
+  private def newSupervisor(): WordCountSupervisor = {
+    println("Creating WordCountSupervisor")
+    val supervisor = new WordCountSupervisor {
+      val numThreadForSearchTree = 5
     }
+    supervisor.start()
+    supervisor
   }
 }
+
 trait WordCountActor extends Actor {
   var done = false;
-  val supervisor: WordCountSupervisor
   val encoding = "UTF-8"
 }
 
-sealed trait WordCountMessage
-case class Start(directory: String, regex: String) extends WordCountMessage
-case class RecurseFiles(directory: String) extends WordCountMessage
-case class DirectoryResult(directories: List[File], files: List[File]) extends WordCountMessage
-case class RegexMatch(regexExpression: String) extends WordCountMessage
-case class Shutdown() extends WordCountMessage
-
-
-class WordCountSupervisor extends WordCountActor {
-  val supervisor = this
-  var regex = ""
+trait WordCountSupervisor extends WordCountActor {
+  val self = WordCountSupervisor.this
+  val numThreadForSearchTree:Int
   
   def act() {
     loopWhile(!done) {
       react {
         case m: Start => {
-          val visitor = new DirectoryVisitor(this)
-          regex = m.regex
-          visitor.start()
-          visitor ! RecurseFiles(m.directory)
+          println("WordCountSupervisor: handling Start")
+          val visitor = newDirectoryVisitor
+          visitor ! RecurseFiles(m.regex, m.directory)
         }
         case m: DirectoryResult => {
-          val fileReaders = m.files.map { (file) =>
-            new FileReadActor(this, file).start()
+          println("WordCountSupervisor: handling DirectoryResult")
+          val noFileReaderNodes = m.files.size
+          val s = newScheduler
+          val gatherer = newRegexGatherer(m.regex, noFileReaderNodes, s)
+          
+          val fileReaders = m.files.map { (_file) =>
+            newFileReadActor(_file, gatherer, s)
           }
           fileReaders.foreach{
-            _ ! RegexMatch(regex)
+            _ ! RegexMatch(m.regex)
           }
         }
-        case m: Shutdown => {
-          done = true
-          val result = Map[String,String]()
-          reply(result)
+        case m: RegexSummary => {
+          println("WordCountSupervisor: handling RegexSummary")
+          // handle results of regexSummary
+          m.wordCountMatch.foreach{ (entry) =>
+            println("Match: " + entry._1 + "\t\tCount:" + entry._2)
+          }
         }
       }
     }
   }
+  private def newScheduler(): IScheduler = {
+    val numProcessors = java.lang.Runtime.getRuntime.availableProcessors
+    val scheduler = new ForkJoinScheduler(
+              initCoreSize = numProcessors,
+              maxSize = numThreadForSearchTree,
+              daemon = false,
+              fair = true)
+    scheduler
+  }
+  private def newRegexGatherer(_regex:String, _nodes: Int, s:IScheduler) : RegexGatherer = {
+    println("Creating RegexGatherer")
+    val node = new RegexGatherer {
+      val regex = _regex
+      val maxResponses = _nodes
+      val client = new Channel[RegexSummary](self)
+      override val scheduler = s
+    }
+    self link node
+    node.start()
+    node
+  }
   
+  private def newFileReadActor(_file: File, gatherer: RegexGatherer, s: IScheduler) : FileReadActor = {
+    println("Creating FileReadActor")
+    val node = new FileReadActor {
+      val file = _file
+      val client = new Channel[RegexResults](gatherer)
+      override val scheduler = s
+    }
+    self link node
+    node.start()
+    node
+  }
+  
+  private def newDirectoryVisitor: DirectoryVisitor = {
+    println("Creating DirectoryVisitor")
+    val node = new DirectoryVisitor{
+      val client = new Channel[DirectoryResult](self)
+    }
+    self link node
+    node.start()
+    node
+  }
 }
 
-class DirectoryVisitor(val supervisor: WordCountSupervisor) extends WordCountActor {
+
+trait DirectoryVisitor extends WordCountActor {
+  val self = DirectoryVisitor.this
+  // target to send results
+  val client: OutputChannel[DirectoryResult]
+  
   def act() {
-    while (!done) {
-      receive {
+    loopWhile(!done) {
+      react {
         case m: RecurseFiles => {
-          val subdirectories = subdirs(new File(m.directory))
-          val allFiles = listFiles(subdirectories).filter( _.isFile )
-          val srcFiles = allFiles.filter{ f =>
-            f.getAbsolutePath.endsWith(".java") || f.getAbsolutePath.endsWith(".scala")
-          } 
-          supervisor ! DirectoryResult(subdirectories, srcFiles)
-          this ! Shutdown()
-        }
-        case m: Shutdown => {
-          done = true
+          println("DirectoryVisitor: handling RecurseFiles")
+          val result = recurseFiles(m)
+          println("DirectoryVisitor: attempting to send DirectoryResult")
+          client ! result
         }
       }
     }
+  }
+  private def recurseFiles(m: RecurseFiles): DirectoryResult = {
+    val subdirectories = subdirs(new File(m.directory))
+    println("DirectoryVisitor: found subdirectories")
+    val allFiles = listFiles(subdirectories).filter( _.isFile )
+    println("DirectoryVisitor: listing Files")
+    val srcFiles = allFiles.filter{ f =>
+      f.getAbsolutePath.endsWith(".java") || f.getAbsolutePath.endsWith(".scala")
+    }
+    println("DirectoryVisitor: filtered for java/scala source files")
+    DirectoryResult(m.regex, subdirectories, srcFiles)
   }
   private def subdirs(dir: File) : List[File] = {
     val children = dir.listFiles.filter(_.isDirectory)
@@ -162,20 +216,70 @@ trait Lexer {
       })
     allTokens
   }
+  
+  def toText(src:Source): String = {
+    src.mkString
+  }
 }
 
+trait RegexGatherer extends WordCountActor with WordCounter {
+  val self = RegexGatherer.this
+  val millis = 1000L
+  val regex: String
+  // max # of nodes that can response b4 sending results for a query
+  val maxResponses: Int
+  // target to send results
+  val client: OutputChannel[RegexSummary]
+  
+  override def act() = {
+    val summary = RegexSummary(regex, Map[String, Int]())
+    bundleResult(0, summary)
+  }
+  /**
+   * curCount is # of responses seen thus far
+   */
+  private def bundleResult(curCount: Int, summary: RegexSummary): Unit = {
+    if (curCount < maxResponses) {
+      receiveWithin(millis) {
+        case current: RegexResults =>
+          println("RegexGatherer: handling RegexResults")
+          bundleResult( curCount + 1, combineResults(current,summary) )
+        case TIMEOUT => 
+          println("RegexGatherer: handling TIMEOUT")
+          bundleResult(maxResponses,summary)
+      }
+    } else {
+      client ! summary
+    }
+  }
+  private def combineResults(current: RegexResults, next:RegexSummary): RegexSummary = {
+    var matches = countWordsSerially(current.matches) ++ next.wordCountMatch
+    next.copy(wordCountMatch = matches)
+    
+    next
+  }
+  
+}
 
-class FileReadActor(val supervisor: WordCountSupervisor, val file: File) extends WordCountActor with Lexer {
+trait FileReadActor extends WordCountActor with Lexer {
+  val self = FileReadActor.this
+  val client: OutputChannel[RegexResults]
+  val file: File
+  
   def act() {
-    while(!done) {
-      receive {
+    loopWhile(!done) {
+      react {
         case m: RegexMatch => {
-          val source = Source.fromFile(file, encoding)
-          val tokens = readTokens(source)
-          val regex = m.regexExpression.r
-          (source)
+          println("FileReadActor: handling RegexMatch")
+          client ! RegexResults(m.regex, file, findMatches(m))
         }
       }
     }
+  }
+  private def findMatches(regexMatch: RegexMatch): Seq[String] = {
+    val source = Source.fromFile(file, encoding)
+    val text = toText(source)
+    val matches = regexMatch.regex.r.findAllIn(text).toSeq
+    matches
   }
 }
