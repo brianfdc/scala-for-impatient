@@ -1,33 +1,66 @@
 package scala.impatient.actors
 
 import scala.actors._
+import scala.actors.Actor._
 import scala.actors.scheduler._
 import scala.collection.immutable._
 /**
+ * 
  * Scatter-gather example from Josh Suereth, _Scala in Depth_, chp 9 (Manning: 2012)
  */
-object SearchZone extends App {
-  run
-  
-  def run = {
-    /*
-     *  In v1 do nothing, since the HeadNode does not return a statically
-     *  typed future. Also HeadNode blocks for an entire SearchQuery.
-     *  Lastly, the search has no failure handling
-     */
-    
+object SearchTreeMain {
+  def create(aName: String) = {
+    val supervisor = new SearchNodeSupervisor{
+      val name = aName
+    }
+  }
+
+  def makeResponder: Actor = {
+    val tmp = actor {
+      while(true) {
+        react {
+          case x => println(x)
+        }
+      }
+    }
+    tmp.start()
+    tmp
   }
 }
-case class ScoredDocument(score: Double, document: String)
 
-sealed trait SearchNodeMessage
-case class SearchQuery(query: String, maxDocs: Int, gatherer: OutputChannel[QueryResponse]) extends SearchNodeMessage
-case class QueryResponse(results:Seq[ScoredDocument]) extends SearchNodeMessage
-case class SearchableDocument(content: String) extends SearchNodeMessage
 
+/** Defines a SearchNode that contains a fragment of the search index */
 trait SearchNode extends Actor {
   val id: Int
-  lazy val index = HashMap[String, Seq[ScoredDocument]]()
+  
+  lazy val index = initIndex()
+  
+  private def initIndex() = {
+    def makeIndex(docs : String*): HashMap[String,Seq[ScoredDocument]] = {
+      var tmp = HashMap[String, Seq[ScoredDocument]]()
+      docs.foreach{ (doc) =>
+        val tokens = doc.split("\\s+").groupBy(identity)
+        for ( (key,value) <- tokens ) {
+          val list = tmp.get(key) getOrElse Seq()
+          tmp += ((key, ScoredDocument(value.length.toDouble, doc) +: list))
+        }
+      }
+      tmp
+    }
+    id match {
+      case 1 => makeIndex("Some example data for you")
+      case 2 => makeIndex("Some more example data for you to use")
+      case 3 => makeIndex("To be or not to be, that is the question")
+      case 4 => makeIndex("OMG it's a cat")
+      case 5 => makeIndex("This is an example.  It's a great one")
+      case 6 => makeIndex("HAI there", "HAI IZ HUNGRY")
+      case 7 => makeIndex("Hello, World")
+      case 8 => makeIndex("Hello, and welcome to the search node 8")
+      case 9 => makeIndex("The lazy brown fox jumped over the")
+      case 10 => makeIndex("Winning is the best because it's winning.")
+    }
+  }
+  
   override def act() = {
     loop {
       /**
@@ -45,6 +78,9 @@ trait SearchNode extends Actor {
   }
 }
 
+/**
+ * An actor which receives distributed results and aggregates/responds to the original query.
+ */
 trait GathererNode extends Actor {
   // max # of docs to return from a query
   val maxDocs: Int
@@ -58,7 +94,6 @@ trait GathererNode extends Actor {
   }
   /**
    * curCount is # of responses seen thus far
-   * 
    */
   private def bundleResult(curCount: Int, current: Seq[ScoredDocument]): Unit = {
     if (curCount < maxResponses) {
@@ -84,7 +119,10 @@ trait GathererNode extends Actor {
  * Also handles failures in the search zone.
  */
 trait SearchNodeSupervisor extends Actor {
+  val name: String
+  
   val numThreadForSearchTree = 5
+  
   private def createSearchTree(size: Int) = {
     val numProcessors = java.lang.Runtime.getRuntime.availableProcessors
     val s = new ForkJoinScheduler(
@@ -122,9 +160,13 @@ trait SearchNodeSupervisor extends Actor {
   }
 }
 
+/**
+ * The head node for the search tree.  Note:  The tree can be multiple levels deep, with head nodes
+ * pointing to other head nodes.
+ */
 trait HeadNode extends Actor {
   // all nodes that head can scatter to.
-  val nodes = Seq[OutputChannel[SearchNodeMessage]]()
+  val nodes = Seq[OutputChannel[SearchMessage]]()
   override def act() = {
     react {
       case SearchQuery(q, max, responder) => {
@@ -145,3 +187,5 @@ trait HeadNode extends Actor {
     "HeadNode with {\n\t" + nodes.size + " search nodes\n" + nodes.mkString("\t") + "\n\t\n"
   }
 }
+
+
