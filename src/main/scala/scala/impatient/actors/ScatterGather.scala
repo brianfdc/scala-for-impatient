@@ -86,7 +86,7 @@ trait GathererNode extends Actor {
   val maxDocs: Int
   // max # of nodes that can response b4 sending results for a query
   val maxResponses: Int
-  // target for results to send
+  // target to send results
   val client: OutputChannel[QueryResponse]
   
   override def act() = {
