@@ -9,7 +9,7 @@ import akka.event.Logging
 import akka.actor._
 import akka.routing.RoundRobinRouter
 import akka.dispatch.Future
-import akka.pattern.ask
+import akka.pattern.{ ask, pipe }
 
 import akka.util.Duration
 import akka.util.duration._
@@ -42,15 +42,28 @@ object WordCountActors extends App with scala.calc.dsl.JavaTokens {
     
     val system = ActorSystem("WordCountSystem")
     val supervisor = newSupervisor(system)
-    val msg =  Start(regex, directory)
-    supervisor ! msg
-    //val future: Future[String] = ask(supervisor,msg).mapTo[String]
+    
+    val future: Future[RegexSummary] = supervisor.ask( Start(regex, directory) )(120 seconds) mapTo manifest[RegexSummary]
+    future onComplete {
+      case Right(regexSummary) => {
+        println("Received future successfully")
+        val isPrint = false;
+        if (isPrint) {
+          regexSummary.wordCountMatch.foreach{ (entry) =>
+            println("Match: " + entry._1 + "\t\tCount:" + entry._2)
+          }
+        }
+        system.shutdown()
+      }
+      case Left(failure) => {
+        println("did not receive future back successfully")
+        system.shutdown()
+      }
+    }
   }
-  implicit val timeout = Timeout(5 seconds)
   
   private def newSupervisor(system: ActorSystem): ActorRef = {
-    system.actorOf(
-        Props(new WordCountSupervisor()),
+    system.actorOf( Props(new WordCountSupervisor()),
         name = "wordCountSupervisor")
   }
 }
@@ -62,42 +75,38 @@ trait WordCountActor extends Actor {
 }
 
 class WordCountSupervisor extends WordCountActor {
+  var initial: ActorRef = _
+  
   def receive = {
-    case m: Start => {
+    case msg: Start => {
       log.info("WordCountSupervisor: handling Start")
+      log.info("WordCountSupervisor: storing reference to initial actor to return a future")
+      initial = sender
       val visitor = newDirectoryVisitor
-      visitor ! RecurseFiles(m.regex, m.directory)
+      visitor ! RecurseFiles(msg.regex, msg.directory)
       visitor ! WordCountShutdown
     }
-    case m: DirectoryResult => {
+    case msg: DirectoryResult => {
       log.info("WordCountSupervisor: handling DirectoryResult")
-      val noFileReaderNodes = m.files.size
-      val gatherer = newRegexGatherer(m.regex, noFileReaderNodes, self)
-      gatherer ! m
+      val noFileReaderNodes = msg.files.size
+      val gatherer = newRegexGatherer(msg.regex, noFileReaderNodes, self)
+      gatherer ! msg
     }
-    case m: RegexSummary => {
-      log.info("\n\nWordCountSupervisor: handling RegexSummary\n\n")
-      val isPrint = false
-      // handle results of regexSummary
-      if (isPrint) {
-        m.wordCountMatch.foreach{ (entry) =>
-          log.info("Match: " + entry._1 + "\t\tCount:" + entry._2)
-        }
-      }
+    case msg: RegexSummary => {
+      log.info("WordCountSupervisor: forwarding RegexSummary as a redeemed Future \n\n")
+      initial ! msg
     }
   }
 
   private def newRegexGatherer(_regex:String, _nodes: Int, supervisor:ActorRef): ActorRef = {
-    log.info("Creating RegexGatherer")
-    context.actorOf(
-        Props(new RegexGatherer(_regex, _nodes, supervisor)),
+    log.info("WordCountSupervisor: Creating RegexGatherer")
+    context.actorOf( Props(new RegexGatherer(_regex, _nodes, supervisor)),
         name = "regexGatherer")
   }
   
   private def newDirectoryVisitor: ActorRef = {
     log.info("Creating DirectoryVisitor")
-    context.actorOf(
-        Props(new DirectoryVisitor()),
+    context.actorOf( Props(new DirectoryVisitor()),
         name = "directoryVisitor")
   }
 }
@@ -105,13 +114,13 @@ class WordCountSupervisor extends WordCountActor {
 
 class DirectoryVisitor extends WordCountActor {
   def receive() = {
-    case m: RecurseFiles => {
+    case msg: RecurseFiles => {
       log.info("DirectoryVisitor: handling RecurseFiles")
-      val result = recurseFiles(m)
+      val result = recurseFiles(msg)
       log.info("DirectoryVisitor: attempting to send DirectoryResult back to WordCountSupervisor")
       sender ! result
     }
-    case m:WordCountShutdown => {
+    case msg:WordCountShutdown => {
       log.info("shutting down DirectoryVisitor")
       context.stop(self)
     }
@@ -199,21 +208,21 @@ class RegexGatherer(_regex:String, _nodes:Int, supervisor: ActorRef) extends Wor
   val fileReadRouter = context.actorOf(Props[FileReadActor].withRouter(RoundRobinRouter(_nodes)), name = "fileReadRouter")
 
   def receive = {
-    case m: DirectoryResult => {
+    case msg:DirectoryResult => {
       // Ask each fileReadActor to handle a file
-      m.files.foreach{ (file) =>
-        fileReadRouter ! RegexMatch(m.regex,file)
+      msg.files.foreach{ (file) =>
+        fileReadRouter ! RegexMatch(msg.regex,file)
       }
     }
-    case m: RegexResults => {
+    case msg:RegexResults => {
       nrOfResults += 1
-      summary = combineResults(m, summary)
+      summary = combineResults(msg, summary)
       if (nrOfResults == _nodes) {
         log.info("Return the result to the supervisor")
         supervisor ! summary
       }
     }
-    case m:WordCountShutdown => {
+    case msg:WordCountShutdown => {
       log.info("shutting down RegexGatherer & its children")
       context.stop(self)
     }
@@ -227,9 +236,9 @@ class RegexGatherer(_regex:String, _nodes:Int, supervisor: ActorRef) extends Wor
 
 class FileReadActor extends WordCountActor with Lexer {
   def receive() = {
-    case m: RegexMatch => {
-      log.info("FileReadActor: handling RegexMatch for: " + m.file.getAbsolutePath)
-      sender ! RegexResults(m.regex, m.file, findMatches(m))
+    case msg:RegexMatch => {
+      log.info("FileReadActor: handling RegexMatch for: " + msg.file.getAbsolutePath)
+      sender ! RegexResults(msg.regex, msg.file, findMatches(msg))
     }
   }
   private def findMatches(regexMatch: RegexMatch): Seq[String] = {
