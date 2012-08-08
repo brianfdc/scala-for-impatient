@@ -46,17 +46,24 @@ object WordCountActors extends App with scala.calc.dsl.JavaTokens {
     val future: Future[RegexSummary] = supervisor.ask( Start(regex, directory) )(120 seconds) mapTo manifest[RegexSummary]
     future onComplete {
       case Right(regexSummary) => {
-        println("Received future successfully")
+        println("Received RegexSummary future successfully")
+        val allMatchingWords = regexSummary.wordCountMatch.keySet
+        val totalNumberOfMatches = regexSummary.wordCountMatch.values.reduceLeft( _ + _ )
+        println("Total number of matches: " + totalNumberOfMatches)
+        println("Total number of words:   " + allMatchingWords.size)
         val isPrint = false;
         if (isPrint) {
           regexSummary.wordCountMatch.foreach{ (entry) =>
             println("Match: " + entry._1 + "\t\tCount:" + entry._2)
           }
+          regexSummary.wordFilesMap.foreach{ (entry) =>
+            println("Match: " + entry._1 + "\t\t Files:" + entry._2.mkString(","))
+          }
         }
         system.shutdown()
       }
       case Left(failure) => {
-        println("did not receive future back successfully")
+        println("Failed to receive RegexSummary future")
         system.shutdown()
       }
     }
@@ -202,7 +209,7 @@ trait Lexer {
 }
 
 class RegexGatherer(_regex:String, _nodes:Int, supervisor: ActorRef) extends WordCountActor with WordCounter {
-  var summary: RegexSummary = RegexSummary(_regex, Map[String,Int]())
+  var summary: RegexSummary = initRegexSummary(_regex)
   var nrOfResults: Int = 0
   
   val fileReadRouter = context.actorOf(Props[FileReadActor].withRouter(RoundRobinRouter(_nodes)), name = "fileReadRouter")
@@ -227,9 +234,20 @@ class RegexGatherer(_regex:String, _nodes:Int, supervisor: ActorRef) extends Wor
       context.stop(self)
     }
   }
+  private def initRegexSummary(_regex: String) = {
+    RegexSummary(_regex, Map[String,Int](), Map[String,List[File]]() )
+  }
+  
+  private def combineWordFilesMap(current:RegexResults, next:RegexSummary): Map[String,List[File]] = {
+    current.matches.foldLeft( next.wordFilesMap ){ (map,eachToken) =>
+      val files = current.file :: map.getOrElse(eachToken,List[File]())
+      map + ( eachToken -> files )
+    }
+  }
   private def combineResults(current: RegexResults, next:RegexSummary): RegexSummary = {
     var matches = countWordsSerially(current.matches) ++ next.wordCountMatch
-    next.copy(wordCountMatch = matches)
+    val wordFilesMap = combineWordFilesMap(current, next)
+    next.copy(wordCountMatch = matches, wordFilesMap = wordFilesMap)
   }
   
 }

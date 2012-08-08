@@ -8,5 +8,5 @@ case class RecurseFiles(regex: String, directory: String) extends WordCountMessa
 case class DirectoryResult(regex: String, directories: List[File], files: List[File]) extends WordCountMessage
 case class RegexMatch(regex: String, file:File) extends WordCountMessage
 case class RegexResults(regex: String, file: File, matches: Seq[String]) extends WordCountMessage
-case class RegexSummary(regex: String, wordCountMatch: Map[String, Int]) extends WordCountMessage
+case class RegexSummary(regex: String, wordCountMatch: Map[String, Int], wordFilesMap: Map[String,List[File]]) extends WordCountMessage
 case class WordCountShutdown() extends WordCountMessage
