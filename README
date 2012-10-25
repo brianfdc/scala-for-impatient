@@ -6,3 +6,7 @@ I also have 0.11.3 SBT installed, but the sbteclipse plugin is not available for
 my sbt version and scala version.
 
 So for now, I'm using Maven for dependency management.
+
+Experiment with FSMs
+- Akka Style http://doc.akka.io/docs/akka/2.0.3/scala/fsm.html
+- Then Uncle Bob's Turnstyle http://www.objectmentor.com/resources/articles/umlfsm.pdf
