@@ -2,8 +2,14 @@
 
 # This Python file uses the following encoding: utf-8
 #
-# TBD change usage s.t. it can be invoked simply like:
-#     python make_module.py {moduleName}
+# TBD
+# - Eliminate command line boiler plate with
+#   + argparse (http://docs.python.org/2/library/argparse.html) for Python 2.7+
+#   + optparse (http://docs.python.org/2/library/optparse.html) for Python 2.3-7
+# - Eliminate logging boilerplate with
+#    + logging (http://docs.python.org/2/library/logging.html) for Python 2.3+
+# - Use platform to access underlying platform's data (http://docs.python.org/2/library/platform.html)
+
 # @author awong
 #
 import sys
