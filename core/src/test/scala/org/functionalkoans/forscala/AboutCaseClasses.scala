@@ -42,7 +42,7 @@ class AboutCaseClasses
     }
     "have a convenient toString method defined" in {
       val d1 = Dog("Scooby", "Doberman")
-      d1.toString should be("Dog(Scooby, Doberman)")
+      d1.toString should be("Dog(Scooby,Doberman)")
     }
     "have automatic properties" in {
       val d1 = Dog("Scooby", "Doberman")
@@ -65,8 +65,8 @@ class AboutCaseClasses
       val d2 = d1.copy(name = "Scooby Doo") // copy the case class but change the name in the copy
       d1.name should be("Scooby") // original left alone
       d1.breed should be("Doberman")
-      d1.name should be("Scooby Doo")
-      d1.breed should be("Doberman")  // copied from the original
+      d2.name should be("Scooby Doo")
+      d2.breed should be("Doberman")  // copied from the original
     }
     "be able to have default and named parameters" in {
       val p1 = Citizen("Fred", "Jones", 23, "111-22-3333")
