@@ -13,10 +13,25 @@ object BuildSettings {
   val buildScalaVersion = "2.9.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
-    organization := buildOrganization,
-    version      := buildVersion,
-    scalaVersion := buildScalaVersion,
-    shellPrompt  := ShellPrompt.buildShellPrompt
+    organization  := buildOrganization,
+    version       := buildVersion,
+    scalaVersion  := buildScalaVersion,
+    scalacOptions ++= Seq("-unchecked", "-deprecation"),
+    javacOptions  ++= Seq("-target", "1.6", "-source", "1.6"),
+    shellPrompt  := ShellPrompt.buildShellPrompt,
+    licenses := Seq("LGPL v3" -> url("http://www.gnu.org/licenses/lgpl.txt")),
+    pomExtra := (
+      <scm>
+        <url>git@github.com:scala-for-impatient/reboot.git</url>
+        <connection>scm:git:git@github.com:scala-for-impatient/reboot.git</connection>
+      </scm>
+      <developers>
+        <developer>
+          <id>awong</id>
+          <name>Alan Wong</name>
+          <url>http://www.github.com/alanktwong</url>
+        </developer>
+      </developers>)
   )
 }
 
@@ -50,21 +65,36 @@ object Resolvers {
   
   val akkaRepo   = "Akka Repo" at "http://repo.akka.io/repository"
 
+  val springReleaseRepo   = "EBR Spring Release Repository" at "http://repository.springsource.com/maven/bundles/release"
+  val springExternalReleaseRepo   = "EBR Spring External Release Repository" at "http://repository.springsource.com/maven/bundles/external"
+
+  val jBossRepo = "JBoss Public Maven Repository Group" at "https://repository.jboss.org/nexus/content/groups/public-jboss/"
+
   val oracleResolvers = Seq (sunrepo, sunrepoGF, oraclerepo)
+  val springAppResolvers = Seq(springReleaseRepo, springExternalReleaseRepo, jBossRepo, akkaRepo)
 }
 
 object Dependencies {
+  val provided = "provided"
+  val test = "test"
+  val runtime = "runtime"
+
+  val hibernateVer = "4.0.0.Final"
+
+  val springOrg = "org.springframework"
+  val springVer = "3.1.0.RELEASE"
+
   val akkaOrg = "com.typesafe.akka"
   val akkaVer = "2.0.4"
 
-  val junit = "junit" % "junit" % "4.4" % "test"
+  val junit = "junit" % "junit" % "4.10" % test
 
-  val scalatest = "org.scalatest" %% "scalatest" % "1.8" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.8" % test
 
   val akkaActor       = akkaOrg % "akka-actor" % akkaVer
   val akkaRemote      = akkaOrg % "akka-remote" % akkaVer
   val akkaSlf4j       = akkaOrg % "akka-slf4j" % akkaVer
-  val akkaTestkit     = akkaOrg % "akka-testkit" % akkaVer % "test"
+  val akkaTestkit     = akkaOrg % "akka-testkit" % akkaVer % test
   val akkaFileMailbox = akkaOrg % "akka-file-mailbox" % akkaVer
   val akkaKernel      = akkaOrg % "akka-kernel" % akkaVer
   val akkaZeroMQ      = akkaOrg % "akka-zeromq" % akkaVer
@@ -77,6 +107,33 @@ object Dependencies {
   val liftJson = "net.liftweb" % "lift-json_2.9.1" % "2.4-M4"
 
   val jodaTime = "joda-time" % "joda-time" % "1.6.2"
+
+  val xerces = "xerces" % "xercesImpl" % "2.9.1" % runtime
+
+  val springContext    = springOrg % "org.springframework.context" % springVer
+  val springTxn        = springOrg % "org.springframework.transaction" % springVer
+  val springOrm        = springOrg % "org.springframework.orm" % springVer
+  val springWeb        = springOrg % "org.springframework.web" % springVer
+  val springWebServlet = springOrg % "org.springframework.web.servlet" % springVer
+
+  val servletApi = "javax.servlet" % "javax.servlet-api" % "3.0.1" % provided
+  val jspApi = "javax.servlet.jsp" % "javax.servlet.jsp-api" % "2.2.1" % provided
+  val jstlApi = "javax.servlet.jsp.jstl" % "javax.servlet.jsp.jstl-api" % "1.2.1" % provided
+
+  val commonsLogging = "commons-logging" % "commons-logging" % "1.1.1" % runtime
+
+  val slf4j = "org.slf4j" % "slf4j-api" % "1.6.4" % runtime
+  val slf4jlog4j = "org.slf4j" % "slf4j-log4j12" % "1.6.4" % runtime
+
+  val hibernateValidator = "org.hibernate" % "hibernate-validator" % "4.2.0.Final"
+  val hibernate = "org.hibernate" % "hibernate-core" % hibernateVer
+
+  val javassist = "org.javassist" % "javassist" % "3.15.0-GA" % runtime
+
+  val commonsDbcp = "commons-dbcp" % "commons-dbcp" % "1.4" % runtime
+
+  val hsqldb = "org.hsqldb" % "hsqldb" % "2.2.6" % runtime
+  val selenium = "org.seleniumhq.selenium" % "selenium-java" % "2.14.0" % test
 }
 
 object ProjectBuild extends Build {
@@ -128,5 +185,38 @@ object ProjectBuild extends Build {
     core % "compile;test->test;provided->provided"
   )
 
-  
+  lazy val spring = Project (
+    buildProject + "-spring-app",
+    file ("spring-app"),
+    settings = buildSettings ++ Seq (
+      resolvers ++= springAppResolvers,
+      libraryDependencies ++= Seq(
+        xerces,
+        springContext,
+        springTxn,
+        springOrm,
+        springWeb,
+        springWebServlet,
+        servletApi,
+        jspApi,
+        jstlApi,
+        commonsLogging,
+        slf4j,
+        slf4jlog4j,
+        hibernateValidator,
+        hibernate,
+        javassist,
+        commonsDbcp,
+        hsqldb,
+        selenium,
+        akkaActor,
+        akkaRemote,
+        akkaTestkit,
+        scalatest
+      ),
+      description := "The Spring module"
+    )
+  ) dependsOn (
+    core % "compile;test->test;provided->provided"
+  )
 }
