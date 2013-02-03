@@ -65,8 +65,10 @@ object Resolvers {
   
   val akkaRepo   = "Akka Repo" at "http://repo.akka.io/repository"
 
-  val springReleaseRepo   = "EBR Spring Release Repository" at "http://repository.springsource.com/maven/bundles/release"
+  val springReleaseRepo           = "EBR Spring Release Repository" at "http://repository.springsource.com/maven/bundles/release"
   val springExternalReleaseRepo   = "EBR Spring External Release Repository" at "http://repository.springsource.com/maven/bundles/external"
+  val springMilestoneRepo         = "Spring Milestone Repository" at "https://repo.springsource.org/libs-milestone"
+
 
   val jBossRepo = "JBoss Public Maven Repository Group" at "https://repository.jboss.org/nexus/content/groups/public-jboss/"
 
@@ -109,12 +111,15 @@ object Dependencies {
   val jodaTime = "joda-time" % "joda-time" % "1.6.2"
 
   val xerces = "xerces" % "xercesImpl" % "2.9.1" % runtime
-
+  
+  val jettyContainer   = "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
+  
   val springContext    = springOrg % "org.springframework.context" % springVer
   val springTxn        = springOrg % "org.springframework.transaction" % springVer
   val springOrm        = springOrg % "org.springframework.orm" % springVer
   val springWeb        = springOrg % "org.springframework.web" % springVer
   val springWebServlet = springOrg % "org.springframework.web.servlet" % springVer
+  val springScala      = "org.springframework.scala" % "spring-scala" % "1.0.0.M1"
 
   val servletApi = "javax.servlet" % "javax.servlet-api" % "3.0.1" % provided
   val jspApi = "javax.servlet.jsp" % "javax.servlet.jsp-api" % "2.2.1" % provided
@@ -136,16 +141,26 @@ object Dependencies {
   val selenium = "org.seleniumhq.selenium" % "selenium-java" % "2.14.0" % test
 }
 
+object ProjectTasks {
+   val hello = TaskKey[Unit]("hello", "Prints 'Hello World'")
+
+   val helloTask = hello := {
+     println("Hello World")
+   }
+
+}
 object ProjectBuild extends Build {
   import Resolvers._
   import Dependencies._
   import BuildSettings._
+  import ProjectTasks._
 
   // Sub-project specific dependencies
   lazy val all = Project (
     id = buildProject + "-all",
     base = file ("."),
     settings = buildSettings ++ Seq(
+      helloTask,
       description := "Wraps up all the modules"
     )
   ) aggregate (
@@ -185,6 +200,7 @@ object ProjectBuild extends Build {
     core % "compile;test->test;provided->provided"
   )
 
+
   lazy val spring = Project (
     buildProject + "-spring-app",
     file ("spring-app"),
@@ -197,6 +213,8 @@ object ProjectBuild extends Build {
         springOrm,
         springWeb,
         springWebServlet,
+        springScala,
+        jettyContainer,
         servletApi,
         jspApi,
         jstlApi,
