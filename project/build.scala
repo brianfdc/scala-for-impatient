@@ -10,7 +10,7 @@ object BuildSettings {
   val buildProject      = "scala-learn"
   val buildOrganization = "org.awong"
   val buildVersion      = "0.0.1-SNAPSHOT"
-  val buildScalaVersion = "2.9.2"
+  val buildScalaVersion = "2.9.3"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization  := buildOrganization,
@@ -91,8 +91,8 @@ object Dependencies {
 
   val junit = "junit" % "junit" % "4.10" % test
 
-  val scalatest = "org.scalatest" %% "scalatest" % "1.8" % test
-
+  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+  
   val akkaActor       = akkaOrg % "akka-actor" % akkaVer
   val akkaRemote      = akkaOrg % "akka-remote" % akkaVer
   val akkaSlf4j       = akkaOrg % "akka-slf4j" % akkaVer
