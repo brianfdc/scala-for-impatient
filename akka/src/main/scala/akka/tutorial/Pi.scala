@@ -5,10 +5,13 @@ package akka.tutorial
  * 
  * @see http://doc.akka.io/docs/akka/2.0.2/intro/getting-started-first-scala.html
  */
-import akka.actor._
+import akka.actor.Actor
+import akka.actor.ActorRef
+import akka.actor.Props
 import akka.actor.ActorSystem
+
 import akka.routing.RoundRobinRouter
-import akka.util.Duration
+import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
 
 object Pi extends App

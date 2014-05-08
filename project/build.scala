@@ -10,14 +10,14 @@ object BuildSettings {
   val buildProject      = "scala-learn"
   val buildOrganization = "org.awong"
   val buildVersion      = "0.0.1-SNAPSHOT"
-  val buildScalaVersion = "2.10.2"
+  val buildScalaVersion = "2.10.1"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization  := buildOrganization,
     version       := buildVersion,
     scalaVersion  := buildScalaVersion,
     scalacOptions ++= Seq("-unchecked", "-deprecation"),
-    javacOptions  ++= Seq("-target", "1.6", "-source", "1.6"),
+    javacOptions  ++= Seq("-target", "1.7", "-source", "1.7"),
     shellPrompt  := ShellPrompt.buildShellPrompt,
     licenses := Seq("LGPL v3" -> url("http://www.gnu.org/licenses/lgpl.txt")),
     pomExtra := (
@@ -63,7 +63,7 @@ object Resolvers {
   val sunrepoGF  = "Sun GF Maven2 Repo" at "http://download.java.net/maven/glassfish"
   val oraclerepo = "Oracle Maven2 Repo" at "http://download.oracle.com/maven"
   
-  val akkaRepo   = "Akka Repo" at "http://repo.akka.io/repository"
+  val akkaRepo   = "Akka Repo" at "http://repo.typesafe.com/typesafe/releases/"
 
   val springReleaseRepo           = "EBR Spring Release Repository" at "http://repository.springsource.com/maven/bundles/release"
   val springExternalReleaseRepo   = "EBR Spring External Release Repository" at "http://repository.springsource.com/maven/bundles/external"
@@ -87,32 +87,29 @@ object Dependencies {
   val springVer = "3.1.0.RELEASE"
 
   val akkaOrg = "com.typesafe.akka"
-  val akkaVer = "2.0.4"
+  val akkaVer = "2.1.4"
 
   val junit = "junit" % "junit" % "4.10" % test
 
-  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % "test"
+  val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % test
   
-  val akkaActor       = akkaOrg % "akka-actor" % akkaVer
-  val akkaRemote      = akkaOrg % "akka-remote" % akkaVer
-  val akkaSlf4j       = akkaOrg % "akka-slf4j" % akkaVer
-  val akkaTestkit     = akkaOrg % "akka-testkit" % akkaVer % test
-  val akkaFileMailbox = akkaOrg % "akka-file-mailbox" % akkaVer
-  val akkaKernel      = akkaOrg % "akka-kernel" % akkaVer
-  val akkaZeroMQ      = akkaOrg % "akka-zeromq" % akkaVer
-  val akkaTransactor  = akkaOrg % "akka-zeromq" % akkaVer
+  val akkaActor       = akkaOrg % "akka-actor_2.10" % akkaVer
+  val akkaRemote      = akkaOrg % "akka-remote_2.10" % akkaVer
+  val akkaSlf4j       = akkaOrg % "akka-slf4j_2.10" % akkaVer
+  val akkaTestkit     = akkaOrg % "akka-testkit_2.10" % akkaVer % test
+  val akkaFileMailbox = akkaOrg % "akka-file-mailbox_2.10" % akkaVer
+  val akkaKernel      = akkaOrg % "akka-kernel_2.10" % akkaVer
+  val akkaZeroMQ      = akkaOrg % "akka-zeromq_2.10" % akkaVer
+  val akkaTransactor  = akkaOrg % "akka-transactor_2.10" % akkaVer
 
   val scalazFull = "org.scalaz" %% "scalaz-full" % "6.0.4"
 
   val guava = "com.google.guava" % "guava" % "12.0"
 
-  val liftJson = "net.liftweb" % "lift-json_2.9.1" % "2.4-M4"
-
   val jodaTime = "joda-time" % "joda-time" % "1.6.2"
 
   val xerces = "xerces" % "xercesImpl" % "2.9.1" % runtime
   
-  val jettyContainer   = "org.mortbay.jetty" % "jetty" % "6.1.22" % "container"
   
   val springContext    = springOrg % "org.springframework.context" % springVer
   val springTxn        = springOrg % "org.springframework.transaction" % springVer
@@ -175,7 +172,6 @@ object ProjectBuild extends Build {
       libraryDependencies ++= Seq(
         junit,
         guava,
-        liftJson,
         jodaTime,
         scalatest
       ),
@@ -200,41 +196,4 @@ object ProjectBuild extends Build {
     core % "compile;test->test;provided->provided"
   )
 
-
-  lazy val spring = Project (
-    buildProject + "-spring-app",
-    file ("spring-app"),
-    settings = buildSettings ++ Seq (
-      resolvers ++= springAppResolvers,
-      libraryDependencies ++= Seq(
-        xerces,
-        springContext,
-        springTxn,
-        springOrm,
-        springWeb,
-        springWebServlet,
-        springScala,
-        jettyContainer,
-        servletApi,
-        jspApi,
-        jstlApi,
-        commonsLogging,
-        slf4j,
-        slf4jlog4j,
-        hibernateValidator,
-        hibernate,
-        javassist,
-        commonsDbcp,
-        hsqldb,
-        selenium,
-        akkaActor,
-        akkaRemote,
-        akkaTestkit,
-        scalatest
-      ),
-      description := "The Spring module"
-    )
-  ) dependsOn (
-    core % "compile;test->test;provided->provided"
-  )
 }
