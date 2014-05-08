@@ -1,4 +1,4 @@
-package scala.impatient.actors
+package akka.scattergather
 
 import scala.actors._
 import scala.actors.Actor._

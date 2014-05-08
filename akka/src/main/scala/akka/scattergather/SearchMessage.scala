@@ -1,4 +1,4 @@
-package scala.impatient.actors
+package akka.scattergather
 
 import scala.actors.OutputChannel
 import scala.collection.immutable._
