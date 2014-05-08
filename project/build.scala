@@ -10,7 +10,7 @@ object BuildSettings {
   val buildProject      = "scala-learn"
   val buildOrganization = "org.awong"
   val buildVersion      = "0.0.1-SNAPSHOT"
-  val buildScalaVersion = "2.9.3"
+  val buildScalaVersion = "2.10.2"
 
   val buildSettings = Defaults.defaultSettings ++ Seq (
     organization  := buildOrganization,

@@ -73,33 +73,31 @@ class Exercises13 {
     ( ds )
   }
   /*
-   * (13.9) 
+   * (13.9)
+   * Unfortunately scala.actors.Actor is now deprecated and akka Actors are now the standard
    */
-  def readFiles(files:Seq[String]) = {
-    import scala.actors.Actor._
-      // spawn new thread to read the file
-      val readFileActor = actor {
-        while(true) {
-          receive {
-            case s:String =>{
-              val wordCount = Exercises04.wordCountFold(s)
-              // now update one of the frequencies maps
-            }
-            case c:Char => {
-              import scala.collection.JavaConversions.asScalaConcurrentMap
-              val freq1 = new scala.collection.mutable.HashMap[Char,Int] with scala.collection.mutable.SynchronizedMap[Char,Int]
-              val freq2: scala.collection.mutable.ConcurrentMap[Char,Int] = new java.util.concurrent.ConcurrentHashMap[Char,Int]
-              // Read performance of freq2 > freq1 
-              freq1.getOrElse(c, 0) + 1
-              freq2.getOrElse(c, 0) + 1
-            }
-            case _ => println("Do nothing")
-          }
-        }
-      }
-    for (file <- files) {
-    }
-  }
+//  def readFiles(files:Seq[String]) = {
+//    import scala.actors.Actor._
+//      val readFileActor = actor {
+//        while(true) {
+//          receive {
+//            case s:String =>{
+//              val wordCount = Exercises04.wordCountFold(s)  // now update one of the frequencies maps
+//            }
+//            case c:Char => {
+//              import scala.collection.JavaConversions.asScalaConcurrentMap
+//              val freq1 = new scala.collection.mutable.HashMap[Char,Int] with scala.collection.mutable.SynchronizedMap[Char,Int]
+//              val freq2: scala.collection.mutable.ConcurrentMap[Char,Int] = new java.util.concurrent.ConcurrentHashMap[Char,Int]
+//              freq1.getOrElse(c, 0) + 1
+//              freq2.getOrElse(c, 0) + 1
+//            }
+//            case _ => println("Do nothing")
+//          }
+//        }
+//      }
+//    for (file <- files) {
+//    }
+//  }
   /*
    * (13.10) 
    */
