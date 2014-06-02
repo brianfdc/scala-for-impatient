@@ -1,4 +1,4 @@
-package scala.monads
+package awong.monads
 
 /** 
  *  Provides a standard interface for compsoing and sequencing operations on some

@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 import scala.io.Source
 import scala.io.BufferedSource

@@ -1,12 +1,13 @@
-package scala.calc.dsl
+package awong.calc.dsl
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import awong.AbstractFlatSpec
 
-import scala.calc.dsl._
+import awong.calc.dsl._
 
 @RunWith(classOf[JUnitRunner])
-class CalcSpec extends scala.awong.AbstractFlatSpec {
+class CalcSpec extends AbstractFlatSpec {
   it should "render AST simply" in {
     val n1 = Number(5)
     expect(5) {

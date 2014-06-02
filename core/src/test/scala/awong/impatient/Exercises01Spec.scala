@@ -1,6 +1,7 @@
 package scala.impatient
 
-import scala.awong._
+import awong._
+import awong.impatient._
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith

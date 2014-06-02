@@ -1,7 +1,7 @@
-package scala.impatient
+package awong.impatient
 import java.beans.PropertyChangeListener
 
-import scala.awong.ReflectionToString
+import awong.ReflectionToString
 
 /**
  * Traits
@@ -55,18 +55,18 @@ object Exercises10 {
    * trait BitSet extends Set[Int] with BitSetLike[BitSet] 
    * 
    * l(BitSet) = BitSet >> l(Set >> BitSetLike)
-   *   = BitSet >> Set >> l( (Int) ⇒ Boolean >> Iterable >> GenSet >> GenericSetTemplate )
+   *   = BitSet >> Set >> l( (Int) .... Boolean >> Iterable >> GenSet >> GenericSetTemplate )
    *     >> BitSetLike >> l(SetLike)
    *     
-   *   = BitSet >> l( (Int) ⇒ Boolean >> Iterable >> GenSet )
+   *   = BitSet >> l( (Int) ... Boolean >> Iterable >> GenSet )
    *      >> GenericSetTemplate >> l(GenericTraversibleTemplate)
    *      >> BitSetLike >> SetLike >> l(IterableLike >> GenSetLike >> Subtractable >> Parallelizable )
    *      
-   *   = BitSet >> (Int) ⇒ Boolean >> l(Iterable >> GenSet)
+   *   = BitSet >> (Int) ... Boolean >> l(Iterable >> GenSet)
    *      >> GenericSetTemplate >> GenericTraversibleTemplate >> l(HasNewBuilder)
    *      >> BitSetLike >> SetLike >> l(IterableLike >> GenSetLike >> Subtractable >> Parallelizable )
    *      
-   *   = BitSet >> (Int) ⇒ Boolean >> l(Iterable >> GenSet)
+   *   = BitSet >> (Int) ...  Boolean >> l(Iterable >> GenSet)
    *      >> GenericSetTemplate >> GenericTraversibleTemplate >> l(HasNewBuilder)
    *      >> BitSetLike >> SetLike >> l(IterableLike)
    *      >> GenSetLike >>  l(GenIterableLike >> (Int) => Boolean >> Equals)

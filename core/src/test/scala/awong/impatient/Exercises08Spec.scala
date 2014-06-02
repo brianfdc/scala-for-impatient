@@ -2,10 +2,12 @@ package scala.impatient
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
-import scala.impatient.Exercise08._
+import awong.impatient.Exercise08._
+import awong._
+
 
 @RunWith(classOf[JUnitRunner])
-class Exercises08Spec extends scala.awong.AbstractFlatSpec {
+class Exercises08Spec extends AbstractFlatSpec {
   var checking: CheckingAccount = _
   var bank: BankAccount = _
   var savings: SavingsAccount = _

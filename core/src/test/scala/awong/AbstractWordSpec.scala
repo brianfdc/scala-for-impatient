@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 import org.scalatest.WordSpec
 import org.scalatest.matchers.MustMatchers

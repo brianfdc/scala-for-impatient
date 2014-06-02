@@ -1,4 +1,4 @@
-package scala.cake
+package awong.cake
 
 /**
  * For Real World Scala series, see

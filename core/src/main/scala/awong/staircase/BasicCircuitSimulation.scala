@@ -1,4 +1,4 @@
-package scala.staircase
+package awong.staircase
 
 abstract class BasicCircuitSimulation extends Simulation {
   def InverterDelay: Int

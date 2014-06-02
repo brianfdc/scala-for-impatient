@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 /**
  * http://stackoverflow.com/questions/2705920/how-to-define-a-ternary-operator-in-scala-which-preserves-leading-tokens

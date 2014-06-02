@@ -1,11 +1,13 @@
-package scala.impatient
+package awong.impatient
 
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
+import awong.AbstractFlatSpec
+
 @RunWith(classOf[JUnitRunner])
-class Exercises20Spec extends scala.awong.AbstractFlatSpec {
+class Exercises20Spec extends AbstractFlatSpec {
 
   "Random number generation" should "just work" in {
      val xf = scala.util.Random.nextInt(10)

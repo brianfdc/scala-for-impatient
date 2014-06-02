@@ -1,6 +1,6 @@
-package scala.impatient
+package awong.impatient
 
-import scala.awong.ReflectionToString
+import awong.ReflectionToString
 
 /**
  * Inheritance

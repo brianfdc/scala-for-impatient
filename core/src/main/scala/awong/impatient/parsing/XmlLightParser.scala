@@ -1,4 +1,4 @@
-package scala.impatient.parsing
+package awong.impatient.parsing
 
 import java.text.ParseException
 

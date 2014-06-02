@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import scala.collection.JavaConversions.propertiesAsScalaMap
 import scala.collection.Iterable

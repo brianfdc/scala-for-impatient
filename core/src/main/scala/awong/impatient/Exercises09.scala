@@ -1,11 +1,11 @@
-package scala.impatient
+package awong.impatient
 
 import scala.io.Source
 
 /**
  * Files and Regular Expressions
  */
-object Exercises09 extends scala.calc.dsl.JavaTokens {
+object Exercises09 extends awong.calc.dsl.JavaTokens {
   /**
    * (9.1)
    */

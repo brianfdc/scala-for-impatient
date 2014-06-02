@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import scala.util.parsing.combinator._
 import scala.util.parsing.input.CharArrayReader

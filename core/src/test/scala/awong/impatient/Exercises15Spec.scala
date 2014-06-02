@@ -3,12 +3,12 @@ package scala.impatient
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import scala.impatient.Exercises15._
-
+import awong.impatient.Exercises15._
+import awong.AbstractFlatSpec
 
 @RunWith(classOf[JUnitRunner])
 class Exercises15Spec
-  extends scala.awong.AbstractWordSpec
+  extends awong.AbstractWordSpec
 {
   "(15.2)" must {
     "Be correct" in {

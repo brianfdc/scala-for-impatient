@@ -1,4 +1,4 @@
-package scala.staircase
+package awong.staircase
 
 abstract class Simulation extends SimulationOp {
   private var curtime = 0

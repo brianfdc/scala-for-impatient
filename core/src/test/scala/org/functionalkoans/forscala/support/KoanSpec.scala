@@ -6,10 +6,10 @@ import org.scalatest.matchers.MustMatchers
 import org.scalatest.matchers.ShouldMatchers
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfter
-
+import awong.AbstractWordSpec
 
 abstract class KoanSpec(val description:String)
-  extends scala.awong.AbstractWordSpec
+  extends AbstractWordSpec
   with BlankTests
 {
   override def beforeAll = {

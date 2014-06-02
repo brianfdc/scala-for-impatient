@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter

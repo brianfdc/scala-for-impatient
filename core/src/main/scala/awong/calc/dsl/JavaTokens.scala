@@ -1,4 +1,4 @@
-package scala.calc.dsl
+package awong.calc.dsl
 
 
 trait JavaTokens {

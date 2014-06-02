@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import java.text.ParseException
 import scala.xml._
@@ -9,11 +9,12 @@ import org.joda.time.format._
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
-import scala.impatient.parsing._
-import scala.calc.dsl._
+import awong.impatient.parsing._
+import awong.calc.dsl._
+import awong.AbstractFlatSpec
 
 @RunWith(classOf[JUnitRunner])
-class Exercises19Spec extends scala.awong.AbstractFlatSpec {
+class Exercises19Spec extends AbstractFlatSpec {
 
   /**
    * (19.1/2)

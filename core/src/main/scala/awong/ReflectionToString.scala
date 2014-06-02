@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 import scala.reflect.NameTransformer
 

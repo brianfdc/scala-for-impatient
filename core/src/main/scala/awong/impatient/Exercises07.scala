@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 /**
  * Packages and Imports

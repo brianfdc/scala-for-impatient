@@ -1,13 +1,15 @@
-package scala.impatient
+package awong.impatient
 
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import scala.impatient.Exercises18._
+import awong.impatient.Exercises18._
+import awong.AbstractFlatSpec
+
 
 @RunWith(classOf[JUnitRunner])
-class Exercises18Spec extends scala.awong.AbstractFlatSpec {
+class Exercises18Spec extends AbstractFlatSpec {
 
   "(18.1/2) A bug" should "move" in {
     val bugsy = new Bug();

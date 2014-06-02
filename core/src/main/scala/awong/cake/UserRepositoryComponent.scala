@@ -1,4 +1,4 @@
-package scala.cake
+package awong.cake
 
 trait UserRepositoryComponent {
   val userRepository: UserRepository

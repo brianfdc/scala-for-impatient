@@ -5,11 +5,11 @@ import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import scala.impatient.Exercises10.RectangleLike
-
+import awong.impatient.Exercises10.RectangleLike
+import awong.AbstractFlatSpec
 
 @RunWith(classOf[JUnitRunner])
-class Exercises10Spec extends scala.awong.AbstractFlatSpec {
+class Exercises10Spec extends AbstractFlatSpec {
   
   before {
     println("executing before")
@@ -26,8 +26,9 @@ class Exercises10Spec extends scala.awong.AbstractFlatSpec {
   }
 
   it should "ceasar Cipher" in {
-    import scala.impatient.Exercises11._
-    val money = new Exercises11.Money(100, 100) with Exercises10.CryptoLogger
+    import awong.impatient.Exercises11.Money
+    import awong.impatient.Exercises10.CryptoLogger
+    val money = new Money(100, 100) with CryptoLogger
     expect( BigInt(101*100) ) { money.totalCents } 
     expect( "khoor" ) { money.log("hello") }
   }

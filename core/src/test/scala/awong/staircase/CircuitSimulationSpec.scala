@@ -1,10 +1,12 @@
-package scala.staircase
+package awong.staircase
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
+import awong.AbstractWordSpec
+
 @RunWith(classOf[JUnitRunner])
-class CircuitSimulationSpec extends scala.awong.AbstractWordSpec {
+class CircuitSimulationSpec extends AbstractWordSpec {
 
   object TestSimulation extends BasicCircuitSimulation {
     def InverterDelay = 1

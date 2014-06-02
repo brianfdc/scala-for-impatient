@@ -1,17 +1,20 @@
-package scala.impatient
+package awong.impatient
 
 import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import scala.impatient.Exercises14._
+import awong.impatient.Exercises14._
+import awong.AbstractFlatSpec
 
 @RunWith(classOf[JUnitRunner])
-class Exercises14Spec extends scala.awong.AbstractFlatSpec {
+class Exercises14Spec extends AbstractFlatSpec {
   
   "(14.2)" should "swap integers" in {
-    expect( (2,1),"swapped integers" ) { Exercises14.swap(1,2) }
+    expect( (2,1),"swapped integers" ) {
+      Exercises14.swap(1,2)
+    }
   }
   
   "(14.3)" should "swap 1st 2 elements of a list" in {
@@ -76,7 +79,7 @@ class Exercises14Spec extends scala.awong.AbstractFlatSpec {
   }
   
   "(14.6)" should "descend a tree recursively" in {
-    import scala.impatient.Exercises14.{BTrie, Node, Leaf, BinaryNode}
+    import awong.impatient.Exercises14.{BTrie, Node, Leaf, BinaryNode}
     expect( 1 ) {
       Exercises14.treeSum(
           Node( Leaf(1)) )

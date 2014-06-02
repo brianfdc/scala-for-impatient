@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 case class SimpleParsed(id: Long, text: String)
 

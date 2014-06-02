@@ -10,10 +10,11 @@ import scala.io.Source
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import scala.impatient.Exercises16._
+import awong.impatient.Exercises16
+import awong.AbstractWordSpec
 
 @RunWith(classOf[JUnitRunner])
-class Exercises16Spec extends scala.awong.AbstractWordSpec {
+class Exercises16Spec extends AbstractWordSpec {
   "(16.1)" should {
     "Return nodes" in {
       val x = Exercises16.sixteenOne

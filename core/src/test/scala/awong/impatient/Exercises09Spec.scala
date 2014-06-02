@@ -1,10 +1,11 @@
-package scala.impatient
+package awong.impatient
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import awong.AbstractFlatSpec
 
 @RunWith(classOf[JUnitRunner])
-class Exercises09Spec extends scala.awong.AbstractFlatSpec {
+class Exercises09Spec extends AbstractFlatSpec {
   "Regex playground" should "work" in {
     val text = 
       """case class MyClass(id:String) extends TheirClass {

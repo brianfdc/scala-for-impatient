@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import scala.runtime._
 
@@ -6,11 +6,14 @@ import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 import org.functionalkoans.forscala._
+import awong.AbstractWordSpec
 
-import scala.impatient.Exercises17._
+import awong.impatient.Exercises17.ImmutablePair
+import awong.impatient.Exercises17.MutablePair
+import awong.impatient.Exercises17.Pair
 
 @RunWith(classOf[JUnitRunner])
-class Exercises17Spec extends scala.awong.AbstractWordSpec {
+class Exercises17Spec extends AbstractWordSpec {
   "(17.1-3)" should {
     "be immutable and swap" in {
       val first = new ImmutablePair("Any", 12)
