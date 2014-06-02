@@ -8,6 +8,7 @@ import org.junit.runner.RunWith
 import net.liftweb.json._
 import net.liftweb.json.Serialization.{read,write}
 
+
 @RunWith(classOf[JUnitRunner])
 class LiftJsonSpec extends AbstractFlatSpec {
   /**

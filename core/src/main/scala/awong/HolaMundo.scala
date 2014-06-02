@@ -1,4 +1,6 @@
-package scala.awong
+package awong
+
+import scala.math.BigInt.int2bigInt
 
 /**
  * Here, object <code>HolaMundo</code> inherits the main method of <code>App</code>.

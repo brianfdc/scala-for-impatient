@@ -110,6 +110,7 @@ object Dependencies {
 
   val xerces = "xerces" % "xercesImpl" % "2.9.1" % runtime
   
+  val lift_json = "net.liftweb" %% "lift-json" % "2.5"
   
   val springContext    = springOrg % "org.springframework.context" % springVer
   val springTxn        = springOrg % "org.springframework.transaction" % springVer
@@ -173,7 +174,8 @@ object ProjectBuild extends Build {
         junit,
         guava,
         jodaTime,
-        scalatest
+        scalatest,
+        lift_json
       ),
       description := "The core module"
     )

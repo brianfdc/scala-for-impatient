@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 
 object Linearization extends Function1[Class[_], List[Class[_]]] {
   private def join[T](x : List[T], y : List[T]) : List[T] = x match {

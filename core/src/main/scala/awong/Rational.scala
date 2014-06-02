@@ -1,4 +1,4 @@
-package scala.awong
+package awong
 /**
  * From Listing 6.5 of the staircase book,
  * _Programming In Scala_ (Odersky et al: 2007).

@@ -4,6 +4,7 @@ import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
+import awong.FunctionalCollections
 
 @RunWith(classOf[JUnitRunner])
 class FunctionalCollectionsSpec extends AbstractFlatSpec {

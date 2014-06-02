@@ -1,7 +1,4 @@
-package scala.awong
-
-import scala.collection.JavaConversions
-
+package awong
 import scala.util.Random
 
 /**
