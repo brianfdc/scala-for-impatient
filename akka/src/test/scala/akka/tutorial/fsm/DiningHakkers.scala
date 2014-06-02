@@ -1,7 +1,10 @@
 package akka.tutorial.fsm
 
 import akka.actor._
-import akka.util.duration._
+
+import scala.concurrent.duration.Duration
+import java.util.concurrent.TimeUnit 
+
 import akka.event.Logging
 
 /**
@@ -121,7 +124,8 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor with A
     case Taken(`chopstickToWaitFor`) =>
       become(eating)
       logDebug("%s (%s) has picked up %s and %s and starts to eat".format(name, self.path.name, left.path.name, right.path.name))
-      system.scheduler.scheduleOnce(5 seconds, self, Think)
+      val duration = Duration(5, TimeUnit.SECONDS)
+      system.scheduler.scheduleOnce(duration, self, Think)
 
     case Busy(chopstick) =>
       become(thinking)
@@ -153,7 +157,8 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor with A
       left ! Put(self)
       right ! Put(self)
       logDebug("%s (%s) puts down his chopsticks and starts to think".format(name, self.path.name))
-      system.scheduler.scheduleOnce(5 seconds, self, Eat)
+      val duration = Duration(5, TimeUnit.SECONDS)
+      system.scheduler.scheduleOnce(duration, self, Eat)
   }
 
   //All hakkers start in a non-eating state
@@ -161,7 +166,8 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor with A
     case Think =>
       become(thinking)
       logDebug("%s (%s) starts to think".format(name, self.path.name))
-      system.scheduler.scheduleOnce(5 seconds, self, Eat)
+      val duration = Duration(5, TimeUnit.SECONDS)
+      system.scheduler.scheduleOnce(duration, self, Eat)
   }
 }
 
