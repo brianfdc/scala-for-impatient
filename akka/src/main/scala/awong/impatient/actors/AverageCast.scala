@@ -1,4 +1,4 @@
-package scala.impatient.actors
+package awong.impatient.actors
 
 import akka.actor.Actor
 import akka.actor.ActorRef

@@ -1,4 +1,4 @@
-package scala.scitter
+package awong.scitter
 
 
 import akka.actor.Actor

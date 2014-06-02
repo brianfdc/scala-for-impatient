@@ -1,4 +1,4 @@
-package akka.tutorial
+package awong.akka.tutorial
 
 import akka.actor.ActorSystem
 import akka.actor.Actor

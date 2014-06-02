@@ -1,4 +1,4 @@
-package akka.tutorial
+package awong.akka.tutorial
 
 /**
  * Copyright (C) 2009-2012 Typesafe Inc. <http://www.typesafe.com>

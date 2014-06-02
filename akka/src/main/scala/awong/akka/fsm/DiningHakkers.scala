@@ -1,4 +1,4 @@
-package akka.tutorial.fsm
+package awong.akka.fsm
 
 import akka.actor._
 

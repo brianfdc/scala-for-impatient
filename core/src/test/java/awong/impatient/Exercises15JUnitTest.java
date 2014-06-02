@@ -13,7 +13,8 @@ import org.junit.Test;
 
 import com.google.common.collect.Lists;
 
-import scala.impatient.Exercises15.Deprecated;
+import awong.impatient.Exercises15.Deprecated;
+import awong.impatient.Exercises15.*;
 
 public class Exercises15JUnitTest {
 	@Ignore

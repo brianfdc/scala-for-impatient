@@ -1,4 +1,4 @@
-package scala.scitter
+package awong.scitter
 /**
  * @author Ted Neward
  * @see  http://www.ibm.com/developerworks/java/library/j-scala10209/index.html
