@@ -108,7 +108,7 @@ object AverageCast extends App {
 			}
 			case m: Shutdown => {
 				done = true
-				exit()
+				sys.exit()
 			}
 		}
 	}
