@@ -87,19 +87,28 @@ object Dependencies {
   val springVer = "3.1.0.RELEASE"
 
   val akkaOrg = "com.typesafe.akka"
-  val akkaVer = "2.1.4"
+  val akkaVer = "2.2.0"
 
   val junit = "junit" % "junit" % "4.10" % test
 
   val scalatest = "org.scalatest" %% "scalatest" % "1.9.1" % test
   
   val akkaActor       = akkaOrg % "akka-actor_2.10" % akkaVer
+  
+  val akkaAgent       = akkaOrg % "akka-agent_2.10" % akkaVer
+  val akkaCamel       = akkaOrg % "akka-agent_2.10" % akkaVer
+  val akkaCluster     = akkaOrg % "akka-cluster_2.10" % akkaVer
+  
+  val akkaKernel      = akkaOrg % "akka-kernel_2.10" % akkaVer
+  val akkaOSGI        = akkaOrg % "akka-osgi_2.10" % akkaVer
+  val akkaOSGI_aries  = akkaOrg % "akka-osgi-aries_2.10" % akkaVer
+  
   val akkaRemote      = akkaOrg % "akka-remote_2.10" % akkaVer
   val akkaSlf4j       = akkaOrg % "akka-slf4j_2.10" % akkaVer
   val akkaTestkit     = akkaOrg % "akka-testkit_2.10" % akkaVer % test
-  val akkaFileMailbox = akkaOrg % "akka-file-mailbox_2.10" % akkaVer
-  val akkaKernel      = akkaOrg % "akka-kernel_2.10" % akkaVer
   val akkaZeroMQ      = akkaOrg % "akka-zeromq_2.10" % akkaVer
+  
+  val akkaFileMailbox = akkaOrg % "akka-file-mailbox_2.10" % akkaVer
   val akkaTransactor  = akkaOrg % "akka-transactor_2.10" % akkaVer
 
   val scalazFull = "org.scalaz" %% "scalaz-full" % "6.0.4"
@@ -188,8 +197,14 @@ object ProjectBuild extends Build {
       resolvers += akkaRepo,
       libraryDependencies ++= Seq(
         akkaActor,
+        akkaAgent,
+        akkaCamel,
+        akkaCluster,
+        akkaKernel,
         akkaRemote,
+        akkaSlf4j,
         akkaTestkit,
+        akkaZeroMQ,
         scalatest
       ),
       description := "The akka module"
