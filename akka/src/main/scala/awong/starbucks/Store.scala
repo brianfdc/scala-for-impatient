@@ -7,97 +7,203 @@ import java.util.concurrent.TimeUnit
 import org.joda.time.DateTime
 import akka.event.Logging
 
+/**
+ * This package models Gregor Hohpe's Starbucks example of order fulfillment
+ * using Akka. For now, it assumes a very naive 1-to-1 relationship between
+ * a customer and an employee. So there is no mature version of actor supervision, 
+ * nor is their an actors-all-the-way down approach where even domain
+ * entities like orders themselves are actors.
+ * 
+ * @see http://www.infoq.com/articles/webber-rest-workflow
+ * @see http://www.enterpriseintegrationpatterns.com/ramblings/18_starbucks.html
+ */
 object Store extends App {
 	run
 
 	def run: Unit = {
-		val employees = Map(1 -> "Smith", 2 -> "Jones", 3 -> "Lee", 4 -> "Gates").map(entry  => Employee(entry._1, entry._2) ).toSeq
-		val supervisor = employees.find( _.name == "Gates").getOrElse(Employee(5, "Bezos"))
-		val workers = employees.filterNot( _.code == supervisor.code )
-		
-		val customers = Map(1 -> "Alan",
-							2 -> "Mary",
-							3 -> "John",
-							4 -> "Audrey",
-							5 -> "Nik",
-							6 -> "Judy",
-							7 -> "Jesse",
-							8 -> "Dagmar",
-							9 -> "Jerome",
-							10 -> "Christian").map(entry  => Customer(entry._1, entry._2) ).toSeq
 		val system = ActorSystem("StarbucksStore")
 		
-		val supervisorActor = system.actorOf(
-				Props(new SupervisorActor(supervisor, workers)),
-				name = "supervisor")
-		val customerActors = createCustomerActors(system, supervisorActor, customers)
-		supervisorActor ! OpenStore(Catalog.products)
+		val employeeInfo = EmployeeInfo(1, "Smith")
+		val customerInfo = CustomerInfo(1, "Juily")
+		val store = createStore(system, employeeInfo, customerInfo)
+		
+		
+		var order = createOrder(1L, customerInfo)
+		order = order + OrderItem(1L, 1, 2, Catalog.findByCode(1L).get)
+		order = order + OrderItem(2L, 2, 1, Catalog.findByCode(2L).get)
+		
+		
+		store ! PlaceOrder(order)
 	}
 
 	
-	def createCustomerActors(system: ActorSystem, supervisor: ActorRef, customers: Seq[Customer]): Map[Customer, ActorRef] = {
-		import scala.collection.breakOut
-		val customerActors = for (c <- customers) yield createCustomerActor(system, c, supervisor)
-		val customerMap = (customers zip customerActors)(breakOut): Map[Customer, ActorRef]
-		customerMap
+	def createOrder(orderCode: Long, customer: CustomerInfo): Order = {
+		val order = new Order(orderCode, customer)
+		order
 	}
 	
-	def createCustomerActor(system: ActorSystem, customer: Customer, supervisor: ActorRef): ActorRef = {
-		system.actorOf(Props(new CustomerActor(customer, supervisor)),
-				name = "customer-" + customer.code + "-" + customer.name)
+	
+	def createStore(system: ActorSystem, employeeInfo: EmployeeInfo, customerInfo: CustomerInfo): ActorRef = {
+		system.actorOf(Props(new Store(employeeInfo, customerInfo)),
+				name = "starbucks-store")
 	}
 }
 
 /**
  * Below are actor classes and their messages
  */
-class CustomerActor(customer: Customer, supervisor: ActorRef) extends Actor with ActorLogging {
-	def receive: Receive = {
-		case PlaceOrder(order) =>
-			log.info("customer placing order")
-			context.become(orderPlaced)
+class Store(employeeInfo: EmployeeInfo, customerInfo: CustomerInfo) extends Actor with ActorLogging {
+	lazy val customer: ActorRef = createCustomer(customerInfo)
+	lazy val barista : ActorRef = createBarista(employeeInfo)
+	
+	import collection.mutable.PriorityQueue
+	
+	// this ought to be assigned to supervisor actor which has singleton scope
+	var unassignedOrderQueue = PriorityQueue[Order]()(Order.orderingByDateTime)
+	  
+	def common: Receive = {
 		case _ =>
-			log.error("unhandleable message for CustomerActor in initial state")
+			log.error("unhandleable message for Store actor")
+	}
+	def receive : Receive = {
+		case m: CustomerMessage =>
+			customer ! m
+		case m: BaristaMessage =>
+			barista ! m
+		case m : StoreMessage =>
+			handleStoreMessage
+		case _ =>
+			common
+	}
+	
+	def handleStoreMessage: Receive = {
+		case EnqueueOrder(order) =>
+			log.info("store has an unassigned order {}", order.code)
+			order.status = OrderStatus.Unassigned
+			unassignedOrderQueue.enqueue(order)
+		case RequestOrder() =>
+			if (!unassignedOrderQueue.isEmpty) {
+				val orderToProcess = unassignedOrderQueue.dequeue
+				barista ! AssignedOrder(orderToProcess)
+				customer ! ReportOrder(orderToProcess)
+			}
+		case _ =>
+			common
+		
+	}
+	
+	def createCustomer(info: CustomerInfo): ActorRef = {
+		context.system.actorOf(Props(new CustomerActor(info, self)),
+				name = "customer-" + info.code + "-" + info.name)
+	}
+	def createBarista(info: EmployeeInfo): ActorRef = {
+		context.system.actorOf(Props(new BaristaActor(info, self)),
+				name = "customer-" + info.code + "-" + info.name)
+	}
+  
+}
+
+class CustomerActor(customer: CustomerInfo, store: ActorRef) extends Actor with ActorLogging {
+	def common: Receive = {
+		case GetStatus =>
+			sender ! ReportStatus(customer.customerStatus)
+		case ReportOrder(order) =>
+			log.info("customer {} knows that order {} is in {}", customer.name, order.code, order.status)
+		case _ =>
+			log.error("unhandleable message for {} in {} state", customer.name, customer.customerStatus.toString())
+	}
+	
+	def receive: Receive = {
+		created
+	}
+	
+	
+	def created: Receive = {
+		case PlaceOrder(order) =>
+			log.info("customer {} placing order {}", customer.name, order.code)
+			store ! EnqueueOrder(order)
+			become(CustomerStatus.OrderPlaced)
+		case _ =>
+			common
 	}
 	
 	def orderPlaced: Receive = {
 		case UpdateOrder(order) =>
 			log.info("customer updating order")
-			context.become(orderUpdated)
+			become(CustomerStatus.OrderUpdated)
 		case PayOrder(order) =>
 			log.info("customer paying order")
-			context.become(orderPaid)
+			become(CustomerStatus.OrderPaid)
 		case _ =>
-			log.error("unhandleable message for CustomerActor in orderPlaced state")
+			common
 	}
 	
 	def orderUpdated: Receive = {
 		case UpdateOrderRejected(order) =>
 			log.info("customer had updated order rejected")
-			context.become(orderPlaced)
+			become(CustomerStatus.OrderPlaced)
 		case UpdateOrderAccepted(order) =>
 			log.info("customer had udpated order accepted")
-			context.become(orderPlaced)
+			become(CustomerStatus.OrderPlaced)
 		case _ =>
-			log.error("unhandleable message for CustomerActor in orderUpdated state")
+			common
 	}
 	
 	def orderPaid: Receive = {
 		case PickupOrder(order) =>
 			log.info("customer picking up order")
-			context.become(orderReceived)
+			become(CustomerStatus.OrderReceived)
 		case _ =>
-			log.error("unhandleable message for CustomerActor in orderPaid state")
+			common
 	}
 	
 	def orderReceived: Receive = {
 		case _ =>
-			log.error("unhandleable message for CustomerActor in orderReceived state")
+			common
+	}
+	
+	/**
+	 * Convenience pattern match to change state and behavior
+	 */
+	private def become(customerStatus: CustomerStatus) = {
+		customerStatus match {
+			case customerStatus @ CustomerStatus.Created =>
+				customer.customerStatus = customerStatus
+				context.become(created)
+			case customerStatus @ CustomerStatus.OrderPlaced =>
+				customer.customerStatus = customerStatus
+				context.become(orderPlaced)
+			case customerStatus @ CustomerStatus.OrderUpdated =>
+				customer.customerStatus = customerStatus
+				context.become(orderUpdated)
+			case customerStatus @ CustomerStatus.OrderPaid =>
+				customer.customerStatus = customerStatus
+				context.become(orderPaid)
+			case customerStatus @ CustomerStatus.OrderReceived =>
+				customer.customerStatus = customerStatus
+				context.become(orderReceived)
+		}
 	}
 }
 
+trait Status
 
-sealed trait CustomerMessage
+sealed trait CustomerStatus extends CustomerStatus.Value with Status
+object CustomerStatus extends EnumerationModel[CustomerStatus] {
+	case object Created extends CustomerStatus
+	case object OrderPlaced extends CustomerStatus
+	case object OrderUpdated extends CustomerStatus
+	case object OrderPaid extends CustomerStatus
+	case object OrderReceived extends CustomerStatus
+}
+
+
+trait Message
+case class GetStatus() extends Message
+case class ReportStatus(status: Status) extends Message
+case class ReportOrder(order: Order) extends Message
+
+sealed trait CustomerMessage extends Message
 case class PlaceOrder(order: Order) extends CustomerMessage
 case class UpdateOrder(order: Order) extends CustomerMessage
 case class UpdateOrderRejected(order: Order) extends CustomerMessage
@@ -106,222 +212,144 @@ case class PayOrder(order: Order) extends CustomerMessage
 case class PickupOrder(order: Order) extends CustomerMessage
 
 
-sealed trait BaristaMessage
+sealed trait BaristaMessage extends Message
 case class LookupNextOrder(order: Order) extends BaristaMessage
 case class MakeOrder(order: Order) extends BaristaMessage
 case class TakePayment(order: Order) extends BaristaMessage
+case class AssignedOrder(order: Order) extends BaristaMessage
 
-sealed trait StoreMessage
-case class OpenStore(products: Set[Product]) extends StoreMessage
+sealed trait StoreMessage extends Message
+case class EnqueueOrder(order: Order) extends StoreMessage
+case class RequestOrder() extends StoreMessage
 
-class SupervisorActor(supervisor: Employee, employees: Seq[Employee]) extends Actor with ActorLogging {
-	import scala.collection.breakOut
-	var orderQueue = Set[Order]()
-	var catalog = Set[Product]()
-	var baristasMap = Map[Employee,ActorRef]()
-	
-	val codeGenerationActor = createCodeGenerator()
-	
-	def receive: Receive = {
-		case OpenStore(products) => 
-			log.info("supervisor opening store")
-			catalog = products
-			val baristas = for (e <- employees) yield createBarista(e)
-			baristasMap = (employees zip baristas)(breakOut): Map[Employee, ActorRef]
-		case m: CustomerMessage =>
-			log.info("supervisor handling customer message")
-		case m: BaristaMessage => 
-			log.info("supervisor handling barista message")
+
+class BaristaActor(employee: EmployeeInfo, store: ActorRef) extends Actor with ActorLogging {
+	  
+	def common: Receive = {
+		case GetStatus =>
+			sender ! ReportStatus(employee.baristaStatus)
 		case _ =>
-			log.error("unhandleable message for SupervisorActor in initial state")
+			log.error("unhandleable message for {} in {} state", employee.name, employee.baristaStatus.toString())
+	}
+
+	def receive: Receive = {
+		awaitingOrder
 	}
 	
-	def createCodeGenerator(): ActorRef = {
-		context.system.actorOf(Props(new CodeGenerationActor("codeGenerationActor")),
-				name = "codeGenerationActor")
-	}
-	def createBarista(employee: Employee): ActorRef = {
-		context.system.actorOf(Props(new BaristaActor(employee, self)),
-				name = "barista-" + employee.code + "-" + employee.name)
-	}
-}
-
-class BaristaActor(employee: Employee, supervisor: ActorRef) extends Actor with ActorLogging {
-	def receive: Receive = {
+	def awaitingOrder: Receive = {
+		case AssignedOrder(order) =>
+			log.info("barista {} assigned order {}", employee.name, order.code)
+			order.status = OrderStatus.Assigned
+			become(BaristaStatus.OrderChosen)
+			self ! MakeOrder(order)
 		case LookupNextOrder(order) =>
-			log.info("barista looking up next order")
-			context.become(orderChosen)
+			log.info("barista {} looking up next order", employee.name)
+			store ! RequestOrder
 		case _ =>
-			log.error("unhandleable message for BaristaActor in initial state")
+			common
 	}
 	
 	def orderChosen: Receive = {
 		case MakeOrder(order) =>
 			log.info("barista making order")
-			context.become(orderMade)
+			become(BaristaStatus.OrderMade)
 		case _ =>
-			log.error("unhandleable message for BaristaActor in orderChosen state")
+			common
 	
 	}
 	
 	def orderMade: Receive = {
 		case TakePayment(order) =>
 			log.info("barista taking payment")
-			context.become(orderReleased)
+			become(BaristaStatus.AwaitingOrder)
 		case _ =>
-			log.error("unhandleable message for BaristaActor in orderMade state")
+			common
 	}
 	
-	def orderReleased: Receive = {
-		case LookupNextOrder(order) =>
-			log.info("barista looking up next order")
-			context.become(orderChosen)
-		case _ =>
-			log.error("unhandleable message for BaristaActor in orderReleased state")
+	/**
+	 * Convenience pattern match to change state and behavior
+	 */
+	private def become(baristaStatus: BaristaStatus) = {
+		baristaStatus match {
+			case baristaStatus @ BaristaStatus.OrderChosen =>
+				employee.baristaStatus = baristaStatus
+				context.become(orderChosen)
+			case baristaStatus @ BaristaStatus.OrderMade =>
+				employee.baristaStatus = baristaStatus
+				context.become(orderMade)
+			case baristaStatus @ BaristaStatus.AwaitingOrder =>
+				employee.baristaStatus = baristaStatus
+				context.become(awaitingOrder)
+		}
 	}
 }
 
-class CodeGenerationActor(name: String) extends Actor with ActorLogging {
-	import collection.mutable.{Map => MMap}
-	
-	var codes: MMap[String, Long] = MMap[String, Long]()
-	
-	def receive: Receive = {
-		case obj: Order =>
-			sender ! getCode(obj.getClass)
-		case obj: OrderItem =>
-			sender ! getCode(obj.getClass)
-		case obj: Consignment =>
-			sender ! getCode(obj.getClass)
-		case obj: ConsignmentItem =>
-			sender ! getCode(obj.getClass)
-		case _ =>
-			log.error("unhandleable message for CodeGenerationActor")
-	}
-	
-	def getCode[T](klazz: Class[T]): Long = {
-		val keyName = klazz.getSimpleName()
-		codes.get(keyName) match {
-			case Some(code) => {
-				val newCode = code + 1
-				codes += keyName -> newCode
-				code
-			}
-			case None => {
-				val code = 1
-				codes += keyName -> code
-				code
-			}
-		}
-	}
+sealed trait BaristaStatus extends BaristaStatus.Value with Status
+object BaristaStatus extends EnumerationModel[BaristaStatus] {
+	case object AwaitingOrder extends BaristaStatus
+	case object OrderChosen extends BaristaStatus
+	case object OrderMade extends BaristaStatus
 }
 
 /**
  * Below are domain classes
  */
 object Catalog {
-	lazy val products = Set(Product(1, "drip coffee"), Product(2, "hot mocha"))
+	lazy val products = Set(Product(1, "drip coffee", 2.00), Product(2, "hot mocha", 4.01))
+	
+	def findByCode(code: Long): Option[Product] = products.find( _.code == code)
 }
 
 trait Codeable {
 	def code: Long
 }
 
-case class Employee(code: Long, name: String) extends Codeable
-case class Customer(code: Long, name: String, orders: Seq[Order] = Seq[Order]()) extends Codeable
+trait Nameable extends Codeable {
+	def name: String
+}
 
-case class Product(code: Long, name: String) extends Codeable
+case class Product(code: Long, name: String, unitPrice: Double) extends Nameable
+case class CustomerInfo(code: Long, name: String, var customerStatus: CustomerStatus = CustomerStatus.Created) extends Nameable
+case class EmployeeInfo(code: Long, name: String, var baristaStatus: BaristaStatus = BaristaStatus.AwaitingOrder) extends Nameable
 
 case class Order(code: Long,
-		customer: Customer,
-		items: Seq[OrderItem],
-		status: OrderStatus = OrderStatus.Created,
-		paymentStatus: PaymentStatus = PaymentStatus.Created,
-		deliveryStatus: DeliveryStatus = DeliveryStatus.NotShipped,
-		consignments: Seq[Consignment] = Seq[Consignment]()) extends Codeable
+		customer: CustomerInfo,
+		dateTime : DateTime = new DateTime(),
+		items: Seq[OrderItem] = Seq[OrderItem](),
+		var status: OrderStatus = OrderStatus.Created) extends Codeable
 {
 	def addItem(orderItem: OrderItem): Order = {
 		val newItems = orderItem +: items
-		Order(code, customer, newItems, status, paymentStatus, deliveryStatus, consignments)
+		Order(code, customer, dateTime, newItems, status)
 	}
 	def +(orderItem: OrderItem) = addItem(orderItem)
 	
-	def addConsignment(consignment: Consignment): Order = {
-		val newConsignments = consignment +: consignments
-		Order(code, customer, items, status, paymentStatus, deliveryStatus, newConsignments)
-	}
+}
+
+object Order {
+	implicit val defaultOrdering: Ordering[Order] = Ordering.by(o => o.code)
+	
+	val orderingByDateTime: Ordering[Order] = Ordering.by(o => o.dateTime.getMillis)
 }
 
 case class OrderItem(code: Long,
 		entryNumber: Int,
 		quantity: Int,
-		product: Product,
-		price: Double,
-		order: Order) extends Codeable
+		product: Product) extends Codeable
 
-case class Consignment(code: Long,
-		order: Order,
-		trackingId: String,
-		items: Seq[ConsignmentItem],
-		targetedDeliveryDate: DateTime,
-		shippingDate: Option[DateTime] = None,
-		consignmentStatus: ConsignmentStatus = ConsignmentStatus.Created) extends Codeable
-{
-	def addItem(consignmentItem: ConsignmentItem): Consignment = {
-		val newItems = consignmentItem +: items
-		Consignment(code, order, trackingId, newItems, targetedDeliveryDate, shippingDate, consignmentStatus)
-	}
-	def +(consignmentItem: ConsignmentItem): Consignment = addItem(consignmentItem)
 
-}
 
-case class ConsignmentItem(code: Long,
-		orderItem: OrderItem,
-		consignment: Consignment,
-		deliveryStatus: DeliveryStatus = DeliveryStatus.NotShipped) extends Codeable
-{
-	def order: Order = consignment.order
-}
-
-sealed trait OrderStatus extends OrderStatus.Value
+sealed trait OrderStatus extends OrderStatus.Value with Status
 object OrderStatus extends EnumerationModel[OrderStatus] {
 	case object Created extends OrderStatus
-	case object OnValidation extends OrderStatus
-	case object Validated extends OrderStatus
+	case object Unassigned extends OrderStatus
+	case object Assigned extends OrderStatus
+	case object Paid extends OrderStatus
 	case object Completed extends OrderStatus
-	case object PartiallyShipped extends OrderStatus
 	case object Shipped extends OrderStatus
 	case object Failed extends OrderStatus
 	case object Cancelled extends OrderStatus
 }
 
-sealed trait PaymentStatus extends PaymentStatus.Value
-object PaymentStatus extends EnumerationModel[PaymentStatus] {
-	case object Created extends PaymentStatus
-	case object CheckedValid extends PaymentStatus
-	case object CheckedInvalid extends PaymentStatus
-	case object PaymentAuthorized extends PaymentStatus
-	case object PaymentNotAuthorized extends PaymentStatus
-	case object PaymentAmountReserved extends PaymentStatus
-	case object PaymentNotAmountReserved extends PaymentStatus
-	case object FraudChecked extends PaymentStatus
-}
 
-
-sealed trait ConsignmentStatus extends ConsignmentStatus.Value
-object ConsignmentStatus extends EnumerationModel[ConsignmentStatus] {
-	case object Created extends ConsignmentStatus
-	case object PickPack extends ConsignmentStatus
-	case object Ready extends ConsignmentStatus
-	case object Waiting extends ConsignmentStatus
-	case object Shipped extends ConsignmentStatus
-	case object Cancelled extends ConsignmentStatus
-}
-
-sealed trait DeliveryStatus extends DeliveryStatus.Value
-object DeliveryStatus extends EnumerationModel[DeliveryStatus] {
-	case object NotShipped extends DeliveryStatus
-	case object PartiallyShipped extends DeliveryStatus
-	case object Completed extends DeliveryStatus
-}
 
