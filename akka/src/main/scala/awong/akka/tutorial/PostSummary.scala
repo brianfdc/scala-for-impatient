@@ -19,7 +19,7 @@ class PostSummary(publisher: ActorRef, postStore: ActorRef, authService: ActorRe
 	implicit val timeout = Timeout(5 seconds)
 	implicit val ec = ExecutionContext.Implicits.global
 	
-	def receive: Receive = {
+	def askSerially: Receive = {
 		case Get(postId, user, password) => {
 			val response = for {
 				status <- (publisher ? GetStatus(postId)).mapTo[PostStatus]
@@ -29,10 +29,25 @@ class PostSummary(publisher: ActorRef, postStore: ActorRef, authService: ActorRe
 				if (auth.successful) PostResult(status, text)
 				else PostFailure("unauthorized")
 			}
-			val xf = response pipeTo sender
-			
+			response pipeTo sender
 		}
 	}
+	
+	def askInParallel: Receive = {
+		case Get(postId, user, password) => {
+			val status = (publisher ? GetStatus(postId)).mapTo[PostStatus]
+			val text   = (postStore ? GetPost(postId)).mapTo[Post]
+			val auth   = (authService ? Login(user, password)).mapTo[AuthStatus]
+			// then compose the future when the last one is complete
+			val response = for (s <- status; t <- text; a <- auth) yield {
+				if (a.successful) PostResult(s, t)
+				else PostFailure("unauthorized")
+			}
+			response pipeTo sender
+		}
+	}
+	
+	def receive: Receive = askInParallel
 }
 
 

@@ -167,8 +167,10 @@ class Barista(employee: EmployeeInfo, orderQueue: PriorityQueue[Order]) extends 
 	
 	
 	/*
-	 * this is incorrect ... in real life, a singleton order queue actor should be consulted
-	 * which maintains a priority queue
+	 * this is incorrect ... in real life, use a routing strategy from
+	 * a risk delegator/supervisor
+	 * 
+	 * @see http://doc.akka.io/docs/akka/2.3.4/scala/routing.html
 	 */
 	private def chooseOrder(): Order = {
 		orderQueue.dequeue
