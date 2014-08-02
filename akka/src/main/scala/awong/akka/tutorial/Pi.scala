@@ -46,7 +46,7 @@ sealed trait PiMessage
 case object Calculate extends PiMessage
 case class Shutdown() extends PiMessage
 case class Work(start: Int, nrOfElements: Int) extends PiMessage
-case class Result(value: Double) extends PiMessage
+case class PiResult(value: Double) extends PiMessage
 case class PiApproximation(pi: Double, duration: Duration)
 
 trait BasePiActor extends Actor with ActorLogging {
@@ -70,7 +70,7 @@ class Worker extends BasePiActor {
 	def receive = {
 		case Work(start, nrOfElements) =>
 			log.debug("worker receives {}, {}", start, nrOfElements)
-			sender ! Result(calculatePiFor(start, nrOfElements)) // perform the work
+			sender ! PiResult(calculatePiFor(start, nrOfElements)) // perform the work
 	}
 	
 	def calculatePiFor(start: Int, nrOfElements: Int): Double = {
@@ -96,7 +96,7 @@ class Master(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: A
 			messages.foreach{ i =>
 				workerRouter ! Work(i * nrOfElements, nrOfElements)
 			}
-		case Result(value) =>
+		case PiResult(value) =>
 			pi += value
 			nrOfResults += 1
 			log.debug("master has received a Result: pi = {}, nrOfResults = {}", pi, nrOfResults)
