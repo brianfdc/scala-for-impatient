@@ -11,5 +11,4 @@ package object starbucks {
 		private var _values = List.empty[A]
 		def values = _values
 	}
-
 }

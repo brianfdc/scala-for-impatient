@@ -13,8 +13,7 @@ import org.scalatest.matchers.MustMatchers
 import org.scalatest.BeforeAndAfterAll
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
-import awong.akka.tutorial.Pi
-import awong.akka.tutorial.Pi._
+import awong.akka.tutorial._
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit.MILLISECONDS
 

@@ -89,6 +89,8 @@ object Versions {
   lazy val springVer    = "3.1.0.RELEASE"
   lazy val akkaVer      = "2.2.0"
   lazy val slf4jVer     = "1.6.4"
+  lazy val logbackVer   = "1.0.1"
+
 }
 
 
@@ -140,15 +142,21 @@ object Dependencies {
   lazy val commonsLogging = "commons-logging" % "commons-logging" % "1.1.1" % runtime
   lazy val commonsDbcp    = "commons-dbcp"    % "commons-dbcp"    % "1.4"   % runtime
 
-  lazy val slf4j      = "org.slf4j" % "slf4j-api"     % slf4jVer % runtime
-  lazy val slf4jlog4j = "org.slf4j" % "slf4j-log4j12" % slf4jVer % runtime
+  lazy val slf4j_api      = "org.slf4j"      % "slf4j-api"       % slf4jVer
+  lazy val slf4j_simple   = "org.slf4j"      % "slf4j-simple"    % slf4jVer
+  lazy val slf4j_log4j    = "org.slf4j"      % "slf4j-log4j12"   % slf4jVer
+  lazy val logbackClassic = "ch.qos.logback" % "logback-classic" % logbackVer
+  lazy val logbackCore    = "ch.qos.logback" % "logback-core"    % logbackVer
+  lazy val logbackAccess  = "ch.qos.logback" % "logback-access"  % logbackVer
+  
+  lazy val slf4jDependencies = Seq(slf4j_api, slf4j_log4j)
 
   lazy val hibernateValidator = "org.hibernate" % "hibernate-validator" % "4.2.0.Final"
   lazy val hibernate          = "org.hibernate" % "hibernate-core"      % hibernateVer
   lazy val javassist          = "org.javassist" % "javassist"           % "3.15.0-GA" % runtime
   lazy val hsqldb             = "org.hsqldb"    % "hsqldb"              % "2.2.6"     % runtime
 
-  lazy val coreDependencies   = testDependencies ++ Seq(guava, jodaTime, liftJson)
+  lazy val coreDependencies   = testDependencies ++ Seq(guava, jodaTime, liftJson) ++ slf4jDependencies
   lazy val akkaDependencies   = coreDependencies ++ Seq(akkaActor, akkaCluster, akkaRemote, akkaSlf4j, akkaTestkit)
 }
 
