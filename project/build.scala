@@ -89,7 +89,7 @@ object Versions {
   lazy val springVer    = "3.1.0.RELEASE"
   lazy val akkaVer      = "2.2.0"
   lazy val slf4jVer     = "1.6.4"
-  lazy val logbackVer   = "1.0.1"
+  lazy val logbackVer   = "1.0.7"
 
 }
 
@@ -149,7 +149,7 @@ object Dependencies {
   lazy val logbackCore    = "ch.qos.logback" % "logback-core"    % logbackVer
   lazy val logbackAccess  = "ch.qos.logback" % "logback-access"  % logbackVer
   
-  lazy val slf4jDependencies = Seq(slf4j_api, slf4j_log4j)
+  lazy val slf4jDependencies = Seq(slf4j_api, logbackClassic)
 
   lazy val hibernateValidator = "org.hibernate" % "hibernate-validator" % "4.2.0.Final"
   lazy val hibernate          = "org.hibernate" % "hibernate-core"      % hibernateVer
@@ -157,7 +157,7 @@ object Dependencies {
   lazy val hsqldb             = "org.hsqldb"    % "hsqldb"              % "2.2.6"     % runtime
 
   lazy val coreDependencies   = testDependencies ++ Seq(guava, jodaTime, liftJson) ++ slf4jDependencies
-  lazy val akkaDependencies   = coreDependencies ++ Seq(akkaActor, akkaCluster, akkaRemote, akkaSlf4j, akkaTestkit)
+  lazy val akkaDependencies   = coreDependencies ++ Seq(akkaActor, akkaCluster, akkaRemote, akkaTestkit)
 }
 
 object ProjectTasks {
