@@ -7,25 +7,21 @@ import org.junit.runner.RunWith
 @RunWith(classOf[JUnitRunner])
 class AboutLiteralNumbers extends KoanSpec("Integer literals") {
   "Integer literals" can {
-    "be created from decimal, octal or hexadecimal, and are 32 bit" in {
+    "be created from decimal or hexadecimal, and are 32 bit" in {
       val a = 2
       val b = 31
       val c = 0x30F
-      val d = 077
       val e = 0
       val f = -2
       val g = -31
       val h = -0x30F
-      val i = -077
       a should be(2)
       b should be(31)
       c should be(783) //Hint: 30F = 783
-      d should be(63) //Hint: 077 = 63
       e should be(0)
       f should be(-2)
       g should be(-31)
       h should be(-783) //Hint: 30F = 783
-      i should be(-63) //Hint: 077 = 63
     }
   }
   "Long literals" should {
@@ -33,23 +29,19 @@ class AboutLiteralNumbers extends KoanSpec("Integer literals") {
       val a = 2L
       val b = 31L
       val c = 0x30FL
-      val d = 077L
       val e = 0L
       println("though 'l' is rarely used since it resembles '1'")
       val f = -2l
       val g = -31L
       val h = -0x30FL
-      val i = -077L
   
       a should be(2L)
       b should be(31L)
       c should be(783L) //Hint: 30F = 783
-      d should be(63L) //Hint: 077 = 73
       e should be(0L)
       f should be(-2L)
       g should be(-31L)
       h should be(-783L) //Hint: 30F = 783
-      i should be(-63L) //Hint: 077 = 63
     }
   }
   "Float & double literals" should {
@@ -85,11 +77,10 @@ class AboutLiteralNumbers extends KoanSpec("Integer literals") {
     "be accomplished to distinguish between method invocation & double/float literal" in {
       val msg = """Trick: To distinguish the dot for a method invocation from the
           |   decimal point in a float or double literal,
-          |   add a space after the literal"""
+          |   add a 0 after the literal"""
       println(msg)
       3.0.toString should be("3.0")
       3.toString should be("3")
-      (3. toString) should be("3.0")
       (3.0 toString) should be("3.0")
       3d.toString should be("3.0")
       

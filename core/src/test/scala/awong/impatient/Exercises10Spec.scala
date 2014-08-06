@@ -29,7 +29,7 @@ class Exercises10Spec extends AbstractFlatSpec {
     import awong.impatient.Exercises11.Money
     import awong.impatient.Exercises10.CryptoLogger
     val money = new Money(100, 100) with CryptoLogger
-    expect( BigInt(101*100) ) { money.totalCents } 
-    expect( "khoor" ) { money.log("hello") }
+    expectResult( BigInt(101*100) ) { money.totalCents } 
+    expectResult( "khoor" ) { money.log("hello") }
   }
 }

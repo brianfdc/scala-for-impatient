@@ -10,29 +10,29 @@ import awong.calc.dsl._
 class CalcSpec extends AbstractFlatSpec {
   it should "render AST simply" in {
     val n1 = Number(5)
-    expect(5) {
+    expectResult(5) {
       n1.value
     }
   }
     
   it should "equality test" in {
     val binop = BinaryOp("+", Number(5), Number(10))
-    expect(Number(5)) {
+    expectResult(Number(5)) {
       binop.left
     }
-    expect(Number(10)) {
+    expectResult(Number(10)) {
       binop.right
     }
-    expect("+") {
+    expectResult("+") {
       binop.operator
     }
   }
 
   it should "parse number" in {
-    expect(Number(5)) {
+    expectResult(Number(5)) {
       Calc.parse("5")
     }
-    expect(Number(5)) {
+    expectResult(Number(5)) {
       Calc.parse("5.0")
     }
   }
@@ -61,39 +61,39 @@ class CalcSpec extends AbstractFlatSpec {
   }
   
   it should " run many ExprParser" in {
-    expect( Number(5) ) {
+    expectResult( Number(5) ) {
       Calc.parse("5")
     }
-    expect( Number(5) ) {
+    expectResult( Number(5) ) {
       Calc.parse("(5)")
     }
-    expect( BinaryOp("+", Number(5), Number(5)) ) {
+    expectResult( BinaryOp("+", Number(5), Number(5)) ) {
       Calc.parse("5 + 5")
     }
-    expect( BinaryOp("+", Number(5), Number(5)) ) {
+    expectResult( BinaryOp("+", Number(5), Number(5)) ) {
       Calc.parse("(5 + 5)")
     }
-    expect( BinaryOp("+",BinaryOp("+", Number(5), Number(5)),Number(5) ) ) {
+    expectResult( BinaryOp("+",BinaryOp("+", Number(5), Number(5)),Number(5) ) ) {
       Calc.parse("(5 + 5) + 5")
     }
-    expect( BinaryOp("+",BinaryOp("+", Number(5), Number(5)),BinaryOp("+", Number(5), Number(5)) ) ) {
+    expectResult( BinaryOp("+",BinaryOp("+", Number(5), Number(5)),BinaryOp("+", Number(5), Number(5)) ) ) {
       Calc.parse("(5 + 5) + (5 + 5)")
     }
   }
   
   it should "do simple addition" in {
-    expect( 2.0 ) {
+    expectResult( 2.0 ) {
       Calc.evaluate("1 + 1")
     }
   }
   
   it should "do simple exponentiation" in {
-    expect( 16.0 ) {
+    expectResult( 16.0 ) {
       Calc.evaluate("4 ^ 2")
     }
   }
   it should "do complex exponentiation" in {
-    expect( 16.0 ) {
+    expectResult( 16.0 ) {
       Calc.evaluate("(2 + 2) ^ (4 / 2)")
     }
   }

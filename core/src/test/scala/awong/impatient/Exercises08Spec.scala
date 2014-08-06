@@ -22,15 +22,15 @@ class Exercises08Spec extends AbstractFlatSpec {
     val oldBalance = bank.deposit(0);
     val str = bank.toString()
     
-    expect (100.00) {
+    expectResult (100.00) {
       oldBalance
     }
     
-    expect(200.00, "deposit") {
+    expectResult(200.00, "deposit") {
       bank.deposit(100)
     }
     
-    expect(100.00,"withdraw") {
+    expectResult(100.00,"withdraw") {
       bank.withdraw(100)
     }
   }

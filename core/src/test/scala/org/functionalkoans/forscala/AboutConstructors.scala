@@ -13,14 +13,14 @@ class AboutConstructors
     // invoke auxiliary constructor
     def this() {
       // what happens if you comment out the following line? compile error
-      this ("defaultname")
+      this("defaultname")
     }
   }
 
   "Primary constructor specified with a parameter" must {
     "Be specified with a parameter requires that parameter to be passed in" in {
       val aboutMe = new AboutConstructorWithAuxiliaryConstructor()
-      (aboutMe.name.isEmpty) should be (true)
+      (aboutMe.name.isEmpty) should be (false)
     }
     
   }

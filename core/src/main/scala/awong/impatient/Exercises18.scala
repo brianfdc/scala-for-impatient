@@ -29,10 +29,10 @@ object Exercises18 {
    * (18.2)
    */
   sealed abstract class Action
-  object show extends Action
-  object then extends Action
+  object Show extends Action
+  object Then extends Action
   
-  object around 
+  object Around 
   
   class FluentBug {
     var position: Int = 0

@@ -48,34 +48,45 @@ class Exercises16Spec extends AbstractWordSpec {
     }
   }
   
-  def getXhtml: Elem = {
+  def getXhtml: Option[Elem] = {
     val src = getSource("file.xhtml")
-    val xhtml = src match {
+    src match {
       case Some(xmlSource) => 
-        XML.loadString(xmlSource.mkString)
+        Some(XML.loadString(xmlSource.mkString))
       case None => 
-        throw new IllegalArgumentException
+        None
     }
-    xhtml
   }
   
   "(16.4/5/6)" should {
     "Read an XHTML file" in {
-      val xhtml = getXhtml
-      Exercises16.filterForAllImgsWithAlts(xhtml).size should be(1)
+      getXhtml match {
+        case Some(xhtml) =>
+          Exercises16.filterForAllImgsWithAlts(xhtml).size should be(1)
+        case None =>
+          fail
+      }
     }
     "Find all image names in an XHTML file" in {
-      val xhtml = getXhtml
-      Exercises16.getAllImgNames(xhtml) should be(List("smiley.gif","unsmiley.gif"))
+      getXhtml match {
+        case Some(xhtml) =>
+          Exercises16.getAllImgNames(xhtml) should be(List("smiley.gif","unsmiley.gif"))
+        case None =>
+          fail
+      }
     }
     "Map all hrefs in an XHTML file" in {
-      val xhtml = getXhtml
-      val hyperlinks = Exercises16.getAllHyperlinks(xhtml)
-      hyperlinks.size should be (2)
-      hyperlinks.values.toArray contains("google") should be (true)
-      hyperlinks.values.toArray contains("twitter") should be (true)
-      hyperlinks.keys.toArray contains("http://www.google.com") should be (true)
-      hyperlinks.keys.toArray contains("http://www.twitter.com") should be (true)
+      getXhtml match {
+        case None =>
+          fail
+        case Some(xhtml) =>
+          val hyperlinks = Exercises16.getAllHyperlinks(xhtml)
+          hyperlinks.size should be (2)
+          hyperlinks.values.toArray contains("google") should be (true)
+          hyperlinks.values.toArray contains("twitter") should be (true)
+          hyperlinks.keys.toArray contains("http://www.google.com") should be (true)
+          hyperlinks.keys.toArray contains("http://www.twitter.com") should be (true)
+      }
     }
   }
   "(16.7/8)" should {

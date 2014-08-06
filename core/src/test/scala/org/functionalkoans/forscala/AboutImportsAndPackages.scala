@@ -46,7 +46,7 @@ package media {
     "A import" can {
       "be done based from absolute package hierarchy" in {
         val stLouisBlues = Album("St. Louis Blues", 1940, Artist("Louie", "Armstrong"))
-        stLouisBlues.getClass.getCanonicalName should be("")
+        stLouisBlues.getClass.getCanonicalName should be("org.functionalkoans.forscala.album.Album")
       }
     }
   }

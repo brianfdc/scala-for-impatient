@@ -9,7 +9,7 @@ import Keys._
 object BuildSettings {
   val buildProject      = "scala-learn"
   val buildOrganization = "org.awong"
-  val buildVersion      = "0.0.1-SNAPSHOT"
+  val buildVersion      = "0.0.2-SNAPSHOT"
   val buildScalaVersion = "2.10.1"
   val javacVersion      = "1.7"
 
@@ -85,12 +85,17 @@ object Versions {
   lazy val javacVersion = BuildSettings.javacVersion
   lazy val scalaVersion = BuildSettings.buildScalaVersion
   
+  lazy val scalaTestVer = "1.9.1"
+  lazy val junitVer     = "4.11"
+
+  lazy val slf4jVer     = "1.6.4"
+  lazy val logbackVer   = "1.0.7"
+  lazy val configVer    = "1.0.2"  // typesafe config
+  lazy val scalazVer    = "7.1.0"
+
   lazy val hibernateVer = "4.0.0.FINAL"
   lazy val springVer    = "3.1.0.RELEASE"
   lazy val akkaVer      = "2.2.0"
-  lazy val slf4jVer     = "1.6.4"
-  lazy val logbackVer   = "1.0.7"
-
 }
 
 
@@ -101,13 +106,16 @@ object Dependencies {
   val runtime  = "runtime"
 
   lazy val seleniumOrg = "org.seleniumhq.selenium"
-  lazy val junit     = "junit"           %  "junit"         % "4.10"   % test
-  lazy val scalaTest = "org.scalatest"   %% "scalatest"     % "1.9.1"  % test
-  lazy val selenium  = seleniumOrg       %  "selenium-java" % "2.14.0" % test
+  lazy val junit       = "junit"           %  "junit"         % junitVer     % test
+  lazy val scalaTest   = "org.scalatest"   %% "scalatest"     % scalaTestVer % test
+  lazy val specs2      = "org.specs2"      %% "specs2"        % "2.4"        % test
+  lazy val selenium    = seleniumOrg       %  "selenium-java" % "2.14.0"     % test
+  lazy val scalaCheck  = "org.scalacheck"  %% "scalacheck"    % "1.11.3"     % test
   
-  lazy val testDependencies = Seq(junit, scalaTest)
+  lazy val testDependencies = Seq(junit, scalaTest, specs2)
   
-  lazy val akkaOrg = "com.typesafe.akka"
+  lazy val typesafeOrg     = "com.typesafe"
+  lazy val akkaOrg         = typesafeOrg + ".akka"
   lazy val akkaActor       = akkaOrg      %% "akka-actor"      % akkaVer
   lazy val akkaAgent       = akkaOrg      %% "akka-agent"      % akkaVer
   lazy val akkaCamel       = akkaOrg      %% "akka-agent"      % akkaVer
@@ -120,7 +128,8 @@ object Dependencies {
   lazy val akkaTestkit     = akkaOrg      %% "akka-testkit"    % akkaVer % test
   lazy val akkaZeroMQ      = akkaOrg      %% "akka-zeromq"     % akkaVer
   
-  lazy val scalazFull      = "org.scalaz"       %% "scalaz-full"  % "6.0.4"
+  lazy val typesafeConfig  = typesafeOrg        %% "config"       % configVer
+  lazy val scalazFull      = "org.scalaz"       %% "scalaz-full"  % scalazVer
   lazy val guava           = "com.google.guava" %  "guava"        % "12.0"
   lazy val jodaTime        = "joda-time"        %  "joda-time"    % "1.6.2"
   lazy val xerces          = "xerces"           %  "xercesImpl"   % "2.9.1" % runtime
@@ -140,7 +149,7 @@ object Dependencies {
   lazy val jstlApi    = "javax.servlet.jsp.jstl" % "javax.servlet.jsp.jstl-api" % "1.2.1" % provided
 
   lazy val commonsLogging = "commons-logging" % "commons-logging" % "1.1.1" % runtime
-  lazy val commonsDbcp    = "commons-dbcp"    % "commons-dbcp"    % "1.4"   % runtime
+  lazy val commonsDbcp    = "commons-dbcp"    % "commons-dbcp"    % "1.4"
 
   lazy val slf4j_api      = "org.slf4j"      % "slf4j-api"       % slf4jVer
   lazy val slf4j_simple   = "org.slf4j"      % "slf4j-simple"    % slf4jVer

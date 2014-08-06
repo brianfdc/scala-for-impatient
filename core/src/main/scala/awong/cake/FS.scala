@@ -1,9 +1,8 @@
 package awong.cake
 
-
-
-import io.{Source => ioS}
 import java.io._
+import io.{Source => ioS}
+import util.{Try, Success, Failure}
 
 /**
  * Abstracts the File System
@@ -21,8 +20,15 @@ trait FS {
   implicit def folder(path: String):       Folder       = new Folder(file(path))
   implicit def file(path: String)                       = new File(path)
   def tempFile(prefix: String)                          = new TextFile(File.createTempFile(prefix, "tmp"))
+  lazy val defaultEncoding                              = "UTF-8"
 
-  def probablyFile(path: String): Either[Any, ExistingFile] = try { Right(existingFile(file(path)))} catch { case x => Left(x) }
+  def probablyFile(path: String): Try[ExistingFile] = {
+    try {
+      Success(existingFile(file(path)))
+    } catch {
+      case th: Throwable => Failure(th)
+     }
+  }
 
   def exists(file: File): Boolean = file.exists
 
@@ -55,20 +61,32 @@ trait FS {
   }
 
   class TextFile(file: File) extends Entry(file) {
-    def text = ioS.fromFile(file).mkString
+    def text: String = ioS.fromFile(file).mkString
 
-    def text_=(s: String) {
-      val out = new PrintWriter(file, "UTF-8")
+    def text_=(s: String): Unit = {
+      val out = new PrintWriter(file, defaultEncoding)
       try{ out.print(s) } finally{ out.close }
     }
 
-    def text_+=(s: String) {
-      val out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), "UTF-8"))
+    def text_+=(s: String): Unit = {
+      val out = new PrintWriter(new OutputStreamWriter(new FileOutputStream(file, true), defaultEncoding))
       try{ out.print(s) } finally{ out.close }
     }
 
-    def textOr(default: String) = try { text } catch { case _ => default }
-    def probablyText: Either[Any, String] = try { Right(text) } catch { case x => Left(x) }
+    private def textOr(default: String): String = {
+      try {
+        text
+      } catch {
+        case _: Throwable => default
+      }
+    }
+    def probablyText: Try[String] = {
+      try {
+        Success(text)
+      } catch {
+        case th: Throwable => Failure(th)
+      }
+    }
   }
 }
 

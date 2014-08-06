@@ -8,22 +8,22 @@ object Exercises15 {
   /**
    * (15.2)
    */
-  @deprecated(message="This class is Deprecated")
+  @deprecated(message="This class is Deprecated", since="0.0.2")
   class Deprecated(var name: String) {
-    @deprecated
+    @deprecated(message="description member bar is obsolete", since="0.0.2")
     var description = name;
     
-    @deprecated(message="this method is obsolete")
+    @deprecated(message="this method is obsolete", since="0.0.2")
     def whoAmI: String = {
       name
     }
-    def print(@deprecated something: String):String  = {
+    def print(@deprecated(message="something parameter is obsolete", since="0.0.2") something: String):String  = {
       val x = (name, description, something)
       x.toString
     }
     
     def sayHi(@deprecatedName('world) sender: String) {
-      @deprecated
+      @deprecated(message="greetee local var is obsolete", since="0.0.2")
       var greetee = sender
       println("Hello " + sender)
     }

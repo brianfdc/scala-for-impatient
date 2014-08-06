@@ -18,7 +18,7 @@ class StackSpec extends AbstractFlatSpec {
     stack.push(1)
     stack.push(2)
     assert(stack.pop === 2, "stack should be LIFO")
-    expect(1, "stack should now pop first item") {
+    expectResult(1, "stack should now pop first item") {
       stack.pop
     }
   }

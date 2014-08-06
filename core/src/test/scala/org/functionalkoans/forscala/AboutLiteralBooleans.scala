@@ -11,16 +11,16 @@ class AboutLiteralBooleans extends KoanSpec("about literal booleans") {
       println("If you want a non-classical logic, write it yourself!")
       val a = true
       val b = false
-      val c = 1 > 2
-      val d = 1 < 2
-      val e = a == c
-      val f = b == d
+      val c = (1 > 2)
+      val d = (1 < 2)
+      val e = (a == c)
+      val f = (b == d)
       a should be(true)
       b should be(false)
       c should be(false)
       d should be(true)
       e should be(false)
-      f should be(true)
+      f should be(false)
     }
   }
 }
