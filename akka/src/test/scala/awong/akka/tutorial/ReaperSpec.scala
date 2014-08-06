@@ -6,7 +6,7 @@ import scala.concurrent.duration._
 import akka.util.Timeout
 
 import akka.actor._
-import akka.testkit.{TestKit, ImplicitSender, TestProbe}
+import akka.testkit.{TestKit, ImplicitSender, TestProbe, TestActorRef}
 
 import org.scalatest.{WordSpec, BeforeAndAfterAll}
 import org.scalatest.matchers.MustMatchers
@@ -16,14 +16,24 @@ import org.junit.runner.RunWith
 
 
 @RunWith(classOf[JUnitRunner])
-class ReaperSpec extends TestKit(ActorSystem("ReaperSpec"))
-	with ImplicitSender with WordSpec
-	with BeforeAndAfterAll with MustMatchers
+class ReaperSpec(_system: ActorSystem) extends TestKit(_system)
+	with ImplicitSender
+	with WordSpec
+	with BeforeAndAfterAll
+	with MustMatchers
 {
 	import Reaper._
  
+	def this() = this(ActorSystem("ReaperSpec"))
+	
 	override def afterAll() {
-		system.shutdown()
+		TestKit.shutdownActorSystem(system)
+	}
+
+	// Our test reaper.	Sends the snooper a message when all
+	// the souls have been reaped
+	class TestReaper(snooper: ActorRef) extends Reaper {
+		def allSoulsReaped(): Unit = snooper ! "Dead"
 	}
 
 	"Reaper" should {
@@ -35,7 +45,7 @@ class ReaperSpec extends TestKit(ActorSystem("ReaperSpec"))
 			val d = TestProbe()
 
 			// Build our reaper
-			val reaper = system.actorOf(Props(new TestReaper(testActor)))
+			val reaper = TestActorRef[TestReaper](Props(new TestReaper(testActor)), "testReaper")
 			
 			// Watch a couple 
 			reaper ! WatchMe(a.ref)
@@ -51,12 +61,6 @@ class ReaperSpec extends TestKit(ActorSystem("ReaperSpec"))
 			}
 		}
 	}
-}
-
-// Our test reaper.	Sends the snooper a message when all
-// the souls have been reaped
-class TestReaper(snooper: ActorRef) extends Reaper {
-	def allSoulsReaped(): Unit = snooper ! "Dead"
 }
 
 

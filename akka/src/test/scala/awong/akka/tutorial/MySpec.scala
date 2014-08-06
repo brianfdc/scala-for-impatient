@@ -1,14 +1,16 @@
 package awong.akka.tutorial
 
-import akka.actor.ActorSystem
-import akka.actor.Actor
-import akka.actor.Props
+import akka.actor._
+
 import akka.testkit.TestKit
 import akka.testkit.ImplicitSender
+
 import org.scalatest.WordSpec
 import org.scalatest.matchers.MustMatchers
 import org.scalatest.BeforeAndAfterAll
+
 import org.scalatest.junit.JUnitRunner
+
 import org.junit.runner.RunWith
 
 /**
@@ -24,8 +26,10 @@ object MySpec {
 
 @RunWith(classOf[JUnitRunner])
 class MySpec(_system: ActorSystem) extends TestKit(_system)
-  with ImplicitSender     with WordSpec
-  with MustMatchers       with BeforeAndAfterAll
+  with ImplicitSender
+  with WordSpec
+  with MustMatchers
+  with BeforeAndAfterAll
 {
   def this() = this(ActorSystem("MySpec"))
  

@@ -23,23 +23,13 @@ object Pi extends App
 		// TODO factor this to Cake pattern
 		// Create an Akka system
 		val system = ActorSystem("PiSystem")
-		val listener = createListener(system)
-		val master = createMaster(nrOfWorkers, nrOfElements, nrOfMessages, system, listener)
+		val listener =  system.actorOf(Listener.props, name = "listener")
+		val master =  system.actorOf(Master.props(nrOfWorkers, nrOfMessages, nrOfElements, listener), name = "master")
+
 		// start the calculation
 		master ! Calculate
 	}
 	
-	// create the result listener, which will print the result and shutdown the system
-	def createListener(system: ActorSystem): ActorRef = {
-		system.actorOf(Props[Listener], name = "listener")
-	}
-	
-	// create the master
-	def createMaster(nrOfWorkers: Int, nrOfElements: Int, nrOfMessages: Int, system: ActorSystem, listener: ActorRef): ActorRef = {
-		system.actorOf(
-				Props(new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener)),
-				name = "master")
-	}
 }
 
 sealed trait PiMessage
@@ -82,6 +72,12 @@ class Worker extends BasePiActor {
 	}
 }
 
+object Master {
+	def props(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: ActorRef): Props = {
+		Props(new Master(nrOfWorkers, nrOfMessages, nrOfElements, listener))
+	}
+}
+
 class Master(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: ActorRef) extends BasePiActor {
 	var pi: Double = _
 	var nrOfResults: Int = _
@@ -113,11 +109,15 @@ class Master(nrOfWorkers: Int, nrOfMessages: Int, nrOfElements: Int, listener: A
 	}
 }
 
+object Listener {
+	def props: Props = Props(new Listener)
+}
+
 class Listener extends BasePiActor {
 	def receive = {
 		case msg: PiApproximation =>
-			println("\nPi approximation: \t\t%s".format(msg.pi))
-			println("Calculation time:	 \t\t%s".format(msg.duration))
+			println("\nPi approximation:\t\t%s".format(msg.pi))
+			println("Calculation time:\t\t%s".format(msg.duration))
 			sender ! Shutdown
 			//context.system.shutdown()
 	}
