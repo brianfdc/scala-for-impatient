@@ -2,12 +2,10 @@ package awong
 
 import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
-import org.scalatest.matchers.MustMatchers
-import org.scalatest.matchers.ShouldMatchers
+import org.scalatest.Matchers
 
 trait AbstractFlatSpec
   extends FlatSpec
   with BeforeAndAfter
-  with ShouldMatchers
-  with MustMatchers
+  with Matchers
   with ResourceLoader

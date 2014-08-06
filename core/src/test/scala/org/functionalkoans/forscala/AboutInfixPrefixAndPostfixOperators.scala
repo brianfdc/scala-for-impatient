@@ -1,55 +1,49 @@
 package org.functionalkoans.forscala
 
-import org.functionalkoans.forscala.support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class AboutInfixPrefixAndPostfixOperators extends KoanSuite {
+class AboutInfixPrefixAndPostfixOperators extends KoanSpec("about infix, prefix and postfix operators") {
 
-  koan("""Simple: Infix Operators are available if an object
-           |  has a method that takes one parameter.""") {
-
-    val g: Int = 3
-    (g + 4) should be(__) // + is an infix operator
-    (g.+(4)) should be(__) // same result but not using the infix operator
-  }
-
-  koan("""Infix Operators do NOT work if an object
-           |  has a method that takes two parameters.""") {
-    val g: String = "Check out the big brains on Brad!"
-    g indexOf 'o' should be(__) //indexOf(Char) can be used as an infix operator
-    //g indexOf 'o', 4 should be (6) //indexOf(Char, Int) cannot be used an infix operator
-    g.indexOf('o', 7) should be(__) //indexOf(Char, Int) must use standard java/scala calls
-  }
-
-  koan("""Postfix operators work if an object
-           |  has a method that takes no parameters.""") {
-    val g: Int = 31
-    (g toHexString) should be(__) //toHexString takes no params therefore can be called
-    //as a postfix operator. Hint: The answer is 1f
-  }
-
-
-  koan("""Prefix operators work if an object
-           |  has a method name that starts with unary_ .""") {
-    val g: Int = 31
-    (-31) should be(__)
-  }
-
-  koan("""Here we create our own prefix operator for our own class.
-          |   The only identifiers that can be used as prefix operators
-          |   are +, -, !, and ~""") {
-
-    class Stereo {
-      def unary_+ = "on"
-
-      def unary_- = "off"
+  "An infix operator" should {
+    "be available if an object has a method that takes 1 parameter" in {
+      val g: Int = 3
+      (g + 4) should be(__) // + is an infix operator
+      (g.+(4)) should be(__) // same result but not using the infix operator
     }
+    
+    "not work if an object has a method that takes 2 parameter" in {
+      val g: String = "Check out the big brains on Brad!"
+      g indexOf 'o' should be(__) //indexOf(Char) can be used as an infix operator
+      //g indexOf 'o', 4 should be (6) //indexOf(Char, Int) cannot be used an infix operator
+      g.indexOf('o', 7) should be(__) //indexOf(Char, Int) must use standard java/scala calls
+    }
+  }
 
-    val stereo = new Stereo
-    (+stereo) should be(__)
-    (-stereo) should be(__)
+  "A postfix operator" should {
+    "work if an object has a method takes 0 parameters" in {
+      val g: Int = 31
+      (g toHexString) should be(__) //toHexString takes no params therefore can be called
+      //as a postfix operator. Hint: The answer is 1f
+    }
+  }
+
+  "A prefix operator" should {
+    "work if an object has a method name that starts with unary_" in {
+      val g: Int = 31
+      (-31) should be(__)
+    }
+    "be creatable on our own class using the only permissible identifiers (+, -, ! and ~)" in {
+      class Stereo {
+        def unary_+ = "on"
+        def unary_- = "off"
+      }
+      val stereo = new Stereo
+      (+stereo) should be(__)
+      (-stereo) should be(__)
+    }
   }
 
 }

@@ -1,61 +1,66 @@
 package org.functionalkoans.forscala
 
-import org.functionalkoans.forscala.support.KoanSuite
+import org.functionalkoans.forscala.support.KoanSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class AboutLazySequences extends KoanSuite {
+class AboutLazySequences extends KoanSpec("About lazy sequences") {
 
-  koan("Creating a lazy collection form a strict collection") {
-    val strictList = List(10, 20, 30)
-    val lazyList = strictList.view
-    lazyList.head should be(__)
-  }
-
-  koan("Strict collection always processes its elements but lazy collection does it on demand") {
-    var x = 0
-    def inc = {x += 1; x}
-
-    val strictList = List(inc _, inc _, inc _)
-    strictList.map(f => f).head should be(__)
-    x should be(__)
-
-    strictList.map(f => f).head
-    x should be(__)
-
-    x = 0
-    val lazyList = strictList.view
-    lazyList.map(f => f).head should be(__)
-    x should be(__)
-    lazyList.map(f => f).head should be(__)
-    x should be(__)
-  }
-
-  koan("Lazy collection sometimes avoid processing errors") {
-    val lazyList = List(2, -2, 0, 4).view map {
-      2 / _
+  "Lazy collection" can {
+    "be created from a strict collection" in {
+      val strictList = List(10, 20, 30)
+      val lazyList = strictList.view
+      lazyList.head should be(__)
     }
-    lazyList.head should be(__)
-    lazyList(1) should be(__)
-    intercept[ArithmeticException] {
-      lazyList(2)
+    
+    "process its elements on demand whereas a strict collection does not" in {
+      var x = 0
+      def inc = {x += 1; x}
+      
+      val strictList = List(inc _, inc _, inc _)
+      strictList.map(f => f).head should be(__)
+      x should be(__)
+
+      strictList.map(f => f).head
+      x should be(__)
+
+      x = 0
+      val lazyList = strictList.view
+      lazyList.map(f => f).head should be(__)
+      x should be(__)
+      lazyList.map(f => f).head should be(__)
+      x should be(__)
+    }
+    
+    "sometimes avoid processing errors" in {
+      val lazyList = List(2, -2, 0, 4).view map {
+        2 / _
+      }
+      lazyList.head should be(__)
+      lazyList(1) should be(__)
+      intercept[ArithmeticException] {
+        lazyList(2)
+      }
+    }
+    
+    "be also infinite" in {
+      val infinite = Stream.from(1)
+      infinite.take(4).sum should be(__)
+      Stream.continually(1).take(4).sum should be(__)
+    }
+    
+  }
+  "The tail of a lazy collection" must {
+    "never be computed unless required" in {
+      def makeLazy(value: Int): Stream[Int] = {
+        Stream.cons(value, makeLazy(value + 1))
+      }
+      val stream = makeLazy(1)
+      stream.head should be(__)
+      stream.tail.head should be(__)
     }
   }
 
-  koan("Lazy collections could also be infinite") {
-    val infinite = Stream.from(1)
-    infinite.take(4).sum should be(__)
-    Stream.continually(1).take(4).sum should be(__)
-  }
-
-  koan("Always remember tail of a lazy collection is never computed unless required") {
-    def makeLazy(value: Int): Stream[Int] = {
-      Stream.cons(value, makeLazy(value + 1))
-    }
-    val stream = makeLazy(1)
-    stream.head should be(__)
-    stream.tail.head should be(__)
-  }
 
 }
