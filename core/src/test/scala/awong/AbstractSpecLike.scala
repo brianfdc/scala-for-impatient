@@ -8,7 +8,6 @@ trait AbstractSpecLike
 	with BeforeAndAfter
 	with Matchers
 	with ResourceLoadLike
-	with LoggingLike
 
 trait AbstractFunSuite
 	extends FunSuite

@@ -25,8 +25,8 @@ object Exercises04 extends awong.ScalaForImpatientExercise {
   import scala.io.Source
   
   def source(sourceName:String) : Source = {
-    val source = Source.fromFile(sourceName:String, "UTF-8")
-    //val sourceURL = Source.fromURL(sourceName,"UTF-8")
+    val source = Source.fromFile(sourceName:String, awong.Defaults.defaultEncoding)
+    //val sourceURL = Source.fromURL(sourceName,awong.Defaults.defaultEncoding)
     //val sourceStr = Source.fromString("hola there hola")
     
     source

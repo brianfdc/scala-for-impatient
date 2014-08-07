@@ -48,7 +48,7 @@ class Exercises16Spec extends AbstractWordSpec {
   }
   
   def getXhtml: Option[Elem] = {
-    val src = getSource("file.xhtml")
+    val src = resourceAsStreamFromSrc("testfile.xhtml")
     src match {
       case Some(xmlSource) => 
         Some(XML.loadString(xmlSource.mkString))

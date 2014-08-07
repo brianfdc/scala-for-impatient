@@ -20,7 +20,7 @@ trait FS {
   implicit def folder(path: String):       Folder       = new Folder(file(path))
   implicit def file(path: String)                       = new File(path)
   def tempFile(prefix: String)                          = new TextFile(File.createTempFile(prefix, "tmp"))
-  lazy val defaultEncoding                              = "UTF-8"
+  lazy val defaultEncoding                              = awong.Defaults.defaultEncoding
 
   def probablyFile(path: String): Try[ExistingFile] = {
     try {

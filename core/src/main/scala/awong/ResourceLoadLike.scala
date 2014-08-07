@@ -7,29 +7,35 @@ import scala.io.BufferedSource
 import com.typesafe.config.ConfigFactory
 
 trait ResourceLoadLike extends LoggingLike {
-	/**
-	 * Load resource as a stream which is located in the
-	 * same package as the concrete koan spec
-	 * 
-	 * TODO : not quite the same as the full strength Spring
-	 * version that searches the entire class path
-	 */
-	def getSource(resourceName: String):Option[BufferedSource] = {
-		try {
-			val klazz = getClass()
-			var stream = klazz.getResourceAsStream(resourceName)
-			val src = Source.fromInputStream(stream)
-			if (!src.isEmpty) {
-				Some(src)
-			} else {
+
+	def resourceAsStreamFromSrc(filename: String): Option[Source] = {
+		resourceAsStreamFromSrc(filename :: Nil)
+	}
+	
+	def resourceAsStreamFromSrc(resourcePath: List[String]): Option[Source] = {
+		awong.ResourceLoader.resourceAsFileFromSrc(resourcePath) match {
+			case Some(file) =>
+				Some(Source.fromFile(file, Defaults.defaultEncoding))
+			case None =>
 				None
-			}
-		} catch  {
-			case th:Throwable => None
 		}
 	}
 	
+	def resourceAsString(filename: String): Option[String] = {
+		resourceAsString(filename :: Nil)
+	}
 	
+	def resourceAsString(resourcePath: List[String]): Option[String] = {
+		resourceAsStreamFromSrc(resourcePath) match {
+			case Some(source) =>
+				Some(source.mkString)
+			case None =>
+				None
+		}
+	}
+}
+
+private[awong] object ResourceLoader extends awong.LoggingLike {
 	/**
 	 * Get a child of a file. For example,
 	 * 
@@ -64,13 +70,14 @@ trait ResourceLoadLike extends LoggingLike {
 	 * Get a resource from the `src/main/resources` directory. Eclipse does not copy
 	 * resources to the output directory, then the class loader cannot find them.
 	 */
-	private def resourceAsFileFromSrc(resourcePath: List[String]): Option[JFile] = {
+	def resourceAsFileFromSrc(resourcePath: List[String]): Option[JFile] = {
 		val uri = getClass.getResource(".").toURI
 		logger.debug("Accessing uri {}.", uri)
 		val classesDir = new JFile(uri)
-		val moduleDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile.getParentFile
+		val moduleDir = classesDir.getParentFile.getParentFile.getParentFile.getParentFile
 		logger.debug("Accessing moduleDir {}", moduleDir.toString)
 		val parentDir = moduleDir.getParentFile
+		logger.debug("Accessing parentDir {}", parentDir.toString)
 		val resourceFiles = getResourceFiles(moduleDir, resourcePath)
 		resourceFiles.find( _.exists ) match {
 			case Some(f) => Some(f)
@@ -79,40 +86,6 @@ trait ResourceLoadLike extends LoggingLike {
 				val listOfOtherResouceFiles = for (m <- otherModules) yield getResourceFiles(m, resourcePath)
 				val allFiles = for (resourceFiles <- listOfOtherResouceFiles; file <- resourceFiles if file.exists) yield file
 				allFiles.headOption
-		}
-	}
-
-	def resourceAsStreamFromSrc(resourcePath: List[String]): Option[Source] = {
-		resourceAsFileFromSrc(resourcePath) match {
-			case Some(file) =>
-				Some(Source.fromFile(file, Defaults.defaultEncoding))
-			case None =>
-				None
-		}
-	}
-	
-	def readInts(resourcePath: List[String]): Stream[Int] = {
-		readStrings(resourcePath) map { _.toInt }
-	}
-	
-	def readDoubles(resourcePath: List[String]): Stream[Double] = {
-		readStrings(resourcePath) map { _.toDouble }
-	}
-	
-	def readStrings(resourcePath: List[String]): Stream[String] = {
-		val maybeStream = for (src <- resourceAsStreamFromSrc(resourcePath)) yield src.getLines.toStream
-		maybeStream match {
-			case Some(stream) => stream
-			case None => Stream[String]()
-		}
-	}
-	
-	def resourceAsString(resourcePath: List[String]): Option[String] = {
-		resourceAsStreamFromSrc(resourcePath) match {
-			case Some(source) =>
-				Some(source.mkString)
-			case None =>
-				None
 		}
 	}
 }

@@ -6,7 +6,7 @@ import scala.io.Source
  * Files and Regular Expressions
  */
 object Exercises09 extends awong.calc.dsl.JavaTokens with awong.ScalaForImpatientExercise  {
-  lazy val encoding = "UTF-8"
+  lazy val encoding = awong.Defaults.defaultEncoding
   /**
    * (9.1)
    */
