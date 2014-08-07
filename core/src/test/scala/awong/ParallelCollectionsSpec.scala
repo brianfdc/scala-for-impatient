@@ -1,34 +1,40 @@
 package awong
 
-import org.scalatest.FlatSpec
-import org.scalatest.BeforeAndAfter
+import collection.parallel.ParSeq
+
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
 @RunWith(classOf[JUnitRunner])
-class ParallelCollectionsSuite extends AbstractFlatSpec {
-  "Scala collections" should "process in parallel" in {
-    val range = 0 until 1000
-    val parallelRange = range.par
-    val result = parallelRange.map{ each => print(each + " "); each }
-    assertResult( parallelRange.length ) {
-      result.length
-    }
-    
-    assertResult(parallelRange.sum, "parallel summation == sequential summation") {
-      /*
-       * aggregate requires two operations
-       * (1) a seqop applied to partitions of the collection
-       * (2) a parop to combine the results applied to the partitions
-       */
-      val sum = parallelRange.aggregate(0)( (a,b) => {
-        a + b
-      },{ (a1,a2) =>
-        logger.debug("adding: (" + a1 + "," + a2 + ")")
-        a1 + a2
-      })
+class ParallelCollectionsSuite extends AbstractWordSpec {
+  var n: Int = _
+  var range: Seq[Int] = _
+  var parSeq: ParSeq[Int] = _
+  
+  before {
+    n = 10000
+    range = (0 until n)
+    parSeq = range.par
+  }
+  
+  "Scala collections" when {
+    "processing in parallel" should {
+      "have same length as the original for a simple map" in {
+        val result = parSeq.map{ each => print(each + " "); each }
+        result.length shouldBe parSeq.length
+      }
       
-      ( sum )
+      "aggregate in a map/reduce pattern just like a sequential summation" in {
+        val parallelSum = parSeq.aggregate(0)( (a,b) => {
+          logger.debug("seqop applied to partitions of collection: {} + {}", a,b)
+          a + b
+        },{ (a1,a2) =>
+          logger.debug("parop combines the results applied to the partions: {} + {}:", a1, a2)
+          a1 + a2
+        })
+        parallelSum should === (parSeq.sum)
+      }
     }
   }
+
 }

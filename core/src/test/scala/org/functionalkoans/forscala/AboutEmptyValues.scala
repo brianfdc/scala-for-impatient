@@ -9,11 +9,11 @@ class AboutEmptyValues extends KoanSpec("Meditate on nothing") {
 
   "None" should {
     "equal None" in {
-      assert(None === None)
+      None should === (None)
     }
     "be identical to None" in {
       val a = None
-      assert(a eq None)
+      (a eq None) shouldBe true
     }
   }
   "None" can {
@@ -36,7 +36,8 @@ class AboutEmptyValues extends KoanSpec("Meditate on nothing") {
     "never be cast to any type of object" in {
       intercept[ClassCastException] {
         // put the exception you expect to see in place of the blank
-        assert(None.asInstanceOf[String] === __)
+        val xf = None.asInstanceOf[String]
+        xf should === (__)
       }
     }
   }

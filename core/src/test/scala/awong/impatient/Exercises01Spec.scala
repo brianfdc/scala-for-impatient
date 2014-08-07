@@ -15,10 +15,10 @@ class Exercises01Spec extends AbstractFlatSpec {
   }
   
   it should "generate a random filename" in {
-    val filename01 = exercises.randomFilename(10);
-    assert(filename01.size === 10)
-    val filename02 = exercises.randomFilename(10);
-    assert(filename02.size === 10)
-    assert( (filename01 != filename02) )
+    val filename01 = exercises.randomFilename(10)
+    filename01 should have size 10
+    val filename02 = exercises.randomFilename(10)
+    filename02 should have size 10
+    filename01 should not be filename02
   }
 }

@@ -7,7 +7,7 @@ trait AbstractSpecLike
 	with BeforeAndAfterAll
 	with BeforeAndAfter
 	with Matchers
-	with ResourceLoader
+	with ResourceLoadLike
 	with LoggingLike
 
 trait AbstractFunSuite

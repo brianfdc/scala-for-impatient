@@ -17,10 +17,10 @@ class StackSpec extends AbstractFlatSpec {
     val stack = Stack[Int]()
     stack.push(1)
     stack.push(2)
-    assert(stack.pop === 2, "stack should be LIFO")
-    expectResult(1, "stack should now pop first item") {
-      stack.pop
-    }
+    logger.trace("stack should be LIFO")
+    stack.pop shouldBe 2
+    logger.trace("stack should pop 1st item")
+    stack.pop shouldBe 1
   }
 
   it should "throw NoSuchElementException if an empty stack is popped" in {
@@ -33,17 +33,16 @@ class StackSpec extends AbstractFlatSpec {
   ignore should "do nothing" in {
     val emptyStack = Stack[String]()
     emptyStack.push("a")
-    
   }
   
   "The Scala language" must "add correctly" taggedAs(SlowTest) in {
     val sum = 1 + 1
-    assert(sum === 2)
+    sum shouldBe 2
   }
 
   it must "subtract correctly" taggedAs(SlowTest, DbTest) in {
     val diff = 4 - 1
-    assert(diff === 3)
+    diff shouldBe 3
   }
 }
 

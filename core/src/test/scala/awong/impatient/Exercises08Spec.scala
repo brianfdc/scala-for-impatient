@@ -20,19 +20,9 @@ class Exercises08Spec extends AbstractFlatSpec {
   
   "bank account" should "transact" in {
     val oldBalance = bank.deposit(0);
-    val str = bank.toString()
-    
-    expectResult (100.00) {
-      oldBalance
-    }
-    
-    expectResult(200.00, "deposit") {
-      bank.deposit(100)
-    }
-    
-    expectResult(100.00,"withdraw") {
-      bank.withdraw(100)
-    }
+    oldBalance should be (100.00)
+    bank.deposit(100) should be (200.00)
+    bank.withdraw(100) should be (100.00)
   }
 
 }

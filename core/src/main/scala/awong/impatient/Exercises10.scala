@@ -167,7 +167,7 @@ object Exercises10 {
         msg.map( x => (x + key).toChar )
       }
       val encrypted = ceasarCipher(msg)
-      logger.debug(encrypted)
+      logger.trace(encrypted)
       ( encrypted )
     }
   }

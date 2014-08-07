@@ -90,7 +90,7 @@ object Versions {
 
   lazy val slf4jVer     = "1.6.4"
   lazy val logbackVer   = "1.0.7"
-  lazy val configVer    = "1.0.2"  // typesafe config
+  lazy val configVer    = "1.2.1"  // typesafe config
   lazy val scalazVer    = "7.1.0"
 
   lazy val hibernateVer = "4.0.0.FINAL"
@@ -128,7 +128,7 @@ object Dependencies {
   lazy val akkaTestkit     = akkaOrg      %% "akka-testkit"    % akkaVer % test
   lazy val akkaZeroMQ      = akkaOrg      %% "akka-zeromq"     % akkaVer
   
-  lazy val typesafeConfig  = typesafeOrg        %% "config"       % configVer
+  lazy val typesafeConfig  = typesafeOrg        %  "config"       % configVer
   lazy val scalazFull      = "org.scalaz"       %% "scalaz-full"  % scalazVer
   lazy val guava           = "com.google.guava" %  "guava"        % "12.0"
   lazy val jodaTime        = "joda-time"        %  "joda-time"    % "1.6.2"
@@ -165,7 +165,7 @@ object Dependencies {
   lazy val javassist          = "org.javassist" % "javassist"           % "3.15.0-GA" % runtime
   lazy val hsqldb             = "org.hsqldb"    % "hsqldb"              % "2.2.6"     % runtime
 
-  lazy val coreDependencies   = testDependencies ++ Seq(guava, jodaTime, liftJson) ++ slf4jDependencies
+  lazy val coreDependencies   = testDependencies ++ Seq(guava, jodaTime, liftJson, typesafeConfig) ++ slf4jDependencies
   lazy val akkaDependencies   = coreDependencies ++ Seq(akkaActor, akkaCluster, akkaRemote, akkaTestkit)
 }
 

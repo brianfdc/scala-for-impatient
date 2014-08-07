@@ -16,10 +16,8 @@ import awong.AbstractFlatSpec
 @RunWith(classOf[JUnitRunner])
 class Exercises19Spec extends AbstractFlatSpec {
 
-  /**
-   * (19.1/2)
-   */
-  "Arithmetic Parser" should "calculate" in {
+
+  "Arithmetic Parser (19.1/2)" should "calculate" in {
     val parser = new ArithParser
     var result = parser.parse("3*4")
     result should be (12)
@@ -30,10 +28,8 @@ class Exercises19Spec extends AbstractFlatSpec {
     result = parser.parse("3-(4-6)")
     result should be (5)
   }
-  /**
-   * (19.3)
-   */
-  "CSVParser" should "find integers in CSV" in {
+
+  "CSVParser (19.3)" should "find integers in CSV" in {
     val parser = new CSVParser
     var result = parser.parse("1,2,3")
     result should be (List(1,2,3))
@@ -41,10 +37,8 @@ class Exercises19Spec extends AbstractFlatSpec {
       result = parser.parse("1,2,3.14")
     }
   }
-  /**
-   * 
-   */
-  "19.4" should "parse date times" in {
+
+  "JodaTime parser (19.4)" should "parse date times" in {
     var dm = new DateMidnight(2012,7,14, DateTimeZone.UTC)
     var str = DateTimeFormat.forPattern("yyyy-MM-dd").print(dm)
     val parser = new JodaDateTimeParser
@@ -59,6 +53,7 @@ class Exercises19Spec extends AbstractFlatSpec {
     str = fmt.print(dt1)
     parser.parseDateTime(str) should be (dt1)
   }
+  
   "scala xml api" should "manipulate xml" in {
     var tmp = <tmp/>.copy(label="root")
     val attrs = List(new UnprefixedAttribute("r0", "r0", Null), new UnprefixedAttribute("r1", "r1", Null))
@@ -70,7 +65,9 @@ class Exercises19Spec extends AbstractFlatSpec {
     tmp = tmp.copy(child= kids.toSeq)
     logger.debug(tmp.toString)
   }
-  "19.5" should "parse xml" in {
+  
+  
+  "XmlLightParser (19.5)" should "parse xml" in {
     var xmlStr = """<?xml version="1.0" ?>
                     <root r0="r0" r1="1">
                       <dad d0="d0"/>
