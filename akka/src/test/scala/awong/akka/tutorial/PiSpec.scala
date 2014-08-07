@@ -9,32 +9,24 @@ import scala.concurrent.duration.Duration
 import akka.util.Timeout
 
 import akka.actor._
+import akka.testkit.TestActorRef
 
-import akka.testkit.{TestKit, ImplicitSender, TestActorRef}
-import org.scalatest.{WordSpec, BeforeAndAfterAll}
-import org.scalatest.matchers.MustMatchers
+import awong.akka.TestkitSpec
+
 import org.scalatest.junit.JUnitRunner
-
 import org.junit.runner.RunWith
 
 /**
  * @see http://doc.akka.io/docs/akka/2.0.1/scala/testing.html
  */
 @RunWith(classOf[JUnitRunner])
-class PiSpec(_system: ActorSystem) extends TestKit(_system)
-	with ImplicitSender
-	with WordSpec
-	with MustMatchers
-	with BeforeAndAfterAll
+class PiSpec(_system: ActorSystem) extends TestkitSpec(_system)
 {
 	import awong.akka.tutorial.Pi
 	import awong.akka.tutorial._
 	
 	def this() = this(ActorSystem("PiSystem"))
 
-	override def afterAll {
-		TestKit.shutdownActorSystem(system)
-	}
 	
 	"An Pi actor system" must {
 		val listener = TestActorRef[Listener](Listener.props, "listener")

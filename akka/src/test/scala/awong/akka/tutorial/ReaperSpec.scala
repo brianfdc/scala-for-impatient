@@ -1,26 +1,20 @@
 package awong.akka.tutorial
 
-import scala.concurrent.Await
 import scala.concurrent.duration._
 
 import akka.util.Timeout
 
 import akka.actor._
-import akka.testkit.{TestKit, ImplicitSender, TestProbe, TestActorRef}
+import akka.testkit._
 
-import org.scalatest.{WordSpec, BeforeAndAfterAll}
-import org.scalatest.matchers.MustMatchers
+import awong.akka.TestkitSpec
+
 import org.scalatest.junit.JUnitRunner
-
 import org.junit.runner.RunWith
 
 
 @RunWith(classOf[JUnitRunner])
-class ReaperSpec(_system: ActorSystem) extends TestKit(_system)
-	with ImplicitSender
-	with WordSpec
-	with BeforeAndAfterAll
-	with MustMatchers
+class ReaperSpec(_system: ActorSystem) extends TestkitSpec(_system)
 {
 	import Reaper._
  
