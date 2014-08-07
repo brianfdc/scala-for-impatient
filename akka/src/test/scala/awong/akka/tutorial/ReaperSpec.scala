@@ -50,7 +50,7 @@ class ReaperSpec(_system: ActorSystem) extends TestkitSpec(_system)
 			system.stop(d.ref)
 
 			// Make sure we've been called
-			within (1 seconds, 5 seconds) {
+			within (1 seconds) {
 				expectMsg("Dead")
 			}
 		}

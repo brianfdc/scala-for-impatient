@@ -20,12 +20,10 @@ import org.junit.runner.RunWith
 @RunWith(classOf[JUnitRunner])
 class MySpec(_system: ActorSystem) extends TestkitSpec(_system)
 {
-	private class EchoActor extends Actor {
-		def receive = {
-			case x => sender ! x
-		}
-	}
-
+	def this() = this(ActorSystem("MySpec"))
+	
+	import MySpec._
+	
 	"An Echo actor" must {
 		"send back messages unchanged" in {
 			val echo = system.actorOf(Props[EchoActor])
@@ -35,4 +33,10 @@ class MySpec(_system: ActorSystem) extends TestkitSpec(_system)
 	}
 }
 
-
+object MySpec {
+	class EchoActor extends Actor {
+		def receive: Receive = {
+			case x => sender ! x
+		}
+	}
+}

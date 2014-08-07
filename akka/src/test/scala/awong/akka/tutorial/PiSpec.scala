@@ -27,7 +27,6 @@ class PiSpec(_system: ActorSystem) extends TestkitSpec(_system)
 	
 	def this() = this(ActorSystem("PiSystem"))
 
-	
 	"An Pi actor system" must {
 		val listener = TestActorRef[Listener](Listener.props, "listener")
 		val nrOfWorkers = 4

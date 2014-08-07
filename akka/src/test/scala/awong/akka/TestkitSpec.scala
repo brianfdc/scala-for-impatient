@@ -9,12 +9,12 @@ import org.scalatest.WordSpecLike
 import org.scalatest.Matchers
 import org.scalatest.BeforeAndAfterAll
 
+import awong.AbstractWordSpec
 
-abstract class TestkitSpec(_system: ActorSystem) extends TestKit(_system)
+abstract class TestkitSpec(_system: ActorSystem)
+	extends TestKit(_system)
 	with ImplicitSender
-	with WordSpecLike
-	with Matchers
-	with BeforeAndAfterAll
+	with AbstractWordSpec
 {
 
 	override def afterAll {
