@@ -1,0 +1,1 @@
+A simple build to work through [Learning Scalaz](http://eed3si9n.com/learning-scalaz)
