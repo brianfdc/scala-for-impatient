@@ -85,7 +85,7 @@ object Versions {
   lazy val javacVersion = BuildSettings.javacVersion
   lazy val scalaVersion = BuildSettings.buildScalaVersion
   
-  lazy val scalaTestVer = "2.0"
+  lazy val scalaTestVer = "2.1.0"
   lazy val junitVer     = "4.11"
 
   lazy val slf4jVer     = "1.6.4"

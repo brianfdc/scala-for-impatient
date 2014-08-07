@@ -60,9 +60,10 @@ class AboutTypeSignatures extends KoanSpec("About type signatures") {
 
   "null.asInstanceOf[className]" can {
     "be used to generate basic default values" in {
-      null.asInstanceOf[String] should be(null)
-      null.asInstanceOf[Int] should be(0)
-      null.asInstanceOf[Short] should be(0)
+      val x0 = null.asInstanceOf[String]
+      x0 shouldBe null
+      val x1 = null.asInstanceOf[Int]
+      x1 shouldBe 0
     }
   }
 }
