@@ -10,11 +10,11 @@ import scala.util.parsing.combinator._
  * @see http://www.ibm.com/developerworks/java/library/j-scala10248/index.html
  * @see http://www.ibm.com/developerworks/java/library/j-scala11218/index.html
  */
-object Calc {
+object Calc extends awong.LoggingLike{
   def parse(text : String) = {
     val parser = new ExprParser
     val results = parser.parse(text)
-    println("parsed " + text + " as " + results + " which is a type " + results.getClass())
+    logger.debug("parsed " + text + " as " + results + " which is a type " + results.getClass())
     results
   }
 

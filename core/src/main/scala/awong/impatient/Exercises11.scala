@@ -3,7 +3,7 @@ package awong.impatient
 /**
  * Operators
  */
-object Exercises11 {
+object Exercises11 extends awong.LoggingLike{
   /**
    * (11.1) According to the precedence rules (determined by the
    * 1st character of an operator
@@ -20,7 +20,7 @@ object Exercises11 {
    */
   def sample(bigInt:BigInt, n: Int) = {
     val power = bigInt.pow(n)
-    println("""The power function on bigInt is not defined as an operator like in Pascal (^) or
+    logger.debug("""The power function on bigInt is not defined as an operator like in Pascal (^) or
         Fortran (**) since the type of exponent (Int) is not the same as the base.""")
   }
   

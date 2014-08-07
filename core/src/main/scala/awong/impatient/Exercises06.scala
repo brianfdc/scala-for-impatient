@@ -56,9 +56,9 @@ package Exercises06 {
    * (6.5)
    * If this extends the trait App it will have main method for free
    */
-  object ReverseApp {
+  object ReverseApp extends awong.ScalaForImpatientExercise {
     def reverse(args:Array[String]) = {
-      println("Hello World: " + args.reverse.mkString(" ") )
+      logger.debug("Hello World: " + args.reverse.mkString(" ") )
     }
   }
   

@@ -33,7 +33,7 @@ class FunctionalCollectionsSpec extends AbstractFlatSpec {
   "A range" should "shuffle randomly" in {
     val range = 1 to 20
     val rn = FunctionalCollections.shuffle(range.toList)
-    println("shuffled range:" + rn.mkString(",") + "\n")
+    logger.debug("shuffled range:" + rn.mkString(",") + "\n")
     expectResult(range.size) { rn.size }
     expectResult(false) { rn.head == range.head }
   }
@@ -54,9 +54,11 @@ class FunctionalCollectionsSpec extends AbstractFlatSpec {
     expectResult(7) {
       (aSet union bSet).size
     }
-    println( aSet &~ bSet )
     expectResult(2) {
-      (aSet &~ bSet).size
+      val setDifference = (aSet &~ bSet)
+      val size =  setDifference.size
+      logger.debug("Set difference size should be {}", size.toString)
+      size
     }
     expectResult(4) {
       (bSet diff aSet).size
@@ -133,7 +135,7 @@ class FunctionalCollectionsSpec extends AbstractFlatSpec {
         // prepend to doubles
         each.toDouble :: doubles
       }
-      println (result.size)
+      logger.debug(result.size.toString)
       // same as java.util.List.addAll
       ( result ::: list.map(_.toDouble) ).size
     }
@@ -162,7 +164,6 @@ class FunctionalCollectionsSpec extends AbstractFlatSpec {
         doubles += (each * 2)  
       }
       ( result ++= list.toBuffer ).size
-      
     }
     
     expectResult(list.size) {

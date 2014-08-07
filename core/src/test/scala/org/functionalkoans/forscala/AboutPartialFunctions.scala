@@ -9,7 +9,7 @@ class AboutPartialFunctions extends KoanSpec("About partial functions") {
 
   "A partial function" should {
     "be a trait that when implemented can be used as building blocks for determining a solution"  in {
-      println("The PartialFunction trait requires that the method isDefinedAt and apply be implemented")
+      logger.info("The PartialFunction trait requires that the method 'isDefinedAt' and 'apply' be implemented")
       val doubleEvens: PartialFunction[Int, Int] = new PartialFunction[Int, Int] {
         //States that this partial function will take on the task
         def isDefinedAt(x: Int) = x % 2 == 0

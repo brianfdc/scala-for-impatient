@@ -32,7 +32,7 @@ class AboutMaps extends KoanSpec("Learn about Scala maps") {
         mapValues.head should be("Michigan")
         val lastElement = mapValues.last
         lastElement should be("Wisconsin")
-        // mapValues.foreach ( println(mval) )
+        // mapValues.foreach ( logger.info(mval) )
         // NOTE that the following will not compile, as iterators do not implement "contains"
         //mapValues.contains("Illinois") should be (true)
       }

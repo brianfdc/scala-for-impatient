@@ -13,7 +13,7 @@ import akka.util._
 import akka.pattern.{ask, pipe}
 
 
-object RequestResponse extends App {
+object RequestResponse extends App with awong.LoggingLike {
 
 	run
 	
@@ -35,22 +35,22 @@ object RequestResponse extends App {
 	private def ask_1(myActor: ActorRef)(implicit timeout: Timeout): Unit = {
 		val future = myActor ? AskNameMessage
 		val result = Await.result(future, timeout.duration).asInstanceOf[String]
-		println(result)
+		logger.debug(result)
 	}
 	
 	// (2) this is a slightly different way to ask another actor
 	private def ask_2(myActor: ActorRef)(implicit timeout: Timeout): Unit = {
 		val future: Future[String] = ask(myActor, AskNameMessage).mapTo[String]
 		val result = Await.result(future, 1 second)
-		println(result)
+		logger.debug(result)
 	}
 	
 	// (3) this is a slightly different way to ask another actor
 	private def ask_3(myActor: ActorRef)(implicit timeout: Timeout, ec: ExecutionContext): Unit = {
 		val future: Future[String] = (myActor ? AskNameMessage).mapTo[String]
 		future.onComplete {
-			case scala.util.Success(string) => println(string)
-			case scala.util.Failure(th) => println("Exception was thrown")
+			case Success(string) => logger.debug(string)
+			case Failure(th) => logger.debug("Exception was thrown")
 		}
 	}
 }
@@ -62,15 +62,15 @@ object TestActor {
 	def props(name: String): Props = Props(new TestActor(name))
 }
 
-class TestActor(val name: String) extends Actor {
+class TestActor(val name: String) extends Actor with ActorLogging {
 	implicit val timeout = Timeout(5 seconds)
 	implicit val ec = ExecutionContext.Implicits.global
 
 	def receive: Receive = {
 		case AskNameMessage =>
-			println(s"${name} respond to the 'AskNameMessage' request")
+			log.debug(s"${name} respond to the 'AskNameMessage' request")
 			sender ! "Fred"
-		case _ => println("that was unexpected")
+		case _ => log.debug("that was unexpected")
 	}
 }
 

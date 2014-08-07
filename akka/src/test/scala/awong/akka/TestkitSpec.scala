@@ -5,11 +5,9 @@ import akka.actor._
 import akka.testkit.TestKit
 import akka.testkit.ImplicitSender
 
-import org.scalatest.WordSpecLike
-import org.scalatest.Matchers
-import org.scalatest.BeforeAndAfterAll
-
 import awong.AbstractWordSpec
+
+import org.scalatest._
 
 abstract class TestkitSpec(_system: ActorSystem)
 	extends TestKit(_system)
@@ -18,6 +16,14 @@ abstract class TestkitSpec(_system: ActorSystem)
 {
 
 	override def afterAll {
-		TestKit.shutdownActorSystem(system)
+		TestKit.shutdownActorSystem(_system)
 	}
 }
+
+abstract class AkkaFunSuite(_system: ActorSystem)
+	extends TestKit(_system)
+	with FunSuiteLike
+	with Matchers
+	with BeforeAndAfterAll
+	with ImplicitSender 
+

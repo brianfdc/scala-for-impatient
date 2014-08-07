@@ -35,10 +35,10 @@ class FileWriter extends Actor {
 
 
 
-class FileWorker(contents: String, file: java.io.File, parent: ActorRef) extends Actor {
+class FileWorker(contents: String, file: java.io.File, parent: ActorRef) extends Actor with ActorLogging {
 	def receive: Receive = {
 		case _ =>
-			println("oops")
+			log.debug("oops")
 	}
 }
 

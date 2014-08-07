@@ -6,7 +6,7 @@ import scala.util.Random
 import java.util.TimeZone
 import java.awt.datatransfer._
 
-class Exercises03 {
+class Exercises03 extends awong.ScalaForImpatientExercise{
 
   /**
    * (1.1)

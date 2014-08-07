@@ -116,8 +116,8 @@ object Listener {
 class Listener extends BasePiActor {
 	def receive = {
 		case msg: PiApproximation =>
-			println("\nPi approximation:\t\t%s".format(msg.pi))
-			println("Calculation time:\t\t%s".format(msg.duration))
+			log.debug("\nPi approximation:\t\t%s".format(msg.pi))
+			log.debug("Calculation time:\t\t%s".format(msg.duration))
 			sender ! Shutdown
 			//context.system.shutdown()
 	}

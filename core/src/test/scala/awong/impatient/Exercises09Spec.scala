@@ -13,7 +13,7 @@ class Exercises09Spec extends AbstractFlatSpec {
            val decimal = 2.0
            val name = "Alan"
       }"""
-    println(Exercises09.ident.toString)
+    logger.debug(Exercises09.ident.toString)
     val identifiers = Exercises09.ident.findAllIn(text).toList
     identifiers.isEmpty should be(false)
     identifiers.size should be (14)

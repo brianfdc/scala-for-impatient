@@ -68,7 +68,7 @@ class Exercises19Spec extends AbstractFlatSpec {
     kids += <wilma></wilma>
     kids.toSeq
     tmp = tmp.copy(child= kids.toSeq)
-    println(tmp)
+    logger.debug(tmp.toString)
   }
   "19.5" should "parse xml" in {
     var xmlStr = """<?xml version="1.0" ?>
@@ -88,7 +88,7 @@ class Exercises19Spec extends AbstractFlatSpec {
     (node \\ "dad").head.attribute("d0").get.toString should be ("d0")
     (node \\ "mum").isEmpty should be (false)
     (node \\ "mum").head.attribute("m0").get.toString should be ("m0")
-    println(node)
+    logger.debug(node.toString)
   }
 
 }

@@ -3,7 +3,7 @@ package awong.impatient
 /**
  * Higher Ordered Functions
  */
-class Exercises12 {
+class Exercises12 extends awong.LoggingLike {
   /**
    * (12.1)
    */
@@ -70,7 +70,7 @@ class Exercises12 {
     var x = 10
     until(x==0) {
       x -= 1
-      println(x)
+      logger.debug(x.toString)
     }
   }
   /**

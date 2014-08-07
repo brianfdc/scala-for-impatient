@@ -2,7 +2,7 @@ package awong.impatient
 /**
  * Control Structures and Functions
  */
-class Exercises02 {
+class Exercises02 extends awong.ScalaForImpatientExercise {
   /*
    * (2.1) 
    */
@@ -22,7 +22,7 @@ class Exercises02 {
    */
   def loop = {
     for (i <- 0 to 10) {
-      println(10-i)
+      logger.debug( (10-i).toString )
     }
   }
   
@@ -31,7 +31,7 @@ class Exercises02 {
    */
   def countdown(n: Int) = {
     for (i <- 0 to n) {
-      println(n-i)
+      logger.debug( (n-i).toString )
     }
   }
   
@@ -41,7 +41,7 @@ class Exercises02 {
    */
   
   def printTabSeparated(s: String) = {
-    s.map(c => "%s\t\\u%04X".format(c, c.toInt)).foreach(println)
+    s.map(c => "%s\t\\u%04X".format(c, c.toInt)).foreach(logger.debug(_))
   }
   
   /*

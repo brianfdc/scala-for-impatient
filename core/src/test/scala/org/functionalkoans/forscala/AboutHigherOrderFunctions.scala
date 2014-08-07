@@ -18,7 +18,7 @@ class AboutHigherOrderFunctions extends KoanSpec("Higher ordered functions") {
   "Closure" should {
     "be any function that closes over the free variables in its lexical environment" in {
       var incrementor = 1
-      println("free variable is: " + incrementor)
+      logger.info("free variable is: " + incrementor)
       def closure = {
         x: Int => x + incrementor
       }

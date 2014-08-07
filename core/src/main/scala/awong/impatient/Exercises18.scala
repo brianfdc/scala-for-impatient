@@ -3,11 +3,11 @@ package awong.impatient
 /**
  * Advanced Types
  */
-object Exercises18 {
+object Exercises18 extends awong.ScalaForImpatientExercise {
   /**
    * (18.1)
    */
-  class Bug {
+  class Bug extends awong.LoggingLike {
     var position: Int = 0
     var direction: Boolean = true
     
@@ -21,7 +21,7 @@ object Exercises18 {
     }
     
     def show(): this.type = {
-      println(position)
+      logger.trace(position.toString)
       this
     }
   }
@@ -89,7 +89,7 @@ object Exercises18 {
   /**
    * (18.4)
    */
-  case class Network(val name: String) { outer =>
+  case class Network(val name: String) extends awong.LoggingLike { outer =>
     import scala.collection.mutable.ArrayBuffer
     
     class Member(val name: String) {
@@ -130,7 +130,7 @@ object Exercises18 {
      */
     type NetworkMember = n.Member forSome { val n: Network }
     def process(m1: NetworkMember, m2: NetworkMember) = {
-      println("same functionally as processVerbosely")
+      logger.debug("same functionally as processVerbosely")
       (m1, m2)
     }
     def processVerbosely[M <: n.Member forSome { val n: Network}](m1: M, m2: M) = {
@@ -176,7 +176,7 @@ object Exercises18 {
   def printValues(f: { def apply(x: Int) : Int}, from: Int, to:Int): List[Int] = {
     val range = if (to > from) { from to to } else {to to from }
     val results = range.map( f.apply(_) ).toList
-    println(results.mkString(" "))
+    logger.debug(results.mkString(" "))
     results
   }
   /**

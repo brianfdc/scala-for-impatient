@@ -10,10 +10,10 @@ class AboutPatternMatching extends KoanSpec("About Pattern Matching") {
     "return something" in {
       val stuff = "blue"
       val myStuff = stuff match {
-        case "red" => println("RED"); 1
-        case "blue" => println("BLUE"); 2
-        case "green" => println("GREEN"); 3
-        case _ => println(stuff); 0
+        case "red" => logger.debug("RED"); 1
+        case "blue" => logger.debug("BLUE"); 2
+        case "green" => logger.debug("GREEN"); 3
+        case _ => logger.debug(stuff); 0
       }
       myStuff should be(2)
     }
@@ -23,7 +23,7 @@ class AboutPatternMatching extends KoanSpec("About Pattern Matching") {
         case "red" => (255, 0, 0)
         case "green" => (0, 255, 0)
         case "blue" => (0, 0, 255)
-        case _ => println(stuff); 0
+        case _ => logger.debug(stuff); 0
       }
       myStuff should be(0, 0, 255)
     }

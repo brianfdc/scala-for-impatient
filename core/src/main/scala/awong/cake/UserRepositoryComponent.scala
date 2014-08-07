@@ -3,13 +3,13 @@ package awong.cake
 trait UserRepositoryComponent {
   val userRepository: UserRepository
   
-  class UserRepository {
+  class UserRepository extends awong.LoggingLike {
     def authenticate(username: String, password: String): User = { 
       val user = new User(username, password)
-      println("authenticating user: " + user)
+      logger.debug("authenticating user: " + user)
       user
     }
-    def create(user: User) = println("creating user: " + user)
-    def delete(user: User) = println("deleting user: " + user)
+    def create(user: User) = logger.debug("creating user: " + user)
+    def delete(user: User) = logger.debug("deleting user: " + user)
   }
 }

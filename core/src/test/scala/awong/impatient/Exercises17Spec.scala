@@ -69,7 +69,7 @@ class Exercises17Spec extends AbstractWordSpec {
       val comparableOfInt: Comparable[Int] = richInt
       // next line below won't compile
       // val comparableOfRichInt: Comparable[RichInt] = richInt
-      println("""RichInt is a conversion through an implicit from Int at runtime. One could easily
+      logger.debug("""RichInt is a conversion through an implicit from Int at runtime. One could easily
                 |have a Seq[Int], some of which have been coerced to RichInt, and need to use 
                 |the Comparable interfaces over the entire collection. Comparable[Int] is the common
                 |type in this mixed scenario""") 
@@ -83,12 +83,12 @@ class Exercises17Spec extends AbstractWordSpec {
         val iterable: Iterable[String] = List("hello", "world")
         
         iterable.foldLeft(List[String]()) { (s,c) => c :: s }.size should be(iterable.size)
-        println("because A defines the upper bound of methods which must consume A")
+        logger.debug("because A defines the upper bound of methods which must consume A")
       }
       "explain in (17.8)" in {
         val pair = new Pair(1, "awong")      // Pair[Int,String]
         val next = pair.replaceFirst(Some("where"))   // Pair[Any,String]
-        println("the lower bound restriction is needed for the product of the method")
+        logger.debug("the lower bound restriction is needed for the product of the method")
       }
     }
   }

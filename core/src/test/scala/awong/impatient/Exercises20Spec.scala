@@ -11,6 +11,6 @@ class Exercises20Spec extends AbstractFlatSpec {
 
   "Random number generation" should "just work" in {
      val xf = scala.util.Random.nextInt(10)
-     println(xf)
+     logger.debug("Next random int: {}", xf.toString)
   }
 }

@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import scala.xml.Text
 import scala.xml.Node
@@ -10,7 +10,6 @@ import scala.io.Source
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
 
-import awong.impatient.Exercises16
 import awong.AbstractWordSpec
 
 @RunWith(classOf[JUnitRunner])
@@ -43,7 +42,7 @@ class Exercises16Spec extends AbstractWordSpec {
       x should be("Fred")
       intercept[MatchError] {
         val y = matcher(<li>{"Fred"}</li>)
-        println("Throws a matchError b/c the case expression is part of the syntax of an empedded expression")
+        logger.debug("Throws a matchError b/c the case expression is part of the syntax of an empedded expression")
       }
     }
   }

@@ -1,9 +1,6 @@
 package awong.impatient.actors
 
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.actor.Props
-import akka.actor.ActorSystem
+import akka.actor._
 
 /**
  * (20.1)
@@ -28,7 +25,7 @@ case class AverageResult(sum: Int, size: Int, average:Double) extends AverageMes
 case class Done() extends AverageMessage
 case class Shutdown() extends AverageMessage
 
-class Supervisor(val system: ActorSystem, val partitionSize: Int, val upperBound: Int) extends Actor {
+class Supervisor(val system: ActorSystem, val partitionSize: Int, val upperBound: Int) extends Actor with ActorLogging {
 	var done = false
 	var randomNumberActors = Seq[ActorRef]()
 	var reduceActor = createReducer(system, new SumMessage(0,0))
@@ -79,9 +76,9 @@ class Supervisor(val system: ActorSystem, val partitionSize: Int, val upperBound
 			reduceActor ! msg
 		}
 		case msg: AverageResult => {
-			println("Size:	 " + msg.size)
-			println("Sum:		" + msg.sum)
-			println("Average:" + msg.average)
+			log.debug("Size:	 " + msg.size)
+			log.debug("Sum:		" + msg.sum)
+			log.debug("Average:" + msg.average)
 			done = true
 		}
 	}
@@ -99,7 +96,7 @@ object Supervisor {
 /**
  * Have many of these for the scatter phase
  */
-class RandomNumberActor(val id: Int, val supervisor: Supervisor) extends Actor {
+class RandomNumberActor(val id: Int, val supervisor: Supervisor) extends Actor with ActorLogging {
 	import scala.util.Random
 	var done = false
 	
@@ -108,7 +105,7 @@ class RandomNumberActor(val id: Int, val supervisor: Supervisor) extends Actor {
 			val randoms = (0 until m.size).map{ (a) => Random.nextInt(supervisor.upperBound) }
 			val sum = randoms.sum
 			val size = randoms.size
-			println(id + ": sum = " + sum + " size: " + size)
+			log.debug(id + ": sum = " + sum + " size: " + size)
 			sender ! SumMessage(sum, size)
 			sender ! Done()
 		}
@@ -122,7 +119,7 @@ class RandomNumberActor(val id: Int, val supervisor: Supervisor) extends Actor {
 /**
  * Only have one of these for the gather phase
  */
-class ReduceActor(var sumMessage: SumMessage) extends Actor {
+class ReduceActor(var sumMessage: SumMessage) extends Actor with ActorLogging {
 	var done = false;
 	
 	def receive = {

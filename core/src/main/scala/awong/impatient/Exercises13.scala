@@ -74,7 +74,7 @@ class Exercises13 {
   }
   /*
    * (13.9)
-   * Unfortunately scala.actors.Actor is now deprecated and akka Actors are now the standard
+   * scala.actors.Actor is now deprecated and akka Actors are now the standard
    */
 //  def readFiles(files:Seq[String]) = {
 //    import scala.actors.Actor._
@@ -91,7 +91,7 @@ class Exercises13 {
 //              freq1.getOrElse(c, 0) + 1
 //              freq2.getOrElse(c, 0) + 1
 //            }
-//            case _ => println("Do nothing")
+//            case _ => logging.debug("Do nothing")
 //          }
 //        }
 //      }

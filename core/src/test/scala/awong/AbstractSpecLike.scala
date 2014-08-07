@@ -8,6 +8,11 @@ trait AbstractSpecLike
 	with BeforeAndAfter
 	with Matchers
 	with ResourceLoader
+	with LoggingLike
+
+trait AbstractFunSuite
+	extends FunSuite
+	with AbstractSpecLike
 
 trait AbstractFlatSpec
 	extends FlatSpecLike

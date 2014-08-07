@@ -7,7 +7,7 @@ package awong
  * Time: 8:32 PM
  */
 
-class ControlStructures {
+class ControlStructures extends LoggingLike{
 
   def conditional(x: Int): Int = {
     if (x > 0) {
@@ -75,6 +75,6 @@ class ControlStructures {
 
   def box(s: String) : Unit = {
     val border = "-" * s.size + "--\n"
-    println(border + "|" + s + "|\n" + border)
+    logger.debug(border + "|" + s + "|\n" + border)
   }
 }

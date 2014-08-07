@@ -108,7 +108,7 @@ class AboutTraits extends KoanSpec("About traits") {
       new C2
       sb = sb :+ ("Created C2")
       sb.mkString(";") should be("""Creating C2;In T2:z=0;In T2:z=1;In T1:x=0;In T1:x=1;In C2:y=0;In C2:y=2;Created C2""")
-      println("Note T1 extends T2, and C1 also extends T2, but T2 is only instantiated twice.")
+      logger.debug("Note T1 extends T2, and C1 also extends T2, but T2 is only instantiated twice.")
     }
   }
   

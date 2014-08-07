@@ -27,13 +27,13 @@ abstract class Simulation extends SimulationOp {
 
   def run() = {
     afterDelay(0) {
-      println("*** simulation started, time = "+ currentTime +" ***")
+      logger.debug("*** simulation started, time = "+ currentTime +" ***")
     }
     while (!agenda.isEmpty) next()
   }
 }
 
-trait SimulationOp {
+trait SimulationOp extends awong.LoggingLike {
   type Action = () => Unit
 
   case class WorkItem(time: Int, action: Action)

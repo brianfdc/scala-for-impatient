@@ -4,11 +4,12 @@ import scala.collection.JavaConversions.propertiesAsScalaMap
 import scala.collection.Iterable
 import scala.collection.Map
 import scala.io.Source
+import awong.ScalaForImpatientExercise
 
 /**
  * Maps and Tuples
  */
-object Exercises04 {
+object Exercises04 extends awong.ScalaForImpatientExercise {
   /**
    * (4.1)
    */
@@ -111,7 +112,7 @@ object Exercises04 {
     val fmt = "%" + largestSize + "s"
     // BUG to be fixed in Scala 2.9.2 ... should be (k,v) instead of entry
     props.foreach{ e =>
-      println(fmt.format(e._1) + " : " + e._2)
+      logger.debug(fmt.format(e._1) + " : " + e._2)
     }
   }
 

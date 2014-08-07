@@ -64,7 +64,7 @@ class AboutLists extends KoanSpec("AboutLists is about Scala Lists") {
         a(4) should equal(9)
   
         intercept[IndexOutOfBoundsException] {
-          println(a(5))
+          logger.debug(a(5).toString)
         }
       }
       "Have many useful methods" in {

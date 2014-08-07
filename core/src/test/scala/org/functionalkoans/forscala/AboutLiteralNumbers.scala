@@ -30,7 +30,7 @@ class AboutLiteralNumbers extends KoanSpec("Integer literals") {
       val b = 31L
       val c = 0x30FL
       val e = 0L
-      println("though 'l' is rarely used since it resembles '1'")
+      logger.debug("though 'l' is rarely used since it resembles '1'")
       val f = -2l
       val g = -31L
       val h = -0x30FL
@@ -51,7 +51,7 @@ class AboutLiteralNumbers extends KoanSpec("Integer literals") {
          |   Floats can be coerced using a f or F suffix, and
          |   Doubles can be coerced using a d or D suffix.
          |   Exponent are specified using e or E."""
-      println(msg)
+      logger.info(msg)
       val a = 3.0
       val b = 3.00
       val c = 2.73
@@ -78,7 +78,7 @@ class AboutLiteralNumbers extends KoanSpec("Integer literals") {
       val msg = """Trick: To distinguish the dot for a method invocation from the
           |   decimal point in a float or double literal,
           |   add a 0 after the literal"""
-      println(msg)
+      logger.info(msg)
       3.0.toString should be("3.0")
       3.toString should be("3")
       (3.0 toString) should be("3.0")

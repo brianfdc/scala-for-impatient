@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import awong._
 import awong.impatient._

@@ -92,7 +92,7 @@ class AboutCaseClasses
     }
     "be able to be disassembled to their constituent parts as a tuple" in {
       val p1 = Citizen("Fred", "Jones", 23, "111-22-3333")
-      println("this seems weird, but it's critical to other features of Scala")
+      logger.info("this seems weird, but it's critical to other features of Scala")
       val parts = Citizen.unapply(p1).get 
 
       parts._1 should be("Fred")

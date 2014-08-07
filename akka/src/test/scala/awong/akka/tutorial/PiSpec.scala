@@ -1,4 +1,4 @@
-package akka.tutorial
+package awong.akka.tutorial
 
 import java.util.concurrent.TimeUnit._
 

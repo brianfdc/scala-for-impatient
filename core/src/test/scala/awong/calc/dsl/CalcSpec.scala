@@ -56,7 +56,7 @@ class CalcSpec extends AbstractFlatSpec {
     )
     val parser = new ArithParser
     expressions.foreach{ (x) =>
-      println(x + " = " + parser.parse(x))
+      logger.debug(x + " = " + parser.parse(x))
     }
   }
   

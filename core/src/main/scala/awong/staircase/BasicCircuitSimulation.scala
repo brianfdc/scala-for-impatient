@@ -55,7 +55,7 @@ abstract class BasicCircuitSimulation extends Simulation {
   
   def probe(name: String, wire: Wire) {
     def probeAction() {
-      println(name +" "+ currentTime + " new-value = "+ wire.getSignal)
+      logger.debug(name +" "+ currentTime + " new-value = "+ wire.getSignal)
     }
     wire addAction probeAction
   }

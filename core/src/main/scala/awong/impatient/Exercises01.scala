@@ -7,7 +7,7 @@ import scala.util.Random
 /**
  * The Basics
  */
-class Exercises01 {
+class Exercises01 extends awong.ScalaForImpatientExercise {
   /*
    * (1.1) Methods on the integer "3"
    * 

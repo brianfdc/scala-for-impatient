@@ -18,7 +18,7 @@ class AboutInteroperability extends KoanSpec("About interoperability with Java")
           |   and see src/test/java for the SomeJavaClass file. This koan
           |   converts a scala List of String to java List of raw type."""
 
-      println(moreDetails)
+      logger.info(moreDetails)
       import scala.collection.JavaConversions._
       val d = new SomeJavaClass
       val e = List("one", "two", "three")

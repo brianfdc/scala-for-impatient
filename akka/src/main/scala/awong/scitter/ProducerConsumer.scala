@@ -1,10 +1,8 @@
 package awong.scitter
 
 
-import akka.actor.Actor
-import akka.actor.ActorRef
-import akka.actor.Props
-import akka.actor.ActorSystem
+import akka.actor._
+
 import akka.routing.RoundRobinRouter
 import scala.concurrent.duration.Duration
 import java.util.concurrent.TimeUnit
@@ -34,11 +32,11 @@ object ProducerConsumer extends App {
   case class StringMessage(msg : String) extends Message
   case class Shutdown() extends Message
   
-  class Consumer extends Actor {
+  class Consumer extends Actor with ActorLogging {
     var done = false;
     def receive = {
       case msg: StringMessage =>
-        println("Received message! -> " + msg.msg)
+        log.debug("Received message! -> " + msg.msg)
         if (msg.msg == "DONE") {
           done = true
           sender ! Shutdown
@@ -51,15 +49,15 @@ object ProducerConsumer extends App {
   }
   
   
-  class Producer(consumer: ActorRef) extends Actor {
+  class Producer(consumer: ActorRef) extends Actor with ActorLogging {
     def receive = {
       case msg : StringMessage => {
         consumer ! msg
       }
       case msg : Shutdown => {
-        println("shutting down master and all its superverised children")
+        log.debug("shutting down master and all its superverised children")
         context.stop(self)
-        println("shutting down system")
+        log.debug("shutting down system")
         context.system.shutdown
       }
     }

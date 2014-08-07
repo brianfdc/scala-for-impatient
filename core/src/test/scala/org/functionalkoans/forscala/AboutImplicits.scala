@@ -1,6 +1,5 @@
 package org.functionalkoans.forscala
 
-import org.scalatest.matchers.ShouldMatchers
 import org.functionalkoans.forscala.support.KoanSpec
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith
@@ -18,40 +17,49 @@ import org.junit.runner.RunWith
 class AboutImplicits extends KoanSpec("""Implicits wrap around existing classes to provide extra functionality
            |   This is similar to \'monkey patching\' in Ruby, and Meta-Programming in Groovy.
            |   Creating a method isOdd for Int, which doesn't exist""")
-  with ShouldMatchers
 {
-  "An implicit" can {
-    "Be specified on a standalone method" in {
-      class KoanIntWrapper(val original: Int) {
-        def isOdd() = original % 2 != 0
-      }
-      implicit def thisMethodNameIsIrrelevant(value: Int) = new KoanIntWrapper(value)
-      19.isOdd() should be(__)
-      20.isOdd() should be(__)
-    }
-    
-    "be imported into your scope" in {
-      object MyPredef {
+  "An implicit" when {
+    "specified on a standalone method" should {
+      "monkey patch the original" in {
         class KoanIntWrapper(val original: Int) {
           def isOdd() = original % 2 != 0
-          def isEven() = !isOdd()
         }
         implicit def thisMethodNameIsIrrelevant(value: Int) = new KoanIntWrapper(value)
+        19.isOdd() should be(__)
+        20.isOdd() should be(__)
       }
-      import MyPredef._
-      //imported implicits come into effect within this scope
-      19.isOdd() should be(__)
-      20.isOdd() should be(__)
     }
-    
-    "be imported used to automatically convert from one type to another" in {
-      import java.math.BigInteger
-      implicit def Int2BigIntegerConvert(value: Int): BigInteger = new BigInteger(value.toString)
-      def add(a: BigInteger, b: BigInteger) = a.add(b)
-      (add(3, 6)) should be(__)
+    "specified on an implicit class in a wrapper pattern" should {
+      "monkey patch the original" in {
+        implicit class KoanIntWrapper(val original: Int) {
+          def isOdd() = original % 2 != 0
+        }
+        19.isOdd() should be(__)
+        20.isOdd() should be(__)
+      }
     }
-    
-    
+    "imported into your scope" should {
+      "also work" in {
+        object MyPredef {
+          implicit class KoanIntWrapper(val original: Int) {
+            def isOdd() = original % 2 != 0
+            def isEven() = !isOdd()
+          }
+        }
+        import MyPredef._
+        //imported implicits come into effect within this scope
+        19.isOdd() should be(__)
+        20.isOdd() should be(__)
+      }
+    }
+    "you need to convert automatically from one type to another" should {
+      "also work" in {
+        import java.math.BigInteger
+        implicit def Int2BigIntegerConvert(value: Int): BigInteger = new BigInteger(value.toString)
+        def add(a: BigInteger, b: BigInteger) = a.add(b)
+        (add(3, 6)) should be(__)
+      }
+    }
   }
   
   "An implicit function parameter" can {

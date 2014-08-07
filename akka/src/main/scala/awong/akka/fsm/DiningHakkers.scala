@@ -55,8 +55,7 @@ object Think extends DiningHakkerMessage
 class Chopstick(name: String) extends Actor with ActorLogging {
   import context._
   def logDebug(msg: String) = {
-    //log.debug(msg)
-    println(msg)
+    log.debug(msg)
   }
   //When a Chopstick is taken by a hakker
   //It will refuse to be taken by other hakkers
@@ -91,8 +90,7 @@ class Hakker(name: String, left: ActorRef, right: ActorRef) extends Actor with A
   import context._
 
   def logDebug(msg: String) = {
-    //log.debug(msg)
-    println(msg)
+    log.debug(msg)
   }
   //When a hakker is thinking it can become hungry
   //and try to pick up its chopsticks and eat

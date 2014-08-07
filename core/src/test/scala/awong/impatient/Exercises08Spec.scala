@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import org.scalatest.junit.JUnitRunner
 import org.junit.runner.RunWith

@@ -160,14 +160,14 @@ object Exercises10 {
   /**
    * (10.4)
    */
-  trait CryptoLogger {
+  trait CryptoLogger extends awong.LoggingLike {
     val key = 3
-    def log(msg: String):String = {
+    def log(msg: String): String = {
       def ceasarCipher(msg: String): String = {
         msg.map( x => (x + key).toChar )
       }
       val encrypted = ceasarCipher(msg)
-      println(encrypted)
+      logger.debug(encrypted)
       ( encrypted )
     }
   }

@@ -1,12 +1,13 @@
 package awong.sudoku
 
+import awong.LoggingLike
 /**
  * Solve a Sudoku puzzle in a purely functional manner using lazy evaluation
  * For alternative, see https://github.com/msmith/sudoku-scala
  * 
  * @see http://www.gregreynolds.co.uk/pure-functional-sudoku-solving-with-scala/
  */
-object SudokuSolver {
+object SudokuSolver extends LoggingLike {
 	type SudokuVec = Vector[Char]
 	
 	/* Setting up some constants.
@@ -88,9 +89,9 @@ object SudokuSolver {
 	// Format the board as a square for output
 	def showBoard(board: SudokuVec): Unit = {
 		if (board.length <= rowLength) {
-			println(board.mkString)
+			logger.debug(board.mkString)
 		} else {
-			println(board.take(rowLength).mkString)
+			logger.debug(board.take(rowLength).mkString)
 			showBoard(board.drop(rowLength))
 		}
 	}
@@ -164,11 +165,11 @@ object SudokuSolver {
 		val testList = testString.toVector
 		val solution = solve(testList)
 		if (solution.isEmpty) {
-			println("No Solution")
+			logger.info("No Solution")
 		} else  {
 			showBoard(solution.head)
 		}
-		println("End")
+		logger.info("End")
 		
 	}
 	// Extract the first solution and print it.

@@ -11,11 +11,11 @@ class ParallelCollectionsSuite extends AbstractFlatSpec {
     val range = 0 until 1000
     val parallelRange = range.par
     val result = parallelRange.map{ each => print(each + " "); each }
-    expectResult( parallelRange.length ) {
+    assertResult( parallelRange.length ) {
       result.length
     }
     
-    expectResult(parallelRange.sum, "parallel summation == sequential summation") {
+    assertResult(parallelRange.sum, "parallel summation == sequential summation") {
       /*
        * aggregate requires two operations
        * (1) a seqop applied to partitions of the collection
@@ -24,7 +24,7 @@ class ParallelCollectionsSuite extends AbstractFlatSpec {
       val sum = parallelRange.aggregate(0)( (a,b) => {
         a + b
       },{ (a1,a2) =>
-        println("adding: (" + a1 + "," + a2 + ")")
+        logger.debug("adding: (" + a1 + "," + a2 + ")")
         a1 + a2
       })
       

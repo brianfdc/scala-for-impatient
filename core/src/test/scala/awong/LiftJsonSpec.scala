@@ -24,7 +24,7 @@ class LiftJsonSpec extends AbstractFlatSpec {
         Somebody(2, "alan", None, new java.util.Date(), true),
         Somebody(2, "alan", None, new java.util.Date(), false)
         ))
-    println(xf)
+    logger.debug(xf)
   }
 
 

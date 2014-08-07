@@ -1,9 +1,16 @@
 package org.functionalkoans
 
+import org.slf4j.LoggerFactory
+import org.slf4j.Logger
 
 package object forscala {
-  def packageMethod = {
-    println("I am a package method")
+  def log(msg: String): Unit = {
+    val logger = LoggerFactory.getLogger("org.functionalkoans.forscala")
+    logger.debug(msg)
+  }
+  
+  def packageMethod: Unit = {
+    log("I am a package method")
   }
 }
 
@@ -21,12 +28,12 @@ package forscala {
   }
   
   case class Event(name: String, source: Any)
-  trait EventListener {
+  trait EventListener extends awong.LoggingLike {
     def listen(event: Event): Option[String]
     def print(event:Event): Unit = {
       listen(event) match {
-        case Some(x) => println(x)
-        case None => println ("Nothing of importance occured")
+        case Some(x) => logger.debug(x.toString)
+        case None => logger.debug("Nothing of importance occured")
       }
     }
   }
@@ -66,11 +73,11 @@ package forscala {
   }
   
   package traits {
-    trait Logging {
+    trait Logging extends awong.LoggingLike {
       var logCache = List[String]()
       def log(value: String) = {
         logCache = logCache :+ value
-        println(value)
+        logger.debug(value)
       }
     }
     class Welder extends Logging {

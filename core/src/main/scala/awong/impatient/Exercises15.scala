@@ -9,7 +9,7 @@ object Exercises15 {
    * (15.2)
    */
   @deprecated(message="This class is Deprecated", since="0.0.2")
-  class Deprecated(var name: String) {
+  class Deprecated(var name: String) extends awong.LoggingLike {
     @deprecated(message="description member bar is obsolete", since="0.0.2")
     var description = name;
     
@@ -25,7 +25,7 @@ object Exercises15 {
     def sayHi(@deprecatedName('world) sender: String) {
       @deprecated(message="greetee local var is obsolete", since="0.0.2")
       var greetee = sender
-      println("Hello " + sender)
+      logger.debug("Hello " + sender)
     }
     /**
      * (15.4)

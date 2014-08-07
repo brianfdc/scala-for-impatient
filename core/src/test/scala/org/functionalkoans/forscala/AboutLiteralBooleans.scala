@@ -8,7 +8,7 @@ import org.junit.runner.RunWith
 class AboutLiteralBooleans extends KoanSpec("about literal booleans") {
   "Boolean literals" must {
     "be either true or false, using the true or false keyword" in {
-      println("If you want a non-classical logic, write it yourself!")
+      logger.debug("If you want a non-classical logic, write it yourself!")
       val a = true
       val b = false
       val c = (1 > 2)

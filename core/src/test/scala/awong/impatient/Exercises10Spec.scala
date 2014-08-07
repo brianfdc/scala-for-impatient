@@ -1,4 +1,4 @@
-package scala.impatient
+package awong.impatient
 
 import org.scalatest.FlatSpec
 import org.scalatest.BeforeAndAfter
@@ -12,7 +12,7 @@ import awong.AbstractFlatSpec
 class Exercises10Spec extends AbstractFlatSpec {
   
   before {
-    println("executing before")
+    logger.trace("executing before")
   }
 
   "(10.1)" should "mixin translate and grow into a concrete Java class" in {

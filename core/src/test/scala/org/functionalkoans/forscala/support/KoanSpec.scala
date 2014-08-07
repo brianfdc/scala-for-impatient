@@ -9,12 +9,12 @@ import org.scalatest.BeforeAndAfterAll
 import org.scalatest.BeforeAndAfter
 import awong.AbstractWordSpec
 
-abstract class KoanSpec(val description:String)
+abstract class KoanSpec(val description:String) 
   extends AbstractWordSpec
   with BlankTests
   with Suite
 {
   override def beforeAll = {
-    println(description)
+    logger.info(description)
   }
 }
