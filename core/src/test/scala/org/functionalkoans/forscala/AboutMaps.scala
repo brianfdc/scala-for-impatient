@@ -74,6 +74,21 @@ class AboutMaps extends KoanSpec("Learn about Scala maps") {
         aNewMap.contains("OH") should be(true)
         aNewMap.size should be(2)
       }
+      
+      "be accrued in a fold combinator" in {
+        val list = ("MI","Michigan")::("OH","Ohio")::("WI","Wisconsin") ::("IA","Iowa"):: Nil
+        val myMap = list.foldLeft(Map[String,String]()) { case (map,(abbr,state)) =>
+            map + (abbr -> state)
+        }
+        myMap.size should be (4)
+        myMap("MI") should be ("Michigan")
+      }
+      "be transformed with in a map combinator" in {
+        val myMap = Map("MI" -> "Michigan", "OH" -> "Ohio", "WI" -> "Wisconsin", "IA" -> "Iowa")
+        val xs = myMap.map { case (k,v) => v }
+        xs.size should be (4)
+       
+      }
     }
     "accessing a map by key" must {
       "result in an exception if key is not found" in {
