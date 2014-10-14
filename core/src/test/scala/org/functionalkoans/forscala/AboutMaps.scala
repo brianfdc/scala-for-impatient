@@ -89,6 +89,13 @@ class AboutMaps extends KoanSpec("Learn about Scala maps") {
         xs.size should be (4)
        
       }
+      "be adjusted on a per entry basis" in {
+        def adjust[A,B](map: Map[A,B], key: A)(f: B=>B): Map[A,B] = map.updated(key, f(map(key)))
+        var myMap = Map("MI" -> "Meeecchigan", "OH" -> "Ohio", "WI" -> "Wisconsin", "IA" -> "Iowa")
+        myMap("MI") should not be ("Michigan")
+        myMap = adjust(myMap, "MI"){ cl => "Michigan" }
+        myMap("MI") should be ("Michigan")
+      } 
     }
     "accessing a map by key" must {
       "result in an exception if key is not found" in {
