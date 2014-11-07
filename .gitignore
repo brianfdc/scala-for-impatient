@@ -2,4 +2,7 @@
 .cache
 target/
 project/target/
-scalaz/.settings
+.settings
+.project
+.classpath
+
